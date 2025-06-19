@@ -1,1 +1,26 @@
-spring.application.name=TODOIST
+server: 
+  servlet: 
+    context-path: /todoist/
+    session: 
+      persistent: true
+      cookie.name: JSESSIONID_TODOIST
+  port: 8081
+spring:
+  mvc:
+    async:
+      request-timeout: -1
+  servlet: 
+    multipart: 
+        max-file-size: 5MB
+  profiles: 
+    active: dev
+  application:
+    name: TODOIST
+  thymeleaf:
+    cache: false
+  banner:
+    location: banner.txt
+  jackson: 
+    serialization:
+      FAIL_ON_EMPTY_BEANS: false
+
