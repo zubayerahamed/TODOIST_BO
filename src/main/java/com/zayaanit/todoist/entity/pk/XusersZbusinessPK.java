@@ -7,16 +7,16 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * @author Zubayer Ahamed 
- * @since Jul 2, 2023
+ * Zubayer Ahamed
+ * @since Jun 22, 2025
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class XusersPK implements Serializable {
+public class XusersZbusinessPK implements Serializable {
 
-	private static final long serialVersionUID = -9024206548799168071L;
+	private static final long serialVersionUID = 4094500453577564536L;
 
 	private Integer zuser;
-	private String zemail;
+	private Integer zid;
 }

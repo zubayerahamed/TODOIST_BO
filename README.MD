@@ -1,6 +1,6 @@
 # TODOIST
 
-<a href="https://docs.google.com/document/d/1JvNOT1pZuLYst_gSQB3-m88wHm98RNTZmauXPTEyePQ/edit?usp=sharing">Documentation Link</a>
+<a href="https://docs.google.com/document/d/1JvNOT1pZuLYst_gSQB3-m88wHm98RNTZmauXPTEyePQ/edit?usp=sharing" target="_blank">Documentation Link</a>
 
 
 ```sh
