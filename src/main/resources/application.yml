@@ -1,26 +1,19 @@
 server: 
   servlet: 
-    context-path: /
+    context-path: /api/v1
     session: 
       persistent: true
       cookie.name: JSESSIONID_TODOIST
   port: 8081
+
+springdoc: 
+  default-produces-media-type: application/json
+
 spring:
-  mvc:
-    async:
-      request-timeout: -1
   servlet: 
     multipart: 
-        max-file-size: 5MB
+        max-file-size: 50MB
   profiles: 
     active: dev
   application:
     name: TODOIST
-  thymeleaf:
-    cache: false
-  banner:
-    location: banner.txt
-  jackson: 
-    serialization:
-      FAIL_ON_EMPTY_BEANS: false
-

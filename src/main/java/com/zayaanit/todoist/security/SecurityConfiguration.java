@@ -32,7 +32,7 @@ public class SecurityConfiguration {
 	@Autowired private JwtAuthenticationFilter jwtAuthFilter;
 	@Autowired private LogoutService logoutHandler;
 
-	private static final String[] WHITE_LIST_URL = new String[] { "/api/v1/auth/**", };
+	private static final String[] WHITE_LIST_URL = new String[] { "/auth/**", };
 
 	@Bean
 	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
