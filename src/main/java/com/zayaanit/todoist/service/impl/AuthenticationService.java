@@ -92,6 +92,7 @@ public class AuthenticationService {
 		return AuthenticationResponse.builder().accessToken(jwtToken).refreshToken(refreshToken).build();
 	}
 
+	@Transactional
 	public AuthenticationResponse authenticate(AuthenticationRequest request) {
 		// 1. Find user by email
 		Xusers xusers = xusersRepo.findByZemail(request.getEmail()).orElseThrow(() -> new RuntimeException("Email is not registered."));
