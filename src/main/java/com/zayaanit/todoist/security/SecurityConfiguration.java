@@ -10,11 +10,13 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.zayaanit.todoist.service.XusersService;
+import com.zayaanit.todoist.service.impl.LogoutService;
 
 /**
  * Zubayer Ahamed
@@ -28,6 +30,7 @@ public class SecurityConfiguration {
 	@Autowired private XusersService xusersService;
 	@Autowired private PasswordEncoder passwordEncoder;
 	@Autowired private JwtAuthenticationFilter jwtAuthFilter;
+	@Autowired private LogoutService logoutHandler;
 
 	private static final String[] WHITE_LIST_URL = new String[] { "/api/v1/auth/**", };
 
@@ -41,7 +44,14 @@ public class SecurityConfiguration {
 							.anyRequest().authenticated()
 			)
 			.authenticationProvider(authenticationProvider())
-			.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+			.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+			.logout(
+				l -> l.logoutUrl("/api/v1/auth/logout")
+						.addLogoutHandler(logoutHandler)
+						.logoutSuccessHandler(
+							(request, response, authentication) -> SecurityContextHolder.clearContext()
+						)
+			);
 
 		return http.build();
 	}
