@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +16,7 @@ import com.zayaanit.todoist.entity.Xusers;
 import com.zayaanit.todoist.entity.XusersZbusiness;
 import com.zayaanit.todoist.entity.Zbusiness;
 import com.zayaanit.todoist.enums.TokenType;
+import com.zayaanit.todoist.exception.CustomException;
 import com.zayaanit.todoist.model.AuthenticationRequest;
 import com.zayaanit.todoist.model.AuthenticationResponse;
 import com.zayaanit.todoist.model.MyUserDetail;
@@ -50,7 +52,7 @@ public class AuthenticationService {
 	public AuthenticationResponse register(RegisterRequest request) {
 		// 1. Check if user already exists
 		if (xusersRepo.findByZemail(request.getEmail()).isPresent()) {
-			throw new RuntimeException("Email is already registered.");
+			throw new CustomException("Email is already registered.", HttpStatus.BAD_REQUEST);
 		}
 
 		// 2. Create user
@@ -160,14 +162,14 @@ public class AuthenticationService {
 	public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
 		final String refreshToken;
-		final String userEmail;
+		final String userId;
 		if (authHeader == null || !authHeader.startsWith("Bearer ")) {
 			return;
 		}
 		refreshToken = authHeader.substring(7);
-		userEmail = jwtService.extractUsername(refreshToken);
-		if (StringUtils.isNotBlank(userEmail)) {
-			MyUserDetail userDetails = (MyUserDetail) xusersService.loadUserByUsername(userEmail);
+		userId = jwtService.extractUsername(refreshToken);
+		if (StringUtils.isNotBlank(userId)) {
+			MyUserDetail userDetails = (MyUserDetail) xusersService.loadUserByUsername(userId);
 
 			if (jwtService.isTokenValid(refreshToken, userDetails)) {
 				var accessToken = jwtService.generateToken(userDetails);
