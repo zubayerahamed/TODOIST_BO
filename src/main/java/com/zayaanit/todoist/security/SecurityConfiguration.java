@@ -25,12 +25,9 @@ import com.zayaanit.todoist.service.XusersService;
 @EnableWebSecurity
 public class SecurityConfiguration {
 
-	@Autowired
-	private XusersService xusersService;
-	@Autowired
-	private PasswordEncoder passwordEncoder;
-	@Autowired
-	private JwtAuthenticationFilter jwtAuthFilter;
+	@Autowired private XusersService xusersService;
+	@Autowired private PasswordEncoder passwordEncoder;
+	@Autowired private JwtAuthenticationFilter jwtAuthFilter;
 
 	private static final String[] WHITE_LIST_URL = new String[] { "/api/v1/auth/**", };
 

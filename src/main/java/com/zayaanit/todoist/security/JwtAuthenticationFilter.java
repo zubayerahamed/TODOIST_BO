@@ -3,6 +3,7 @@ package com.zayaanit.todoist.security;
 import java.io.IOException;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.http.HttpHeaders;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.zayaanit.todoist.model.MyUserDetail;
+import com.zayaanit.todoist.repo.XtokensRepo;
 import com.zayaanit.todoist.service.XusersService;
 
 import jakarta.servlet.FilterChain;
@@ -29,6 +31,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 	private final JwtService jwtService;
 	private final XusersService xusersService;
+	private final XtokensRepo xtokensRepo;
 
 	@Override
 	protected void doFilterInternal(
@@ -36,21 +39,24 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 		@NonNull HttpServletResponse response, 
 		@NonNull FilterChain filterChain) throws ServletException, IOException {
 
-		final String authHeader = request.getHeader("Authorization");
-		final String jwt;
-		final String userEmail;
+		final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+		final String jwtToken;
+		final String userId;
 
 		if(StringUtils.isBlank(authHeader) || !authHeader.startsWith("Bearer ")) {
 			filterChain.doFilter(request, response);
 			return;
 		}
 
-		jwt = authHeader.substring(7);
-		userEmail = jwtService.extractUsername(jwt);
-		if(StringUtils.isNotBlank(userEmail) && SecurityContextHolder.getContext().getAuthentication() == null) {  // User email not null && user is not authenticated yet
-			MyUserDetail userDetails = (MyUserDetail) xusersService.loadUserByUsername(userEmail);
-			if(jwtService.isTokenValid(jwt, userDetails)) {
-				UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userEmail, null, userDetails.getAuthorities());
+		jwtToken = authHeader.substring(7);
+		userId = jwtService.extractUsername(jwtToken);
+		if(StringUtils.isNotBlank(userId) && SecurityContextHolder.getContext().getAuthentication() == null) {  // User id not null && user is not authenticated yet
+			MyUserDetail userDetails = (MyUserDetail) xusersService.loadUserByUsername(userId);
+
+			var isTokenValid = xtokensRepo.findByXtoken(jwtToken).map(t -> !t.isXexpired() && !t.isXrevoked()).orElse(false);
+
+			if(jwtService.isTokenValid(jwtToken, userDetails) && isTokenValid) {
+				UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 				authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 				SecurityContextHolder.getContext().setAuthentication(authToken);
 			}
