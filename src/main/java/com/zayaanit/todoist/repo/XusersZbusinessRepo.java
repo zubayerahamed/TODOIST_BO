@@ -12,8 +12,8 @@ import com.zayaanit.todoist.entity.pk.XusersZbusinessPK;
 @Repository
 public interface XusersZbusinessRepo extends JpaRepository<XusersZbusiness, XusersZbusinessPK> {
 
-	List<XusersZbusiness> findAllByZuser(Integer zuser);
-	Optional<XusersZbusiness> findByZuserAndZprimary(Integer zuser, Boolean zprimary);
-	Optional<XusersZbusiness> findByZuserAndZadmin(Integer zuser, Boolean zadmin);
-	Optional<XusersZbusiness> findByZuserAndZcollaborator(Integer zuser, Boolean zcollaborator);
+	List<XusersZbusiness> findAllByZuser(Long zuser);
+	Optional<XusersZbusiness> findByZuserAndZprimary(Long zuser, Boolean zprimary);
+	Optional<XusersZbusiness> findByZuserAndZadmin(Long zuser, Boolean zadmin);
+	Optional<XusersZbusiness> findByZuserAndZcollaborator(Long zuser, Boolean zcollaborator);
 }

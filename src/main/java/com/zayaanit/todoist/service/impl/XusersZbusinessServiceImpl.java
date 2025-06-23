@@ -20,24 +20,24 @@ public class XusersZbusinessServiceImpl implements XusersZbusinessService {
 	@Autowired private XusersZbusinessRepo xusersZbusinessRepo;
 
 	@Override
-	public List<XusersZbusiness> findAllByZuser(Integer zuser) {
+	public List<XusersZbusiness> findAllByZuser(Long zuser) {
 		return xusersZbusinessRepo.findAllByZuser(zuser);
 	}
 
 	@Override
-	public XusersZbusiness findByZuserAndZprimary(Integer zuser, Boolean zprimary) {
+	public XusersZbusiness findByZuserAndZprimary(Long zuser, Boolean zprimary) {
 		Optional<XusersZbusiness> xusersZbusinessOp = xusersZbusinessRepo.findByZuserAndZprimary(zuser, zprimary);
 		return xusersZbusinessOp.isPresent() ? xusersZbusinessOp.get() : null;
 	}
 
 	@Override
-	public XusersZbusiness findByZuserAndZadmin(Integer zuser, Boolean zadmin) {
+	public XusersZbusiness findByZuserAndZadmin(Long zuser, Boolean zadmin) {
 		Optional<XusersZbusiness> xusersZbusinessOp = xusersZbusinessRepo.findByZuserAndZadmin(zuser, zadmin);
 		return xusersZbusinessOp.isPresent() ? xusersZbusinessOp.get() : null;
 	}
 
 	@Override
-	public XusersZbusiness findByZuserAndZcollaborator(Integer zuser, Boolean zcollaborator) {
+	public XusersZbusiness findByZuserAndZcollaborator(Long zuser, Boolean zcollaborator) {
 		Optional<XusersZbusiness> xusersZbusinessOp = xusersZbusinessRepo.findByZuserAndZcollaborator(zuser, zcollaborator);
 		return xusersZbusinessOp.isPresent() ? xusersZbusinessOp.get() : null;
 	}

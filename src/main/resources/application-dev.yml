@@ -9,14 +9,15 @@ logging:
       type: DEBUG
 
 app: 
-  audit-enable: false
-  tomcat-service: Tomcat9
   logging-path: D:/todoist/logs
-  template-path: D:/cr_live_reports
-  backup-location: C:/todoist/backup
-  import-export: D:/todoist/import-export
   database-name: todoist
   version: "@project.version@"
+  security:
+    jwt:
+      secret-key: nPeVKgv2NF4HvDi2q2PKqaU2Y+kSlY0OYcP+Evh3A8k=
+      expiration: 86400000 # a day
+      refresh-token:
+        expiration: 604800000 # 7 d
 
 server:
   port: 8081
@@ -39,7 +40,7 @@ spring:
       min-idle: 15
   jpa:
     show-sql : true
-    generate-ddl: false
+    generate-ddl: true
     hibernate:
       ddl-auto: update
       naming:

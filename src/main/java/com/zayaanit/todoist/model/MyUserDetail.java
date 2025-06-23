@@ -20,7 +20,7 @@ public class MyUserDetail implements UserDetails {
 
 	private static final long serialVersionUID = 9078767219064029540L;
 
-	private Integer zuser;
+	private Long zuser;
 	private String zemail;
 	private String xpassword;
 	private Zbusiness zbusiness;
@@ -32,6 +32,7 @@ public class MyUserDetail implements UserDetails {
 		this.zemail = xuser.getZemail();
 		this.xpassword = xuser.getXpassword();
 		this.zbusiness = zbusiness;
+		this.roles = "ROLE_USER";
 		this.authorities = Arrays.stream(roles.split(",")).map(SimpleGrantedAuthority::new)
 				.collect(Collectors.toList());
 	}

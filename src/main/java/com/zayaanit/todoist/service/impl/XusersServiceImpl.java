@@ -34,7 +34,7 @@ public class XusersServiceImpl implements XusersService {
 			throw new UsernameNotFoundException("Email required");
 		}
 
-		Optional<Xusers> xusersOp = xusersRepo.findByZemail(username);
+		Optional<Xusers> xusersOp = xusersRepo.findById(Long.valueOf(username));
 		if(!xusersOp.isPresent()) throw new UsernameNotFoundException("User not exist.");
 
 		Xusers xuser = xusersOp.get();

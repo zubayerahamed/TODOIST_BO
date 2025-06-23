@@ -20,7 +20,7 @@ public class ZbusinessServiceImpl implements ZbusinessService {
 	@Autowired private ZbusinessRepo zbusinessRepo;
 
 	@Override
-	public Zbusiness findById(Integer zid) throws ServiceException {
+	public Zbusiness findById(Long zid) throws ServiceException {
 		if(zid == null) throw new ServiceException("Business id null");
 
 		Optional<Zbusiness> zbusinessOp = zbusinessRepo.findById(zid);

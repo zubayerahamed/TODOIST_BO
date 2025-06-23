@@ -10,8 +10,8 @@ import com.zayaanit.todoist.entity.XusersZbusiness;
  */
 public interface XusersZbusinessService {
 
-	List<XusersZbusiness> findAllByZuser(Integer zuser);
-	XusersZbusiness findByZuserAndZprimary(Integer zuser, Boolean zprimary);
-	XusersZbusiness findByZuserAndZadmin(Integer zuser, Boolean zadmin);
-	XusersZbusiness findByZuserAndZcollaborator(Integer zuser, Boolean zcollaborator);
+	List<XusersZbusiness> findAllByZuser(Long zuser);
+	XusersZbusiness findByZuserAndZprimary(Long zuser, Boolean zprimary);
+	XusersZbusiness findByZuserAndZadmin(Long zuser, Boolean zadmin);
+	XusersZbusiness findByZuserAndZcollaborator(Long zuser, Boolean zcollaborator);
 }

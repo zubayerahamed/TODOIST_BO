@@ -5,5 +5,5 @@ import com.zayaanit.todoist.exception.ServiceException;
 
 public interface ZbusinessService {
 
-	Zbusiness findById(Integer zid) throws ServiceException;
+	Zbusiness findById(Long zid) throws ServiceException;
 }

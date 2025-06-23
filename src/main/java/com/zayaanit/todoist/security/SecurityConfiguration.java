@@ -5,9 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -20,40 +18,31 @@ import com.zayaanit.todoist.service.XusersService;
 
 /**
  * Zubayer Ahamed
+ * 
  * @since Jun 22, 2025
  */
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration {
 
-	@Autowired private XusersService xusersService;
-	@Autowired private PasswordEncoder passwordEncoder;
-	@Autowired private JwtAuthenticationFilter jwtAuthFilter;
+	@Autowired
+	private XusersService xusersService;
+	@Autowired
+	private PasswordEncoder passwordEncoder;
+	@Autowired
+	private JwtAuthenticationFilter jwtAuthFilter;
 
-	private static final String[] WHITE_LIST_URL = new String[]{
-		"/v2/api-docs",
-		"/v3/api-docs",
-		"/v3/api-docs/**",
-		"/swagger-resources",
-		"/swagger-resources/**",
-		"/configuration/ui",
-		"/configuration/security",
-		"/swagger-ui/**",
-		"/webjars/**",
-		"/swagger-ui.html"
-	};
+	private static final String[] WHITE_LIST_URL = new String[] { "/api/v1/auth/**", };
 
 	@Bean
 	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http
-			.csrf().disable()
-			.authorizeHttpRequests()
-			.requestMatchers(WHITE_LIST_URL).permitAll()
-			.anyRequest().authenticated()
-			.and()
-			.sessionManagement()
-			.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-			.and()
+			.csrf(csrf -> csrf.disable())
+			.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+			.authorizeHttpRequests(
+				auth -> auth.requestMatchers(WHITE_LIST_URL).permitAll()
+							.anyRequest().authenticated()
+			)
 			.authenticationProvider(authenticationProvider())
 			.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 

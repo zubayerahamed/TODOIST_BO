@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import com.zayaanit.todoist.entity.Zbusiness;
 
 @Repository
-public interface ZbusinessRepo extends JpaRepository<Zbusiness, Integer> {
+public interface ZbusinessRepo extends JpaRepository<Zbusiness, Long> {
 
 }

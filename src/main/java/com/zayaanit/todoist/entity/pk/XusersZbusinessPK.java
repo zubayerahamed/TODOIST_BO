@@ -17,6 +17,6 @@ public class XusersZbusinessPK implements Serializable {
 
 	private static final long serialVersionUID = 4094500453577564536L;
 
-	private Integer zuser;
-	private Integer zid;
+	private Long zuser;
+	private Long zid;
 }

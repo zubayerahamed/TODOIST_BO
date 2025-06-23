@@ -24,11 +24,11 @@ import io.jsonwebtoken.security.Keys;
 @Service
 public class JwtService {
 
-	private static final String SECRET_KEY = "e3a1f2d4c5b6789a0f1e2d3c4b5a6978e9f0a1b2c3d4e5f67890abcdef123456";
-
-	@Value("${application.security.jwt.expiration:20000}")
+	@Value("${app.security.jwt.secret-key:nPeVKgv2NF4HvDi2q2PKqaU2Y+kSlY0OYcP+Evh3A8k=}")
+	private String secretKey;
+	@Value("${app.security.jwt.expiration:86400000}")
 	private long jwtExpiration;
-	@Value("${application.security.jwt.refresh-token.expiration:50000}")
+	@Value("${app.security.jwt.refresh-token.expiration:604800000}")
 	private long refreshExpiration;
 
 	public String extractUsername(String token) {
@@ -54,7 +54,7 @@ public class JwtService {
 	}
 
 	private SecretKey getSignInKey() {
-		byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
+		byte[] keyBytes = Decoders.BASE64.decode(secretKey);
 		return Keys.hmacShaKeyFor(keyBytes);
 	}
 
@@ -75,7 +75,7 @@ public class JwtService {
 				.claims().add(extraClaims)
 				.subject(userDetails.getUsername())
 				.issuedAt(new Date(System.currentTimeMillis()))
-				.expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 24))
+				.expiration(new Date(System.currentTimeMillis() + expiration))
 				.and()
 				.signWith(getSignInKey(), Jwts.SIG.HS256)
 				.compact();

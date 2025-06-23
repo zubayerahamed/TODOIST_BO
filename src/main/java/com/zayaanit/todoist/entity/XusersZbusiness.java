@@ -2,14 +2,16 @@ package com.zayaanit.todoist.entity;
 
 import com.zayaanit.todoist.entity.pk.XusersZbusinessPK;
 
-import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.IdClass;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 /**
  * Zubayer Ahamed
@@ -17,30 +19,31 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @Entity
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @IdClass(XusersZbusinessPK.class)
 @Table(name = "xusers_zbusiness")
 @EqualsAndHashCode(callSuper = true)
-public class XusersZbusiness extends AbstractModel<String> {
+public class XusersZbusiness extends AbstractModel<Long> {
 
 	private static final long serialVersionUID = 8172997495726591542L;
 
 	@Id
-	@Basic(optional = false)
 	@Column(name = "zuser")
-	private Integer zuser;
+	private Long zuser;
 
 	@Id
-	@Basic(optional = false)
 	@Column(name = "zid")
-	private Integer zid;
+	private Long zid;
 
-	@Column(name = "zprimary")
+	@Column(name = "zprimary", length = 1, nullable = false, columnDefinition = "BIT DEFAULT 0")
 	private Boolean zprimary;
 
-	@Column(name = "zadmin")
+	@Column(name = "zadmin", length = 1, nullable = false, columnDefinition = "BIT DEFAULT 0")
 	private Boolean zadmin;
 
-	@Column(name = "zcollaborator")
+	@Column(name = "zcollaborator", length = 1, nullable = false, columnDefinition = "BIT DEFAULT 0")
 	private Boolean zcollaborator;
 
 }

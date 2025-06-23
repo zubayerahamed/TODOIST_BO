@@ -6,8 +6,7 @@ package com.zayaanit.todoist.enums;
  */
 public enum UserRole {
 
-	ZADMIN("ROLE_ZADMIN", "ZAdmin", 0),
-	SUBSCRIBER("ROLE_SUBSCRIBER", "Subscriber", 100);
+	USER("ROLE_USER", "User", 0);
 
 	private String code;
 	private String roleName;

@@ -1,6 +1,6 @@
 server: 
   servlet: 
-    context-path: /todoist/
+    context-path: /
     session: 
       persistent: true
       cookie.name: JSESSIONID_TODOIST
