@@ -33,13 +33,13 @@ public class Xtokens implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	public Long xtokenid;
+	public Long xid;
 
 	@Column(unique = true)
 	public String xtoken;
 
 	@Enumerated(EnumType.STRING)
-	public TokenType tokenType;
+	public TokenType xtype;
 
 	public boolean xrevoked;
 

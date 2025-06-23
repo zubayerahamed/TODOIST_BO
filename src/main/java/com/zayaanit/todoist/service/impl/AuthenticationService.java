@@ -150,7 +150,7 @@ public class AuthenticationService {
 				.xtoken(jwtToken)
 				.xrevoked(false)
 				.xexpired(false)
-				.tokenType(TokenType.BEARER)
+				.xtype(TokenType.BEARER)
 				.build();
 
 		xtokensRepo.save(xtoken);
