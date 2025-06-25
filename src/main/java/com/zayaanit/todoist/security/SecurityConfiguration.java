@@ -15,6 +15,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import com.zayaanit.todoist.exception.CustomAccessDeniedHandler;
+import com.zayaanit.todoist.exception.CustomAuthenticationEntryPoint;
 import com.zayaanit.todoist.service.XusersService;
 import com.zayaanit.todoist.service.impl.LogoutService;
 
@@ -31,6 +33,8 @@ public class SecurityConfiguration {
 	@Autowired private PasswordEncoder passwordEncoder;
 	@Autowired private JwtAuthenticationFilter jwtAuthFilter;
 	@Autowired private LogoutService logoutHandler;
+	@Autowired private CustomAccessDeniedHandler accessDeniedHandler;
+	@Autowired private CustomAuthenticationEntryPoint authenticationEntryPoint;
 
 	private static final String[] WHITE_LIST_URL = new String[] { "/auth/**", };
 
@@ -42,6 +46,9 @@ public class SecurityConfiguration {
 			.authorizeHttpRequests(
 				auth -> auth.requestMatchers(WHITE_LIST_URL).permitAll()
 							.anyRequest().authenticated()
+			)
+			.exceptionHandling(
+				ex -> ex.accessDeniedHandler(accessDeniedHandler).authenticationEntryPoint(authenticationEntryPoint)
 			)
 			.authenticationProvider(authenticationProvider())
 			.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)

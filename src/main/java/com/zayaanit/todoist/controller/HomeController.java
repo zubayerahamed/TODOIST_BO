@@ -1,10 +1,13 @@
 package com.zayaanit.todoist.controller;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.zayaanit.todoist.enums.ResponseStatusType;
+import com.zayaanit.todoist.model.ResponseBuilder;
+import com.zayaanit.todoist.model.SuccessResponse;
 
 /**
  * Zubayer Ahamed
@@ -15,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class HomeController {
 
 	@GetMapping
-	public ResponseEntity<String> index() {
-		return new ResponseEntity<>("Hellow from secured endpoint", HttpStatus.OK);
+	public ResponseEntity<SuccessResponse<String>> index() {
+		return ResponseBuilder.build(ResponseStatusType.READ_SUCCESS, "Hellow from secured endpoint");
 	}
 }
