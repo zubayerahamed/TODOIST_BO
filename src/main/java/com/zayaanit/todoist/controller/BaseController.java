@@ -1,7 +1,6 @@
 package com.zayaanit.todoist.controller;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -21,6 +20,6 @@ public interface BaseController<REQ, RES, LIST, PAGE, ID> {
 			@RequestParam(defaultValue = "true") boolean ascending);
 	ResponseEntity<SuccessResponse<RES>> save(@RequestBody REQ req);
 	ResponseEntity<SuccessResponse<RES>> update(@RequestBody REQ req);
-	ResponseEntity<SuccessResponse<RES>> find(@PathVariable ID id);
-	ResponseEntity<SuccessResponse<RES>> delete(@PathVariable ID id);
+	ResponseEntity<SuccessResponse<RES>> find(@RequestParam ID id);
+	ResponseEntity<SuccessResponse<RES>> delete(@RequestParam ID id);
 }

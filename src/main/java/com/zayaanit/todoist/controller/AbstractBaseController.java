@@ -55,21 +55,17 @@ public class AbstractBaseController<REQ, RES, LIST, PAGE, ID> implements BaseCon
 		return ResponseBuilder.build(ResponseStatusType.UPDATE_SUCCESS, data);
 	}
 
-	@GetMapping("/{id}")
+	@GetMapping("/find")
 	@Override
 	public ResponseEntity<SuccessResponse<RES>> find(ID id) {
 		RES data = service.find(id);
 		return ResponseBuilder.build(ResponseStatusType.READ_SUCCESS, data);
 	}
 
-	@DeleteMapping("/{id}")
+	@DeleteMapping
 	@Override
 	public ResponseEntity<SuccessResponse<RES>> delete(ID id) {
 		service.delete(id);
 		return ResponseBuilder.build(ResponseStatusType.DELETE_NO_CONTENT, null);
 	}
-
-
-
-	
 }
