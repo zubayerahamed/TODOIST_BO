@@ -27,7 +27,7 @@ spring:
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
     url: jdbc:sqlserver://localhost;databaseName=todoist;encrypt=true;trustServerCertificate=true;
     username: sa
-    password: zubayer@123
+    password: azmee1234
     tomcat:
       max-wait: 20000
       max-active: 50
