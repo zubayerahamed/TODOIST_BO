@@ -1,5 +1,8 @@
 package com.zayaanit.todoist.controller;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,14 +21,23 @@ import lombok.RequiredArgsConstructor;
  * @since Jun 26, 2025
  */
 @RequiredArgsConstructor
-public class AbstractBaseController<LIST, REQ, RES> implements BaseController<LIST, REQ, RES> {
+public class AbstractBaseController<REQ, RES, LIST, PAGE, ID> implements BaseController<REQ, RES, LIST, PAGE, ID> {
 
-	protected final BaseService<LIST, REQ, RES> service;
+	protected final BaseService<REQ, RES, LIST, PAGE, ID> service;
 
 	@GetMapping
 	@Override
 	public ResponseEntity<SuccessResponse<LIST>> getAll() {
 		LIST data = service.getAll();
+		return ResponseBuilder.build(ResponseStatusType.READ_SUCCESS, data);
+	}
+
+	@GetMapping("/pageable")
+	@Override
+	public ResponseEntity<SuccessResponse<PAGE>> getAll(int page, int size, String sortBy, boolean ascending) {
+		Sort sort = ascending ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+		Pageable pageable = PageRequest.of(page, size, sort);
+		PAGE data = service.getAll(pageable);
 		return ResponseBuilder.build(ResponseStatusType.READ_SUCCESS, data);
 	}
 
@@ -45,16 +57,19 @@ public class AbstractBaseController<LIST, REQ, RES> implements BaseController<LI
 
 	@GetMapping("/{id}")
 	@Override
-	public ResponseEntity<SuccessResponse<RES>> find(Object id) {
+	public ResponseEntity<SuccessResponse<RES>> find(ID id) {
 		RES data = service.find(id);
 		return ResponseBuilder.build(ResponseStatusType.READ_SUCCESS, data);
 	}
 
 	@DeleteMapping("/{id}")
 	@Override
-	public ResponseEntity<SuccessResponse<RES>> delete(Object id) {
+	public ResponseEntity<SuccessResponse<RES>> delete(ID id) {
 		service.delete(id);
 		return ResponseBuilder.build(ResponseStatusType.DELETE_NO_CONTENT, null);
 	}
 
+
+
+	
 }

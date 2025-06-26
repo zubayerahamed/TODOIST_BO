@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.zayaanit.todoist.dto.req.UsersReqDto;
@@ -19,7 +21,7 @@ import com.zayaanit.todoist.service.UsersService;
  * @since Jun 26, 2025
  */
 @Service()
-public class UsersServiceImpl implements UsersService<List<UsersResDto>, UsersReqDto, UsersResDto> {
+public class UsersServiceImpl implements UsersService<UsersReqDto, UsersResDto, List<UsersResDto>, Page<UsersResDto>, Long> {
 
 	@Autowired XusersRepo xusersRepo;
 	
@@ -38,6 +40,14 @@ public class UsersServiceImpl implements UsersService<List<UsersResDto>, UsersRe
 	}
 
 	@Override
+	public Page<UsersResDto> getAll(Pageable pageable) throws CustomException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+
+	@Override
 	public UsersResDto save(UsersReqDto req) throws CustomException {
 		// TODO Auto-generated method stub
 		return null;
@@ -50,13 +60,13 @@ public class UsersServiceImpl implements UsersService<List<UsersResDto>, UsersRe
 	}
 
 	@Override
-	public UsersResDto find(Object id) throws CustomException {
+	public UsersResDto find(Long id) throws CustomException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public void delete(Object id) throws CustomException {
+	public void delete(Long id) throws CustomException {
 		// TODO Auto-generated method stub
 		
 	}

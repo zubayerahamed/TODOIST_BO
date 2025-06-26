@@ -2,6 +2,7 @@ package com.zayaanit.todoist.controller;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.zayaanit.todoist.anno.RestApiController;
@@ -15,9 +16,9 @@ import com.zayaanit.todoist.service.WorkspaceService;
  */
 @RestApiController
 @RequestMapping("/api/v1/workspaces")
-public class WorkspaceController extends AbstractBaseController<List<WorkspaceResDto>, WorkspaceReqDto, WorkspaceResDto> {
+public class WorkspaceController extends AbstractBaseController<WorkspaceReqDto, WorkspaceResDto, List<WorkspaceResDto>, Page<WorkspaceResDto>, Long> {
 
-	public WorkspaceController(WorkspaceService<List<WorkspaceResDto>, WorkspaceReqDto, WorkspaceResDto> service) {
+	public WorkspaceController(WorkspaceService<WorkspaceReqDto, WorkspaceResDto, List<WorkspaceResDto>, Page<WorkspaceResDto>, Long> service) {
 		super(service);
 	}
 
