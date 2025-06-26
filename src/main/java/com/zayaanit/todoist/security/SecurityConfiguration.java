@@ -36,7 +36,9 @@ public class SecurityConfiguration {
 	@Autowired private CustomAccessDeniedHandler accessDeniedHandler;
 	@Autowired private CustomAuthenticationEntryPoint authenticationEntryPoint;
 
-	private static final String[] WHITE_LIST_URL = new String[] { "/auth/**", };
+	private static final String[] WHITE_LIST_URL = new String[] { 
+		"/api/v1/auth/**",
+	};
 
 	@Bean
 	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {

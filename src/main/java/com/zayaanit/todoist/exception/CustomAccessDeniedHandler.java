@@ -1,7 +1,6 @@
 package com.zayaanit.todoist.exception;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
@@ -30,7 +29,6 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
 		ErrorResponse error = ErrorResponse.builder()
 				.status(HttpStatus.FORBIDDEN.value()).error("Forbidden")
 				.message("You do not have permission to access this resource")
-				.timestamp(LocalDateTime.now())
 				.build();
 
 		response.setStatus(HttpStatus.FORBIDDEN.value());

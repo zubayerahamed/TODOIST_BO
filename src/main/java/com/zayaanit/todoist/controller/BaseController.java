@@ -2,10 +2,9 @@ package com.zayaanit.todoist.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import com.zayaanit.todoist.model.SuccessResponse;
-
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 
 /**
  * Zubayer Ahamed

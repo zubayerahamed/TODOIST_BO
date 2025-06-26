@@ -14,7 +14,7 @@ import com.zayaanit.todoist.model.SuccessResponse;
  * @since Jun 17, 2025
  */
 @RestController
-@RequestMapping("/home")
+@RequestMapping("/api/v1/home")
 public class HomeController {
 
 	@GetMapping

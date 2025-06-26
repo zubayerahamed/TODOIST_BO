@@ -3,7 +3,6 @@ package com.zayaanit.todoist.controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 
@@ -12,7 +11,6 @@ import com.zayaanit.todoist.model.ResponseBuilder;
 import com.zayaanit.todoist.model.SuccessResponse;
 import com.zayaanit.todoist.service.BaseService;
 
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -47,7 +45,7 @@ public class AbstractBaseController<LIST, REQ, RES> implements BaseController<LI
 
 	@GetMapping("/{id}")
 	@Override
-	public ResponseEntity<SuccessResponse<RES>> find(@PathVariable Object id) {
+	public ResponseEntity<SuccessResponse<RES>> find(Object id) {
 		RES data = service.find(id);
 		return ResponseBuilder.build(ResponseStatusType.READ_SUCCESS, data);
 	}

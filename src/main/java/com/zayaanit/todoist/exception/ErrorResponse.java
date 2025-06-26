@@ -1,7 +1,5 @@
 package com.zayaanit.todoist.exception;
 
-import java.time.LocalDateTime;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,5 +18,4 @@ public class ErrorResponse {
 	private int status;
 	private String error;
 	private String message;
-	private LocalDateTime timestamp;
 }

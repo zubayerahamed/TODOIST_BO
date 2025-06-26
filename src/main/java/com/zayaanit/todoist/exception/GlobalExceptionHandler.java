@@ -1,7 +1,5 @@
 package com.zayaanit.todoist.exception;
 
-import java.time.LocalDateTime;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -22,7 +20,6 @@ public class GlobalExceptionHandler {
 				.status(ex.getStatus().value())
 				.error(ex.getStatus().getReasonPhrase())
 				.message(ex.getMessage())
-				.timestamp(LocalDateTime.now())
 				.build();
 
 		return new ResponseEntity<>(error, ex.getStatus());
@@ -34,7 +31,6 @@ public class GlobalExceptionHandler {
 				.status(HttpStatus.INTERNAL_SERVER_ERROR.value())
 				.error(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase())
 				.message(ex.getMessage())
-				.timestamp(LocalDateTime.now())
 				.build();
 
 		return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);

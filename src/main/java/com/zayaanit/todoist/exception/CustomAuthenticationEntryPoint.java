@@ -1,7 +1,6 @@
 package com.zayaanit.todoist.exception;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
@@ -31,7 +30,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
 				.status(HttpStatus.UNAUTHORIZED.value())
 				.error("Unauthorized")
 				.message("Authentication is required to access this resource")
-				.timestamp(LocalDateTime.now()).build();
+				.build();
 
 		response.setStatus(HttpStatus.UNAUTHORIZED.value());
 		response.setContentType("application/json");

@@ -10,6 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.zayaanit.todoist.security.SpringSecurityAuditorAware;
 
+
 @SpringBootApplication
 @EnableJpaAuditing(auditorAwareRef = "auditorAware")
 public class TodoistApplication {

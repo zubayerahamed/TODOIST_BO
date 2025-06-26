@@ -26,7 +26,7 @@ import jakarta.servlet.http.HttpServletResponse;
  * @since Jun 22, 2025
  */
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/v1/auth")
 public class AuthenticationController {
 
 	private @Autowired AuthenticationService authenticationService;

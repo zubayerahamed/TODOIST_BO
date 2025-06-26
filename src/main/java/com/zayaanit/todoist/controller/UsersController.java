@@ -14,7 +14,7 @@ import com.zayaanit.todoist.service.UsersService;
  * @since Jun 26, 2025
  */
 @RestApiController
-@RequestMapping("/users")
+@RequestMapping("/api/v1/users")
 public class UsersController extends AbstractBaseController<List<UsersResDto>, UsersReqDto, UsersResDto> {
 
 	public UsersController(UsersService<List<UsersResDto>, UsersReqDto, UsersResDto> service) {
