@@ -54,7 +54,7 @@ public class Project extends AbstractModel<Long> {
 
 	@Enumerated(EnumType.STRING)
 	@Column(name = "layout_type")
-	public LayoutType layoutType;
+	private LayoutType layoutType;
 
 	@Column(name = "is_system_defined", length = 1, nullable = false, columnDefinition = "BIT DEFAULT 0")
 	private Boolean isSystemDefined;

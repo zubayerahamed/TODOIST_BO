@@ -10,6 +10,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.zayaanit.todoist.controller.users.User;
+import com.zayaanit.todoist.controller.users.workspaces.UserWorkspace;
 import com.zayaanit.todoist.controller.workspaces.Workspace;
 
 /**
@@ -20,20 +21,28 @@ public class MyUserDetail implements UserDetails {
 
 	private static final long serialVersionUID = 9078767219064029540L;
 
-	private Long zuser;
-	private String zemail;
-	private String xpassword;
-	private Workspace zbusiness;
+	private Long id;
+	private String email;
+	private String password;
+	private Workspace workspace;
 	private String roles;
+	private boolean primaryWorkspace;
 	private List<GrantedAuthority> authorities;
 
-	public MyUserDetail(User xuser, Workspace zbusiness){
-		this.zuser = xuser.getId();
-		this.zemail = xuser.getEmail();
-		this.xpassword = xuser.getPassword();
-		this.zbusiness = zbusiness;
+	public MyUserDetail(User user, Workspace workspace, UserWorkspace userWorkspace){
+		this.id = user.getId();
+		this.email = user.getEmail();
+		this.password = user.getPassword();
+		this.workspace = workspace;
+		this.primaryWorkspace = Boolean.TRUE.equals(userWorkspace.getIsPrimary());
 		this.roles = "ROLE_USER";
-		this.authorities = Arrays.stream(roles.split(",")).map(SimpleGrantedAuthority::new)
+		if(Boolean.TRUE.equals(userWorkspace.getIsAdmin())) {
+			roles += ",ROLE_ADMIN";
+		} else if(Boolean.TRUE.equals(userWorkspace.getIsCollaborator())) {
+			roles += ",ROLE_COLLABORATOR";
+		}
+		this.authorities = Arrays.stream(roles.split(","))
+				.map(SimpleGrantedAuthority::new)
 				.collect(Collectors.toList());
 	}
 
@@ -44,20 +53,23 @@ public class MyUserDetail implements UserDetails {
 
 	@Override
 	public String getPassword() {
-		return this.xpassword;
+		return this.password;
 	}
 
 	@Override
 	public String getUsername() {
-		return this.zuser.toString();
+		return this.id.toString();
 	}
 
-	public String getUserEmail() {
-		return this.zemail;
+	public String getEmail() {
+		return this.email;
 	}
 
-	public Workspace getZbusiness() {
-		return this.zbusiness;
+	public Workspace getWorkspace() {
+		return this.workspace;
 	}
 
+	public boolean isPrimaryWorkspace() {
+		return this.primaryWorkspace;
+	}
 }

@@ -32,30 +32,30 @@ public class UserService implements UserDetailsService  {
 			throw new UsernameNotFoundException("Email required");
 		}
 
-		Optional<User> xusersOp = usersRepo.findById(Long.valueOf(username));
-		if(!xusersOp.isPresent()) throw new UsernameNotFoundException("User not exist.");
+		Optional<User> userOp = usersRepo.findById(Long.valueOf(username));
+		if(!userOp.isPresent()) throw new UsernameNotFoundException("User not exist.");
 
-		User xuser = xusersOp.get();
-		if(Boolean.FALSE.equals(xuser.getIsActive())) {
+		User user = userOp.get();
+		if(Boolean.FALSE.equals(user.getIsActive())) {
 			throw new UsernameNotFoundException("User inactive.");
 		}
 
-		Optional<UserWorkspace> xusersZbusinessOp = usersWorkspacesRepo.findByUserIdAndIsPrimary(xuser.getId(), Boolean.TRUE);
-		if(!xusersZbusinessOp.isPresent()) {
+		Optional<UserWorkspace> userWorkspaceOp = usersWorkspacesRepo.findByUserIdAndIsPrimary(user.getId(), Boolean.TRUE);
+		if(!userWorkspaceOp.isPresent()) {
 			throw new UsernameNotFoundException("Primary workspace not found");
 		}
 
-		Optional<Workspace> zbusinessOp = workspacesRepo.findById(xusersZbusinessOp.get().getWorkspaceId());
-		if(!zbusinessOp.isPresent()) {
+		Optional<Workspace> workspaceOp = workspacesRepo.findById(userWorkspaceOp.get().getWorkspaceId());
+		if(!workspaceOp.isPresent()) {
 			throw new UsernameNotFoundException("Primary workspace not found");
 		}
 
-		Workspace zbusiness = zbusinessOp.get();
-		if(Boolean.FALSE.equals(zbusiness.getIsActive())) {
+		Workspace workspace = workspaceOp.get();
+		if(Boolean.FALSE.equals(workspace.getIsActive())) {
 			throw new UsernameNotFoundException("Workspace is disabled");
 		}
 
-		return new MyUserDetail(xuser, zbusiness);
+		return new MyUserDetail(user, workspace, userWorkspaceOp.get());
 	}
 
 }

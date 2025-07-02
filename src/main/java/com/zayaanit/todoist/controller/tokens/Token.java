@@ -33,20 +33,20 @@ public class Token implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	public Long id;
+	private Long id;
 
 	@Column(unique = true, nullable = false)
-	public String token;
+	private String token;
 
 	@Enumerated(EnumType.STRING)
-	public TokenType xtype;
+	private TokenType xtype;
 
 	@Column(name = "is_revoked")
-	public boolean revoked;
+	private boolean revoked;
 
 	@Column(name = "is_expired")
-	public boolean expired;
+	private boolean expired;
 
 	@Column(name = "user_id")
-	public Long userId;
+	private Long userId;
 }

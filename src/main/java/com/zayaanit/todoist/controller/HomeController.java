@@ -3,8 +3,8 @@ package com.zayaanit.todoist.controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
+import com.zayaanit.todoist.anno.RestApiController;
 import com.zayaanit.todoist.enums.ResponseStatusType;
 import com.zayaanit.todoist.model.ResponseBuilder;
 import com.zayaanit.todoist.model.SuccessResponse;
@@ -13,7 +13,7 @@ import com.zayaanit.todoist.model.SuccessResponse;
  * Zubayer Ahamed
  * @since Jun 17, 2025
  */
-@RestController
+@RestApiController
 @RequestMapping("/api/v1/home")
 public class HomeController {
 

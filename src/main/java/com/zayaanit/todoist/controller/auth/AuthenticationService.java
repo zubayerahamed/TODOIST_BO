@@ -113,8 +113,8 @@ public class AuthenticationService {
 		workflow = workflowRepo.save(workflow);
 
 		// 7. Generate JWT token and Refresh token
-		var jwtToken = jwtService.generateToken(new MyUserDetail(user, workspace));
-		var refreshToken = jwtService.generateRefreshToken(new MyUserDetail(user, workspace));
+		var jwtToken = jwtService.generateToken(new MyUserDetail(user, workspace, userWorkspace));
+		var refreshToken = jwtService.generateRefreshToken(new MyUserDetail(user, workspace, userWorkspace));
 
 		// 8. Save User Token
 		saveUserToken(user.getId(), jwtToken);
@@ -139,10 +139,10 @@ public class AuthenticationService {
 		}
 
 		// 4. Get primary business assigned to this user
-		UserWorkspace primaryLink = userWorkspacesRepo.findByUserIdAndIsPrimary(xusers.getId(), Boolean.TRUE).orElseThrow(() -> new RuntimeException("No primary workspace assigned to this user."));
+		UserWorkspace primaryUserWorkspace = userWorkspacesRepo.findByUserIdAndIsPrimary(xusers.getId(), Boolean.TRUE).orElseThrow(() -> new RuntimeException("No primary workspace assigned to this user."));
 
 		// 5. Load the business
-		Workspace business = workspaceRepo.findById(primaryLink.getWorkspaceId()).orElseThrow(() -> new RuntimeException("Primary workspace not found."));
+		Workspace business = workspaceRepo.findById(primaryUserWorkspace.getWorkspaceId()).orElseThrow(() -> new RuntimeException("Primary workspace not found."));
 
 		// 6. Check if business is active
 		if (Boolean.FALSE.equals(business.getIsActive())) {
@@ -150,8 +150,8 @@ public class AuthenticationService {
 		}
 
 		// 7. Generate token
-		var jwtToken = jwtService.generateToken(new MyUserDetail(xusers, business));
-		var refreshToken = jwtService.generateRefreshToken(new MyUserDetail(xusers, business));
+		var jwtToken = jwtService.generateToken(new MyUserDetail(xusers, business, primaryUserWorkspace));
+		var refreshToken = jwtService.generateRefreshToken(new MyUserDetail(xusers, business, primaryUserWorkspace));
 
 		// 8. Revoke tokens and save new token
 		revokeAllUserTokens(xusers.getId());
