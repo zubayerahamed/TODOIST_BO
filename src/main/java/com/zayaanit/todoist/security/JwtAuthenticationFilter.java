@@ -11,9 +11,9 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.zayaanit.todoist.controller.tokens.TokenRepo;
+import com.zayaanit.todoist.controller.users.UserService;
 import com.zayaanit.todoist.model.MyUserDetail;
-import com.zayaanit.todoist.repo.TokensRepo;
-import com.zayaanit.todoist.service.XusersService;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -30,8 +30,8 @@ import lombok.RequiredArgsConstructor;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 	private final JwtService jwtService;
-	private final XusersService xusersService;
-	private final TokensRepo xtokensRepo;
+	private final UserService usersService;
+	private final TokenRepo xtokensRepo;
 
 	@Override
 	protected void doFilterInternal(
@@ -51,7 +51,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 		jwtToken = authHeader.substring(7);
 		userId = jwtService.extractUsername(jwtToken);
 		if(StringUtils.isNotBlank(userId) && SecurityContextHolder.getContext().getAuthentication() == null) {  // User id not null && user is not authenticated yet
-			MyUserDetail userDetails = (MyUserDetail) xusersService.loadUserByUsername(userId);
+			MyUserDetail userDetails = (MyUserDetail) usersService.loadUserByUsername(userId);
 
 			var isTokenValid = xtokensRepo.findByToken(jwtToken).map(t -> !t.isExpired() && !t.isRevoked()).orElse(false);
 

@@ -15,10 +15,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import com.zayaanit.todoist.controller.auth.LogoutService;
+import com.zayaanit.todoist.controller.users.UserService;
 import com.zayaanit.todoist.exception.CustomAccessDeniedHandler;
 import com.zayaanit.todoist.exception.CustomAuthenticationEntryPoint;
-import com.zayaanit.todoist.service.XusersService;
-import com.zayaanit.todoist.service.impl.LogoutService;
 
 /**
  * Zubayer Ahamed
@@ -29,7 +29,7 @@ import com.zayaanit.todoist.service.impl.LogoutService;
 @EnableWebSecurity
 public class SecurityConfiguration {
 
-	@Autowired private XusersService xusersService;
+	@Autowired private UserService usersService;
 	@Autowired private PasswordEncoder passwordEncoder;
 	@Autowired private JwtAuthenticationFilter jwtAuthFilter;
 	@Autowired private LogoutService logoutHandler;
@@ -67,7 +67,7 @@ public class SecurityConfiguration {
 
 	@Bean
 	AuthenticationProvider authenticationProvider() {
-		DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider(xusersService);
+		DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider(usersService);
 		authenticationProvider.setPasswordEncoder(passwordEncoder);
 		return authenticationProvider;
 	}

@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import com.zayaanit.todoist.security.SpringSecurityAuditorAware;
+import com.zayaanit.todoist.config.DataAuditorAware;
 
 
 @SpringBootApplication
@@ -21,7 +21,7 @@ public class TodoistApplication {
 
 	@Bean
 	AuditorAware<Long> auditorAware() {
-		return new SpringSecurityAuditorAware();
+		return new DataAuditorAware();
 	}
 
 	@Bean
