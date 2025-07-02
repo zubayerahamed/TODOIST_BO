@@ -6,9 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import com.zayaanit.todoist.entity.Zbusiness;
+import com.zayaanit.todoist.entity.Workspaces;
 import com.zayaanit.todoist.exception.CustomException;
-import com.zayaanit.todoist.repo.ZbusinessRepo;
+import com.zayaanit.todoist.repo.WorkspacesRepo;
 import com.zayaanit.todoist.service.ZbusinessService;
 
 /**
@@ -18,13 +18,13 @@ import com.zayaanit.todoist.service.ZbusinessService;
 @Service
 public class ZbusinessServiceImpl implements ZbusinessService {
 
-	@Autowired private ZbusinessRepo zbusinessRepo;
+	@Autowired private WorkspacesRepo zbusinessRepo;
 
 	@Override
-	public Zbusiness findById(Long zid) throws CustomException {
+	public Workspaces findById(Long zid) throws CustomException {
 		if(zid == null) throw new CustomException("Business id null", HttpStatus.BAD_REQUEST);
 
-		Optional<Zbusiness> zbusinessOp = zbusinessRepo.findById(zid);
+		Optional<Workspaces> zbusinessOp = zbusinessRepo.findById(zid);
 
 		return zbusinessOp.isPresent() ? zbusinessOp.get() : null;
 	}

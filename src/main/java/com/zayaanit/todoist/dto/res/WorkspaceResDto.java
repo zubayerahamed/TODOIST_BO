@@ -1,6 +1,6 @@
 package com.zayaanit.todoist.dto.res;
 
-import com.zayaanit.todoist.entity.Zbusiness;
+import com.zayaanit.todoist.entity.Workspaces;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -20,10 +20,10 @@ public class WorkspaceResDto {
 	private Boolean isActive;
 	private String logo;
 
-	public WorkspaceResDto(Zbusiness zbusiness){
-		this.id = zbusiness.getZid();
-		this.name = zbusiness.getZorg();
-		this.isActive = Boolean.TRUE.equals(zbusiness.getZactive());
-		this.logo = zbusiness.getXlogo() == null ? null : zbusiness.getXlogo().toString();
+	public WorkspaceResDto(Workspaces zbusiness){
+		this.id = zbusiness.getId();
+		this.name = zbusiness.getName();
+		this.isActive = Boolean.TRUE.equals(zbusiness.getIsActive());
+		this.logo = zbusiness.getLogo() == null ? null : zbusiness.getLogo().toString();
 	}
 }

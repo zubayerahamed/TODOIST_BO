@@ -9,8 +9,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.zayaanit.todoist.entity.Xusers;
-import com.zayaanit.todoist.entity.Zbusiness;
+import com.zayaanit.todoist.entity.Users;
+import com.zayaanit.todoist.entity.Workspaces;
 
 /**
  * Zubayer Ahamed
@@ -23,14 +23,14 @@ public class MyUserDetail implements UserDetails {
 	private Long zuser;
 	private String zemail;
 	private String xpassword;
-	private Zbusiness zbusiness;
+	private Workspaces zbusiness;
 	private String roles;
 	private List<GrantedAuthority> authorities;
 
-	public MyUserDetail(Xusers xuser, Zbusiness zbusiness){
-		this.zuser = xuser.getZuser();
-		this.zemail = xuser.getZemail();
-		this.xpassword = xuser.getXpassword();
+	public MyUserDetail(Users xuser, Workspaces zbusiness){
+		this.zuser = xuser.getId();
+		this.zemail = xuser.getEmail();
+		this.xpassword = xuser.getPassword();
 		this.zbusiness = zbusiness;
 		this.roles = "ROLE_USER";
 		this.authorities = Arrays.stream(roles.split(",")).map(SimpleGrantedAuthority::new)
@@ -56,7 +56,7 @@ public class MyUserDetail implements UserDetails {
 		return this.zemail;
 	}
 
-	public Zbusiness getZbusiness() {
+	public Workspaces getZbusiness() {
 		return this.zbusiness;
 	}
 

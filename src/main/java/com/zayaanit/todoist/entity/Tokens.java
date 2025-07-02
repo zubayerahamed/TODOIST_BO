@@ -26,25 +26,27 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "xtokens")
-public class Xtokens implements Serializable {
+@Table(name = "tokens")
+public class Tokens implements Serializable {
 
 	private static final long serialVersionUID = 5429097916566992030L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	public Long xid;
+	public Long id;
 
-	@Column(unique = true)
-	public String xtoken;
+	@Column(unique = true, nullable = false)
+	public String token;
 
 	@Enumerated(EnumType.STRING)
 	public TokenType xtype;
 
-	public boolean xrevoked;
+	@Column(name = "is_revoked")
+	public boolean revoked;
 
-	public boolean xexpired;
+	@Column(name = "is_expired")
+	public boolean expired;
 
-	@Column(name = "zuser")
-	public Long zuser;
+	@Column(name = "user_id")
+	public Long userId;
 }

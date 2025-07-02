@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.zayaanit.todoist.model.MyUserDetail;
-import com.zayaanit.todoist.repo.XtokensRepo;
+import com.zayaanit.todoist.repo.TokensRepo;
 import com.zayaanit.todoist.service.XusersService;
 
 import jakarta.servlet.FilterChain;
@@ -31,7 +31,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 	private final JwtService jwtService;
 	private final XusersService xusersService;
-	private final XtokensRepo xtokensRepo;
+	private final TokensRepo xtokensRepo;
 
 	@Override
 	protected void doFilterInternal(
@@ -53,7 +53,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 		if(StringUtils.isNotBlank(userId) && SecurityContextHolder.getContext().getAuthentication() == null) {  // User id not null && user is not authenticated yet
 			MyUserDetail userDetails = (MyUserDetail) xusersService.loadUserByUsername(userId);
 
-			var isTokenValid = xtokensRepo.findByXtoken(jwtToken).map(t -> !t.isXexpired() && !t.isXrevoked()).orElse(false);
+			var isTokenValid = xtokensRepo.findByToken(jwtToken).map(t -> !t.isExpired() && !t.isRevoked()).orElse(false);
 
 			if(jwtService.isTokenValid(jwtToken, userDetails) && isTokenValid) {
 				UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());

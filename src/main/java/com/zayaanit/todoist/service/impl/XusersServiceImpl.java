@@ -8,13 +8,13 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.zayaanit.todoist.entity.Xusers;
-import com.zayaanit.todoist.entity.XusersZbusiness;
-import com.zayaanit.todoist.entity.Zbusiness;
+import com.zayaanit.todoist.entity.Users;
+import com.zayaanit.todoist.entity.UsersWorkspaces;
+import com.zayaanit.todoist.entity.Workspaces;
 import com.zayaanit.todoist.model.MyUserDetail;
-import com.zayaanit.todoist.repo.XusersRepo;
-import com.zayaanit.todoist.repo.XusersZbusinessRepo;
-import com.zayaanit.todoist.repo.ZbusinessRepo;
+import com.zayaanit.todoist.repo.UsersRepo;
+import com.zayaanit.todoist.repo.UsersWorkspacesRepo;
+import com.zayaanit.todoist.repo.WorkspacesRepo;
 import com.zayaanit.todoist.service.XusersService;
 
 /**
@@ -24,9 +24,9 @@ import com.zayaanit.todoist.service.XusersService;
 @Service
 public class XusersServiceImpl implements XusersService {
 
-	@Autowired private XusersRepo xusersRepo;
-	@Autowired private XusersZbusinessRepo xusersZbusinessRepo;
-	@Autowired private ZbusinessRepo zbusinessRepo;
+	@Autowired private UsersRepo xusersRepo;
+	@Autowired private UsersWorkspacesRepo xusersZbusinessRepo;
+	@Autowired private WorkspacesRepo zbusinessRepo;
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -34,26 +34,26 @@ public class XusersServiceImpl implements XusersService {
 			throw new UsernameNotFoundException("Email required");
 		}
 
-		Optional<Xusers> xusersOp = xusersRepo.findById(Long.valueOf(username));
+		Optional<Users> xusersOp = xusersRepo.findById(Long.valueOf(username));
 		if(!xusersOp.isPresent()) throw new UsernameNotFoundException("User not exist.");
 
-		Xusers xuser = xusersOp.get();
-		if(Boolean.FALSE.equals(xuser.getZactive())) {
+		Users xuser = xusersOp.get();
+		if(Boolean.FALSE.equals(xuser.getIsActive())) {
 			throw new UsernameNotFoundException("User inactive.");
 		}
 
-		Optional<XusersZbusiness> xusersZbusinessOp = xusersZbusinessRepo.findByZuserAndZprimary(xuser.getZuser(), Boolean.TRUE);
+		Optional<UsersWorkspaces> xusersZbusinessOp = xusersZbusinessRepo.findByUserIdAndIsPrimary(xuser.getId(), Boolean.TRUE);
 		if(!xusersZbusinessOp.isPresent()) {
 			throw new UsernameNotFoundException("Primary workspace not found");
 		}
 
-		Optional<Zbusiness> zbusinessOp = zbusinessRepo.findById(xusersZbusinessOp.get().getZid());
+		Optional<Workspaces> zbusinessOp = zbusinessRepo.findById(xusersZbusinessOp.get().getWorkspaceId());
 		if(!zbusinessOp.isPresent()) {
 			throw new UsernameNotFoundException("Primary workspace not found");
 		}
 
-		Zbusiness zbusiness = zbusinessOp.get();
-		if(Boolean.FALSE.equals(zbusiness.getZactive())) {
+		Workspaces zbusiness = zbusinessOp.get();
+		if(Boolean.FALSE.equals(zbusiness.getIsActive())) {
 			throw new UsernameNotFoundException("Workspace is disabled");
 		}
 
@@ -61,7 +61,7 @@ public class XusersServiceImpl implements XusersService {
 	}
 
 	@Override
-	public Xusers createUser(Xusers xusers) {
+	public Users createUser(Users xusers) {
 		return xusersRepo.save(xusers);
 	}
 

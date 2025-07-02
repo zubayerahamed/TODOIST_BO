@@ -5,10 +5,10 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.zayaanit.todoist.entity.Xusers;
+import com.zayaanit.todoist.entity.Users;
 
 @Repository
-public interface XusersRepo extends JpaRepository<Xusers, Long> {
+public interface UsersRepo extends JpaRepository<Users, Long> {
 
-	Optional<Xusers> findByZemail(String zemail);
+	Optional<Users> findByEmail(String email);
 }

@@ -11,9 +11,9 @@ import org.springframework.stereotype.Service;
 
 import com.zayaanit.todoist.dto.req.UsersReqDto;
 import com.zayaanit.todoist.dto.res.UsersResDto;
-import com.zayaanit.todoist.entity.Xusers;
+import com.zayaanit.todoist.entity.Users;
 import com.zayaanit.todoist.exception.CustomException;
-import com.zayaanit.todoist.repo.XusersRepo;
+import com.zayaanit.todoist.repo.UsersRepo;
 import com.zayaanit.todoist.service.UsersService;
 
 /**
@@ -23,11 +23,11 @@ import com.zayaanit.todoist.service.UsersService;
 @Service()
 public class UsersServiceImpl implements UsersService<UsersReqDto, UsersResDto, List<UsersResDto>, Page<UsersResDto>, Long> {
 
-	@Autowired XusersRepo xusersRepo;
+	@Autowired UsersRepo xusersRepo;
 	
 	@Override
 	public List<UsersResDto> getAll() throws CustomException {
-		List<Xusers> list = xusersRepo.findAll();
+		List<Users> list = xusersRepo.findAll();
 
 		List<UsersResDto> resData = new ArrayList<>();
 		list.stream().forEach(f -> {

@@ -2,9 +2,9 @@ package com.zayaanit.todoist.service;
 
 import org.springframework.security.core.userdetails.UserDetailsService;
 
-import com.zayaanit.todoist.entity.Xusers;
+import com.zayaanit.todoist.entity.Users;
 
 public interface XusersService extends UserDetailsService {
 
-	Xusers createUser(Xusers xusers);
+	Users createUser(Users xusers);
 }

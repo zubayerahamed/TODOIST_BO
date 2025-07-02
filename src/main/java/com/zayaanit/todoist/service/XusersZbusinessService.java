@@ -2,7 +2,7 @@ package com.zayaanit.todoist.service;
 
 import java.util.List;
 
-import com.zayaanit.todoist.entity.XusersZbusiness;
+import com.zayaanit.todoist.entity.UsersWorkspaces;
 
 /**
  * Zubayer Ahamed
@@ -10,8 +10,8 @@ import com.zayaanit.todoist.entity.XusersZbusiness;
  */
 public interface XusersZbusinessService {
 
-	List<XusersZbusiness> findAllByZuser(Long zuser);
-	XusersZbusiness findByZuserAndZprimary(Long zuser, Boolean zprimary);
-	XusersZbusiness findByZuserAndZadmin(Long zuser, Boolean zadmin);
-	XusersZbusiness findByZuserAndZcollaborator(Long zuser, Boolean zcollaborator);
+	List<UsersWorkspaces> findAllByZuser(Long zuser);
+	UsersWorkspaces findByZuserAndZprimary(Long zuser, Boolean zprimary);
+	UsersWorkspaces findByZuserAndZadmin(Long zuser, Boolean zadmin);
+	UsersWorkspaces findByZuserAndZcollaborator(Long zuser, Boolean zcollaborator);
 }

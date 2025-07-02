@@ -22,24 +22,27 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "zbusiness")
+@Table(name = "workspaces")
 @EqualsAndHashCode(callSuper = true)
-public class Zbusiness extends AbstractModel<Long> {
+public class Workspaces extends AbstractModel<Long> {
 
 	private static final long serialVersionUID = 2932605023333073712L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "zid")
-	private Long zid;
+	@Column(name = "id")
+	private Long id;
 
-	@Column(name = "zorg", length = 100)
-	private String zorg;
+	@Column(name = "name", length = 100)
+	private String name;
 
-	@Column(name = "zactive", length = 1, nullable = false, columnDefinition = "BIT DEFAULT 0")
-	private Boolean zactive;
+	@Column(name = "is_active", length = 1, nullable = false, columnDefinition = "BIT DEFAULT 0")
+	private Boolean isActive;
+
+	@Column(name = "is_system_defined", length = 1, nullable = false, columnDefinition = "BIT DEFAULT 0")
+	private Boolean isSystemDefined;
 
 	@Lob
-	@Column(name = "xlogo")
-	private byte[] xlogo;
+	@Column(name = "logo")
+	private byte[] logo;
 }

@@ -11,20 +11,20 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.zayaanit.todoist.entity.Xtokens;
-import com.zayaanit.todoist.entity.Xusers;
-import com.zayaanit.todoist.entity.XusersZbusiness;
-import com.zayaanit.todoist.entity.Zbusiness;
+import com.zayaanit.todoist.entity.Tokens;
+import com.zayaanit.todoist.entity.Users;
+import com.zayaanit.todoist.entity.UsersWorkspaces;
+import com.zayaanit.todoist.entity.Workspaces;
 import com.zayaanit.todoist.enums.TokenType;
 import com.zayaanit.todoist.exception.CustomException;
 import com.zayaanit.todoist.model.AuthenticationRequest;
 import com.zayaanit.todoist.model.AuthenticationResponse;
 import com.zayaanit.todoist.model.MyUserDetail;
 import com.zayaanit.todoist.model.RegisterRequest;
-import com.zayaanit.todoist.repo.XtokensRepo;
-import com.zayaanit.todoist.repo.XusersRepo;
-import com.zayaanit.todoist.repo.XusersZbusinessRepo;
-import com.zayaanit.todoist.repo.ZbusinessRepo;
+import com.zayaanit.todoist.repo.TokensRepo;
+import com.zayaanit.todoist.repo.UsersRepo;
+import com.zayaanit.todoist.repo.UsersWorkspacesRepo;
+import com.zayaanit.todoist.repo.WorkspacesRepo;
 import com.zayaanit.todoist.security.JwtService;
 import com.zayaanit.todoist.service.XusersService;
 
@@ -40,46 +40,45 @@ import jakarta.transaction.Transactional;
 @Service
 public class AuthenticationService {
 
-	@Autowired private ZbusinessRepo zbusinessRepo;
-	@Autowired private XusersRepo xusersRepo;
-	@Autowired private XusersZbusinessRepo xusersZbusinessRepo;
+	@Autowired private WorkspacesRepo zbusinessRepo;
+	@Autowired private UsersRepo xusersRepo;
+	@Autowired private UsersWorkspacesRepo xusersZbusinessRepo;
 	@Autowired private JwtService jwtService;
 	@Autowired private PasswordEncoder passwordEncoder;
-	@Autowired private XtokensRepo xtokensRepo;
+	@Autowired private TokensRepo tokensRepo;
 	@Autowired private XusersService xusersService;
 
 	@Transactional
 	public AuthenticationResponse register(RegisterRequest request) {
 		// 1. Check if user already exists
-		if (xusersRepo.findByZemail(request.getEmail()).isPresent()) {
+		if (xusersRepo.findByEmail(request.getEmail()).isPresent()) {
 			throw new CustomException("Email is already registered.", HttpStatus.BAD_REQUEST);
 		}
 
 		// 2. Create user
-		Xusers xusers = Xusers.builder()
-				.xfname(request.getFirstName())
-				.xlname(request.getLastName())
-				.zemail(request.getEmail())
-				.xpassword(passwordEncoder.encode(request.getPassword()))
-				.zactive(Boolean.TRUE).build();
+		Users xusers = Users.builder()
+				.firstName(request.getFirstName())
+				.lastName(request.getLastName())
+				.email(request.getEmail())
+				.password(passwordEncoder.encode(request.getPassword()))
+				.isActive(Boolean.TRUE).build();
 
 		xusers = xusersRepo.save(xusers);
 
 		// 3. Create workspace (business)
-		Zbusiness business = Zbusiness.builder()
-				.zorg(xusers.getXfname() + "'s Workspace")
-				.zactive(Boolean.TRUE)
+		Workspaces business = Workspaces.builder()
+				.name(xusers.getFirstName() + "'s Workspace")
+				.isActive(Boolean.TRUE)
 				.build();
 
 		business = zbusinessRepo.save(business);
 
 		// 4. Create user-business relationship
-		XusersZbusiness xz = XusersZbusiness.builder()
-				.zuser(xusers.getZuser())
-				.zid(business.getZid())
-				.zprimary(Boolean.TRUE)
-				.zadmin(Boolean.TRUE)
-				.zcollaborator(Boolean.FALSE).build();
+		UsersWorkspaces xz = UsersWorkspaces.builder()
+				.userId(xusers.getId())
+				.workspaceId(business.getId())
+				.isAdmin(Boolean.TRUE)
+				.isCollaborator(Boolean.FALSE).build();
 
 		xz = xusersZbusinessRepo.save(xz);
 
@@ -88,7 +87,7 @@ public class AuthenticationService {
 		var refreshToken = jwtService.generateRefreshToken(new MyUserDetail(xusers, business));
 
 		// 6. Save User Token
-		saveUserToken(xusers.getZuser(), jwtToken);
+		saveUserToken(xusers.getId(), jwtToken);
 
 		// 7. Return token
 		return AuthenticationResponse.builder().accessToken(jwtToken).refreshToken(refreshToken).build();
@@ -97,26 +96,26 @@ public class AuthenticationService {
 	@Transactional
 	public AuthenticationResponse authenticate(AuthenticationRequest request) {
 		// 1. Find user by email
-		Xusers xusers = xusersRepo.findByZemail(request.getEmail()).orElseThrow(() -> new RuntimeException("Email is not registered."));
+		Users xusers = xusersRepo.findByEmail(request.getEmail()).orElseThrow(() -> new RuntimeException("Email is not registered."));
 
 		// 2. Check if user is active
-		if (Boolean.FALSE.equals(xusers.getZactive())) {
+		if (Boolean.FALSE.equals(xusers.getIsActive())) {
 			throw new RuntimeException("User account is inactive.");
 		}
 
 		// 3. Verify password
-		if (!passwordEncoder.matches(request.getPassword(), xusers.getXpassword())) {
+		if (!passwordEncoder.matches(request.getPassword(), xusers.getPassword())) {
 			throw new RuntimeException("Invalid credentials.");
 		}
 
 		// 4. Get primary business assigned to this user
-		XusersZbusiness primaryLink = xusersZbusinessRepo.findByZuserAndZprimary(xusers.getZuser(), Boolean.TRUE).orElseThrow(() -> new RuntimeException("No primary workspace assigned to this user."));
+		UsersWorkspaces primaryLink = xusersZbusinessRepo.findByUserIdAndIsPrimary(xusers.getId(), Boolean.TRUE).orElseThrow(() -> new RuntimeException("No primary workspace assigned to this user."));
 
 		// 5. Load the business
-		Zbusiness business = zbusinessRepo.findById(primaryLink.getZid()).orElseThrow(() -> new RuntimeException("Primary workspace not found."));
+		Workspaces business = zbusinessRepo.findById(primaryLink.getWorkspaceId()).orElseThrow(() -> new RuntimeException("Primary workspace not found."));
 
 		// 6. Check if business is active
-		if (Boolean.FALSE.equals(business.getZactive())) {
+		if (Boolean.FALSE.equals(business.getIsActive())) {
 			throw new RuntimeException("Primary workspace is inactive.");
 		}
 
@@ -125,8 +124,8 @@ public class AuthenticationService {
 		var refreshToken = jwtService.generateRefreshToken(new MyUserDetail(xusers, business));
 
 		// 8. Revoke tokens and save new token
-		revokeAllUserTokens(xusers.getZuser());
-		saveUserToken(xusers.getZuser(), jwtToken);
+		revokeAllUserTokens(xusers.getId());
+		saveUserToken(xusers.getId(), jwtToken);
 
 		// 9. Return token
 		return AuthenticationResponse.builder().accessToken(jwtToken).refreshToken(refreshToken).build();
@@ -134,29 +133,29 @@ public class AuthenticationService {
 
 	@Transactional
 	private void revokeAllUserTokens(Long zuser) {
-		List<Xtokens> validTokens = xtokensRepo.findAllByZuserAndXrevokedAndXexpired(zuser, false, false);
+		List<Tokens> validTokens = tokensRepo.findAllByUserIdAndRevokedAndExpired(zuser, false, false);
 		if (validTokens.isEmpty())
 			return;
 
 		validTokens.forEach(t -> {
-			t.setXrevoked(true);
-			t.setXexpired(true);
+			t.setRevoked(true);
+			t.setExpired(true);
 		});
 
-		xtokensRepo.saveAll(validTokens);
+		tokensRepo.saveAll(validTokens);
 	}
 
 	@Transactional
 	private void saveUserToken(Long zuser, String jwtToken) {
-		Xtokens xtoken = Xtokens.builder()
-				.zuser(zuser)
-				.xtoken(jwtToken)
-				.xrevoked(false)
-				.xexpired(false)
+		Tokens xtoken = Tokens.builder()
+				.userId(zuser)
+				.token(jwtToken)
+				.revoked(false)
+				.expired(false)
 				.xtype(TokenType.BEARER)
 				.build();
 
-		xtokensRepo.save(xtoken);
+		tokensRepo.save(xtoken);
 	}
 
 	public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {

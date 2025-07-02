@@ -12,9 +12,9 @@ import org.springframework.stereotype.Service;
 
 import com.zayaanit.todoist.dto.req.WorkspaceReqDto;
 import com.zayaanit.todoist.dto.res.WorkspaceResDto;
-import com.zayaanit.todoist.entity.Zbusiness;
+import com.zayaanit.todoist.entity.Workspaces;
 import com.zayaanit.todoist.exception.CustomException;
-import com.zayaanit.todoist.repo.ZbusinessRepo;
+import com.zayaanit.todoist.repo.WorkspacesRepo;
 import com.zayaanit.todoist.service.WorkspaceService;
 
 import jakarta.transaction.Transactional;
@@ -26,11 +26,11 @@ import jakarta.transaction.Transactional;
 @Service
 public class WorkspaceServiceImpl implements WorkspaceService<WorkspaceReqDto, WorkspaceResDto, List<WorkspaceResDto>, Page<WorkspaceResDto>, Long> {
 
-	@Autowired private ZbusinessRepo zbusinessRepo;
+	@Autowired private WorkspacesRepo zbusinessRepo;
 
 	@Override
 	public List<WorkspaceResDto> getAll() throws CustomException {
-		List<Zbusiness> workspaces = zbusinessRepo.findAll();
+		List<Workspaces> workspaces = zbusinessRepo.findAll();
 		List<WorkspaceResDto> resData = new ArrayList<>();
 		workspaces.stream().forEach(w -> {
 			WorkspaceResDto resDto = new WorkspaceResDto(w);
@@ -41,7 +41,7 @@ public class WorkspaceServiceImpl implements WorkspaceService<WorkspaceReqDto, W
 
 	@Override
 	public Page<WorkspaceResDto> getAll(Pageable pageable) throws CustomException {
-		Page<Zbusiness> workspacesPage = zbusinessRepo.findAll(pageable);
+		Page<Workspaces> workspacesPage = zbusinessRepo.findAll(pageable);
 
 		Page<WorkspaceResDto> dtoPage = workspacesPage.map(entity -> {
 			WorkspaceResDto dto = new WorkspaceResDto(entity);
@@ -67,7 +67,7 @@ public class WorkspaceServiceImpl implements WorkspaceService<WorkspaceReqDto, W
 
 	@Override
 	public WorkspaceResDto find(Long id) throws CustomException {
-		Optional<Zbusiness> zbusinessOp = zbusinessRepo.findById(id);
+		Optional<Workspaces> zbusinessOp = zbusinessRepo.findById(id);
 		if(!zbusinessOp.isPresent()) throw new CustomException("Workspace not found", HttpStatus.BAD_REQUEST);
 		return new WorkspaceResDto(zbusinessOp.get());
 	}

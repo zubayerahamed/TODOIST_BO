@@ -13,10 +13,10 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class XusersZbusinessPK implements Serializable {
+public class UsersWorkspacesPK implements Serializable {
 
 	private static final long serialVersionUID = 4094500453577564536L;
 
-	private Long zuser;
-	private Long zid;
+	private Long userId;
+	private Long workspaceId;
 }

@@ -6,8 +6,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.stereotype.Service;
 
-import com.zayaanit.todoist.entity.Xtokens;
-import com.zayaanit.todoist.repo.XtokensRepo;
+import com.zayaanit.todoist.entity.Tokens;
+import com.zayaanit.todoist.repo.TokensRepo;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -19,7 +19,7 @@ import jakarta.servlet.http.HttpServletResponse;
 @Service
 public class LogoutService implements LogoutHandler {
 
-	@Autowired private XtokensRepo xtokensRepo;
+	@Autowired private TokensRepo tokensRepo;
 
 	@Override
 	public void logout(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
@@ -32,11 +32,11 @@ public class LogoutService implements LogoutHandler {
 
 		jwtToken = authHeader.substring(7);
 
-		Xtokens storedToken = xtokensRepo.findByXtoken(jwtToken).orElse(null);
+		Tokens storedToken = tokensRepo.findByToken(jwtToken).orElse(null);
 		if(storedToken != null) {
-			storedToken.setXexpired(true);
-			storedToken.setXrevoked(true);
-			xtokensRepo.save(storedToken);
+			storedToken.setExpired(true);
+			storedToken.setRevoked(true);
+			tokensRepo.save(storedToken);
 		}
 
 	}
