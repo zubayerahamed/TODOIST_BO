@@ -11,6 +11,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.zayaanit.todoist.controller.projects.Project;
+import com.zayaanit.todoist.controller.projects.ProjectRepo;
 import com.zayaanit.todoist.controller.tokens.Token;
 import com.zayaanit.todoist.controller.tokens.TokenRepo;
 import com.zayaanit.todoist.controller.users.User;
@@ -18,8 +20,11 @@ import com.zayaanit.todoist.controller.users.UserRepo;
 import com.zayaanit.todoist.controller.users.UserService;
 import com.zayaanit.todoist.controller.users.workspaces.UserWorkspace;
 import com.zayaanit.todoist.controller.users.workspaces.UserWorkspaceRepo;
+import com.zayaanit.todoist.controller.workflows.Workflow;
+import com.zayaanit.todoist.controller.workflows.WorkflowRepo;
 import com.zayaanit.todoist.controller.workspaces.Workspace;
 import com.zayaanit.todoist.controller.workspaces.WorkspaceRepo;
+import com.zayaanit.todoist.enums.LayoutType;
 import com.zayaanit.todoist.enums.TokenType;
 import com.zayaanit.todoist.exception.CustomException;
 import com.zayaanit.todoist.model.MyUserDetail;
@@ -44,6 +49,8 @@ public class AuthenticationService {
 	@Autowired private PasswordEncoder passwordEncoder;
 	@Autowired private TokenRepo tokensRepo;
 	@Autowired private UserService userService;
+	@Autowired private ProjectRepo projectRepo;
+	@Autowired private WorkflowRepo workflowRepo;
 
 	@Transactional
 	public AuthenticationResDto register(RegisterRequestDto request) {
@@ -81,17 +88,38 @@ public class AuthenticationService {
 
 		userWorkspace = userWorkspacesRepo.save(userWorkspace);
 
-		// Create default project (Index)
-		// Create a defailt status (Completed)
+		// 5. Create default project (Index)
+		Project project = Project.builder()
+				.workspaceId(workspace.getId())
+				.name("Inbox")
+				.color("#000000")
+				.seqn(-999)
+				.layoutType(LayoutType.LIST)
+				.isSystemDefined(Boolean.TRUE)
+				.isFavourite(Boolean.FALSE)
+				.build();
 
-		// 5. Generate JWT token and Refresh token
+		project  = projectRepo.save(project);
+
+		// 6. Create a default status (Completed)
+		Workflow workflow = Workflow.builder()
+				.referenceId(workspace.getId())
+				.name("Completed")
+				.isSystemDefined(Boolean.TRUE)
+				.seqn(999)
+				.color("#000000")
+				.build();
+
+		workflow = workflowRepo.save(workflow);
+
+		// 7. Generate JWT token and Refresh token
 		var jwtToken = jwtService.generateToken(new MyUserDetail(user, workspace));
 		var refreshToken = jwtService.generateRefreshToken(new MyUserDetail(user, workspace));
 
-		// 6. Save User Token
+		// 8. Save User Token
 		saveUserToken(user.getId(), jwtToken);
 
-		// 7. Return token
+		// 9. Return token
 		return AuthenticationResDto.builder().accessToken(jwtToken).refreshToken(refreshToken).build();
 	}
 
