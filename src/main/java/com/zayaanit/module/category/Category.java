@@ -27,7 +27,7 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = true)
 public class Category extends AbstractModel<Long> {
 
-	private static final long serialVersionUID = 2932605023333073712L;
+	private static final long serialVersionUID = -9016326056400831749L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
