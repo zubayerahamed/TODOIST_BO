@@ -15,10 +15,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.zayaanit.todoist.controller.auth.LogoutService;
-import com.zayaanit.todoist.controller.users.UserService;
 import com.zayaanit.todoist.exception.CustomAccessDeniedHandler;
 import com.zayaanit.todoist.exception.CustomAuthenticationEntryPoint;
+import com.zayaanit.todoist.module.auth.LogoutService;
+import com.zayaanit.todoist.module.users.UserService;
 
 /**
  * Zubayer Ahamed

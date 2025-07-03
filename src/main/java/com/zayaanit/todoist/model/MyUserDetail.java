@@ -9,9 +9,9 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.zayaanit.todoist.controller.users.User;
-import com.zayaanit.todoist.controller.users.workspaces.UserWorkspace;
-import com.zayaanit.todoist.controller.workspaces.Workspace;
+import com.zayaanit.todoist.module.users.User;
+import com.zayaanit.todoist.module.users.workspaces.UserWorkspace;
+import com.zayaanit.todoist.module.workspaces.Workspace;
 
 /**
  * Zubayer Ahamed

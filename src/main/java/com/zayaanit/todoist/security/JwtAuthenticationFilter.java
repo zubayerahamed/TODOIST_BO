@@ -11,9 +11,9 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.zayaanit.todoist.controller.tokens.TokenRepo;
-import com.zayaanit.todoist.controller.users.UserService;
 import com.zayaanit.todoist.model.MyUserDetail;
+import com.zayaanit.todoist.module.tokens.TokenRepo;
+import com.zayaanit.todoist.module.users.UserService;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
