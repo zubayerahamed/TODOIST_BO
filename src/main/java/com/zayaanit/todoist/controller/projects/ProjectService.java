@@ -76,6 +76,11 @@ public class ProjectService extends BaseService {
 			throw new CustomException("System defined project can't be deleted", HttpStatus.BAD_REQUEST);
 		}
 
+		// Delete all sub task
+		// Delete all task
+		// Delete all sections
+		// Delete all project settings
+		// Delete project
 		projectRepo.delete(projectOp.get());
 	}
 

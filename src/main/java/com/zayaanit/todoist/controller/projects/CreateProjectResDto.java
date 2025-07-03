@@ -27,6 +27,7 @@ public class CreateProjectResDto {
 	private Integer seqn;
 	private LayoutType layoutType;
 	private Boolean isSystemDefined;
+	private Boolean isInheritSettings;
 
 	public CreateProjectResDto(Project project) {
 		BeanUtils.copyProperties(project, this);

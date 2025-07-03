@@ -1,4 +1,4 @@
-package com.zayaanit.todoist.controller.projects;
+package com.zayaanit.todoist.controller.category;
 
 import java.util.List;
 
@@ -24,38 +24,44 @@ import jakarta.validation.Valid;
  * @since Jul 2, 2025
  */
 @RestApiController
-@RequestMapping("/api/v1/projects")
-public class ProjectController {
+@RequestMapping("/api/v1/categories")
+public class CategoryController {
 
-	@Autowired private ProjectService projectService;
+	@Autowired private CategoryService categoryService;
 
-	@GetMapping
-	public ResponseEntity<SuccessResponse<List<ProjectResDto>>> getAllProject(){
-		List<ProjectResDto> resData = projectService.getAllProject();
+	@GetMapping("/all/workspace")
+	public ResponseEntity<SuccessResponse<List<CategoryResDto>>> getAllWorkspaceCategories(){
+		List<CategoryResDto> resData = categoryService.getAllWorkspaceCategories();
+		return ResponseBuilder.build(ResponseStatusType.READ_SUCCESS, resData);
+	}
+
+	@GetMapping("/all/project/{id}")
+	public ResponseEntity<SuccessResponse<List<CategoryResDto>>> getAllProjectCategories(@PathVariable Long id){
+		List<CategoryResDto> resData = categoryService.getAllProjectCategories(id);
 		return ResponseBuilder.build(ResponseStatusType.READ_SUCCESS, resData);
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<SuccessResponse<ProjectResDto>> findProject(@PathVariable Long id){
-		ProjectResDto resData = projectService.findById(id);
+	public ResponseEntity<SuccessResponse<CategoryResDto>> findCategory(@PathVariable Long id){
+		CategoryResDto resData = categoryService.findById(id);
 		return ResponseBuilder.build(ResponseStatusType.READ_SUCCESS, resData);
 	} 
 
 	@PostMapping
-	public ResponseEntity<SuccessResponse<CreateProjectResDto>> createProject(@Valid @RequestBody CreateProjectReqDto reqDto){
-		CreateProjectResDto resData = projectService.createProject(reqDto);
+	public ResponseEntity<SuccessResponse<CreateCategoryResDto>> createCategory(@Valid @RequestBody CreateCategoryReqDto reqDto){
+		CreateCategoryResDto resData = categoryService.createCategory(reqDto);
 		return ResponseBuilder.build(ResponseStatusType.CREATE_SUCCESS, resData);
 	}
 
 	@PutMapping
-	public ResponseEntity<SuccessResponse<UpdateProjectResDto>> updateProject(@Valid @RequestBody UpdateProjectReqDto reqDto){
-		UpdateProjectResDto resData = projectService.updateProject(reqDto);
+	public ResponseEntity<SuccessResponse<UpdateCategoryResDto>> updateCategory(@RequestBody UpdateCategoryReqDto reqDto){
+		UpdateCategoryResDto resData = categoryService.updateCategory(reqDto);
 		return ResponseBuilder.build(ResponseStatusType.UPDATE_SUCCESS, resData);
 	}
 
 	@DeleteMapping("/{id}")
-	public ResponseEntity<SuccessResponse<ProjectResDto>> deleteProject(@PathVariable Long id){
-		projectService.deleteById(id);
+	public ResponseEntity<SuccessResponse<CategoryResDto>> deleteCategory(@PathVariable Long id){
+		categoryService.deleteById(id);
 		return ResponseBuilder.build(ResponseStatusType.DELETE_SUCCESS, null);
 	}
 }

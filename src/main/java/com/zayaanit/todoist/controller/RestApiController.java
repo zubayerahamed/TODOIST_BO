@@ -1,4 +1,4 @@
-package com.zayaanit.todoist.anno;
+package com.zayaanit.todoist.controller;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

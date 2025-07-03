@@ -4,7 +4,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.zayaanit.todoist.anno.RestApiController;
 import com.zayaanit.todoist.enums.ResponseStatusType;
 import com.zayaanit.todoist.model.ResponseBuilder;
 import com.zayaanit.todoist.model.SuccessResponse;

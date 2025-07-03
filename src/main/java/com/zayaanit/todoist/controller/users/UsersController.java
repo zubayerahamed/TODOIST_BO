@@ -2,7 +2,7 @@ package com.zayaanit.todoist.controller.users;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.zayaanit.todoist.anno.RestApiController;
+import com.zayaanit.todoist.controller.RestApiController;
 
 /**
  * Zubayer Ahamed

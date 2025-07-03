@@ -1,5 +1,7 @@
 package com.zayaanit.todoist.exception;
 
+import java.util.Map;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,4 +20,5 @@ public class ErrorResponse {
 	private int status;
 	private String error;
 	private String message;
+	Map<String, String> fieldErrors;
 }
