@@ -97,6 +97,7 @@ public class AuthenticationService {
 				.layoutType(LayoutType.LIST)
 				.isSystemDefined(Boolean.TRUE)
 				.isFavourite(Boolean.FALSE)
+				.isInheritSettings(Boolean.FALSE)
 				.build();
 
 		project  = projectRepo.save(project);

@@ -3,7 +3,8 @@ server:
     context-path: /
     session: 
       persistent: true
-      cookie.name: JSESSIONID_TODOIST
+      cookie:
+        name: JSESSIONID_TODOIST
   port: 8081
 
 springdoc: 
@@ -12,8 +13,11 @@ springdoc:
 spring:
   servlet: 
     multipart: 
-        max-file-size: 50MB
+      max-file-size: 50MB
   profiles: 
     active: dev
   application:
     name: TODOIST
+  output:
+    ansi:
+      enabled: always 
