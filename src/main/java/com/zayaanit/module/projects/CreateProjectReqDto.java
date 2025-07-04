@@ -1,5 +1,7 @@
 package com.zayaanit.module.projects;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.zayaanit.enums.LayoutType;
 import com.zayaanit.module.ValidEnum;
 
@@ -34,7 +36,7 @@ public class CreateProjectReqDto {
 	public Project getBean() {
 		return Project.builder()
 				.name(name)
-				.color(color == null ? "#000000" : color)
+				.color(StringUtils.isBlank(color) ? "#000000" : color)
 				.isFavourite(isFavourite == null ? Boolean.FALSE : isFavourite)
 				.layoutType(layoutType == null ? LayoutType.LIST : layoutType)
 				.build();

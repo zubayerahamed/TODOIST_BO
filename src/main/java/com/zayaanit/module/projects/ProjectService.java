@@ -24,7 +24,7 @@ public class ProjectService extends BaseService {
 
 	@Autowired private ProjectRepo projectRepo;
 
-	public List<ProjectResDto> getAllProject() {
+	public List<ProjectResDto> getAll() {
 		List<Project> projects = projectRepo.findAllByWorkspaceId(loggedinUser().getWorkspace().getId());
 		if(projects.isEmpty()) return Collections.emptyList(); 
 
@@ -42,7 +42,7 @@ public class ProjectService extends BaseService {
 	}
 
 	@Transactional
-	public CreateProjectResDto createProject(CreateProjectReqDto reqDto) throws CustomException {
+	public CreateProjectResDto create(CreateProjectReqDto reqDto) throws CustomException {
 		Project project = reqDto.getBean();
 		project.setWorkspaceId(loggedinUser().getWorkspace().getId());
 		project.setSeqn(0);
@@ -53,7 +53,7 @@ public class ProjectService extends BaseService {
 	}
 
 	@Transactional
-	public UpdateProjectResDto updateProject(UpdateProjectReqDto reqDto) throws CustomException {
+	public UpdateProjectResDto update(UpdateProjectReqDto reqDto) throws CustomException {
 		if(reqDto.getId() == null) throw new CustomException("Project id required", HttpStatus.BAD_REQUEST);
 
 		Optional<Project> projectOp = projectRepo.findByIdAndWorkspaceId(reqDto.getId(), loggedinUser().getWorkspace().getId());
