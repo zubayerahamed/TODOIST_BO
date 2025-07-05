@@ -9,6 +9,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
@@ -66,4 +67,8 @@ public class User extends AbstractModel<Long> {
 	@Temporal(TemporalType.DATE)
 	@Column(name = "date_of_birth", nullable = true)
 	private Date dateOfBirth;
+
+	@Lob
+	@Column(name = "thumbnail", nullable = true)
+	private byte[] thumbnail;
 }

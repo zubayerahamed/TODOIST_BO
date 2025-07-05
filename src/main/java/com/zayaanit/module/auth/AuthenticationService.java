@@ -69,6 +69,8 @@ public class AuthenticationService {
 
 		user = userRepo.save(user);
 
+		// TODO: Create User preferences with system default values
+
 		// 3. Create workspace (business)
 		Workspace workspace = Workspace.builder()
 				.name(user.getFirstName() + "'s Workspace")

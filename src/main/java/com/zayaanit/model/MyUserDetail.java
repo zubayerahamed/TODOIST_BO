@@ -61,6 +61,10 @@ public class MyUserDetail implements UserDetails {
 		return this.id.toString();
 	}
 
+	public Long getUserId() {
+		return this.id;
+	}
+
 	public String getEmail() {
 		return this.email;
 	}
