@@ -21,6 +21,12 @@ public class UserPreferenceService extends BaseService {
 
 	@Autowired private UserPreferenceRepo userPreferenceRepo;
 
+	public UserPreferenceResDto getLoggedinUserPreference() throws CustomException {
+		Optional<UserPreference> userPreferenceOp = userPreferenceRepo.findById(loggedinUser().getUserId());
+		if(!userPreferenceOp.isPresent()) throw new CustomException("Preference data not found", HttpStatus.NOT_FOUND);
+		return new UserPreferenceResDto(userPreferenceOp.get());
+	}
+
 	@Transactional
 	public UpdateUserPreferenceResDto update(UpdateUserPreferenceReqDto reqDto) throws CustomException {
 		Optional<UserPreference> userPreferenceOp = userPreferenceRepo.findById(loggedinUser().getUserId());

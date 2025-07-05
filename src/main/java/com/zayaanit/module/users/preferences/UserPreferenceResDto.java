@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UpdateUserPreferenceResDto {
+public class UserPreferenceResDto {
 
 	private Long userId;
 	private String language;
@@ -31,7 +31,7 @@ public class UpdateUserPreferenceResDto {
 	private Boolean enabledEmailNoti;
 	private Boolean enabledSmsNoti;
 
-	public UpdateUserPreferenceResDto(UserPreference obj) {
+	public UserPreferenceResDto(UserPreference obj) {
 		BeanUtils.copyProperties(obj, this);
 	}
 }

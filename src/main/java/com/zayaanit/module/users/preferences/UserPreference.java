@@ -35,35 +35,35 @@ public class UserPreference extends AbstractModel<Long> {
 	private String language;
 
 	@Column(name = "home_view", length = 25)
-	private String home_view;
+	private String homeView;
 
 	@Column(name = "time_zone", length = 25)
-	private String time_zone;
+	private String timeZone;
 
 	@Column(name = "time_format", length = 25)
-	private String time_format;
+	private String timeFormat;
 
 	@Column(name = "date_format", length = 25)
-	private String date_format;
+	private String dateFormat;
 
 	@Column(name = "week_start", length = 25)
-	private String week_start;
+	private String weekStart;
 
 	@Column(name = "next_week", length = 25)
-	private String next_week;
+	private String nextWeek;
 
 	@Column(name = "weekend", length = 25)
 	private String weekend;
 
 	@Column(name = "enabled_browser_noti", length = 1, nullable = false, columnDefinition = "BIT DEFAULT 0")
-	private Boolean enabled_browser_noti;
+	private Boolean enabledBrowserNoti;
 
 	@Column(name = "enabled_push_noti", length = 1, nullable = false, columnDefinition = "BIT DEFAULT 0")
-	private Boolean enabled_push_noti;
+	private Boolean enabledPushNoti;
 
 	@Column(name = "enabled_email_noti", length = 1, nullable = false, columnDefinition = "BIT DEFAULT 0")
-	private Boolean enabled_email_noti;
+	private Boolean enabledEmailNoti;
 
 	@Column(name = "enabled_sms_noti", length = 1, nullable = false, columnDefinition = "BIT DEFAULT 0")
-	private Boolean enabled_sms_noti;
+	private Boolean enabledSmsNoti;
 }

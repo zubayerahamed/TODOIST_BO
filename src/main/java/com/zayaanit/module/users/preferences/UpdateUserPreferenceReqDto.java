@@ -17,11 +17,11 @@ public class UpdateUserPreferenceReqDto {
 
 	private Long userId;
 	private String language;
-	private String home_view;
-	private String time_zone;
-	private String time_format;
-	private String date_format;
-	private String week_start;
-	private String next_week;
+	private String homeView;
+	private String timeZone;
+	private String timeFormat;
+	private String dateFormat;
+	private String weekStart;
+	private String nextWeek;
 	private String weekend;
 }

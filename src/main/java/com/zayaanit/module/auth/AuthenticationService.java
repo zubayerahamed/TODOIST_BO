@@ -11,7 +11,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.zayaanit.enums.DateFormat;
+import com.zayaanit.enums.Days;
+import com.zayaanit.enums.Language;
 import com.zayaanit.enums.LayoutType;
+import com.zayaanit.enums.TimeFormat;
 import com.zayaanit.enums.TokenType;
 import com.zayaanit.exception.CustomException;
 import com.zayaanit.model.MyUserDetail;
@@ -22,6 +26,8 @@ import com.zayaanit.module.tokens.TokenRepo;
 import com.zayaanit.module.users.User;
 import com.zayaanit.module.users.UserRepo;
 import com.zayaanit.module.users.UserService;
+import com.zayaanit.module.users.preferences.UserPreference;
+import com.zayaanit.module.users.preferences.UserPreferenceRepo;
 import com.zayaanit.module.users.workspaces.UserWorkspace;
 import com.zayaanit.module.users.workspaces.UserWorkspaceRepo;
 import com.zayaanit.module.workflows.Workflow;
@@ -51,6 +57,7 @@ public class AuthenticationService {
 	@Autowired private UserService userService;
 	@Autowired private ProjectRepo projectRepo;
 	@Autowired private WorkflowRepo workflowRepo;
+	@Autowired private UserPreferenceRepo userPreferenceRepo;
 
 	@Transactional
 	public AuthenticationResDto register(RegisterRequestDto request) {
@@ -70,6 +77,23 @@ public class AuthenticationService {
 		user = userRepo.save(user);
 
 		// TODO: Create User preferences with system default values
+		UserPreference up = UserPreference.builder()
+				.userId(user.getId())
+				.language(Language.ENGLISH.name())
+				.homeView("TODAY")
+				.timeZone("Asia/Dhaka")
+				.timeFormat(TimeFormat.HOUR_12.name())
+				.dateFormat(DateFormat.DD_MMM_YYYY.name())
+				.weekStart(Days.SUN.name())
+				.nextWeek(Days.SUN.name())
+				.weekend(Days.FRI.name())
+				.enabledBrowserNoti(false)
+				.enabledEmailNoti(false)
+				.enabledPushNoti(false)
+				.enabledSmsNoti(false)
+				.build();
+
+		userPreferenceRepo.save(up);
 
 		// 3. Create workspace (business)
 		Workspace workspace = Workspace.builder()
