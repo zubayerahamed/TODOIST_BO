@@ -21,8 +21,6 @@ public class CreateTagReqDto {
 
     private String color;
 
-    @NotNull(message = "Workspace ID required.")
-    private Long workspaceId;
 
     public Tag getBean() {
         return Tag.builder()

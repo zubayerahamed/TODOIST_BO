@@ -11,13 +11,13 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateTagResDto {
+public class TagResDto {
     private Long id;
     private String name;
     private String color;
     private Long workspaceId;
 
-    public CreateTagResDto(Tag tag) {
+    public TagResDto(Tag tag) {
         BeanUtils.copyProperties(tag, this);
     }
 }

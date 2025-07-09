@@ -28,6 +28,4 @@ public class UpdateTagReqDto {
 
     private String color;
 
-    @NotNull(message = "Workspace ID required.")
-    private Long workspaceId;
 }

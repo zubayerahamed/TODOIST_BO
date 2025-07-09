@@ -25,21 +25,26 @@ public class TagController {
     private TagService tagService;
 
     @PostMapping
-    public ResponseEntity<SuccessResponse<CreateTagResDto>> createProject(@Valid @RequestBody CreateTagReqDto reqDto) {
-        CreateTagResDto resData = tagService.createTag(reqDto);
+    public ResponseEntity<SuccessResponse<TagResDto>> createProject(@Valid @RequestBody CreateTagReqDto reqDto) {
+        TagResDto resData = tagService.createTag(reqDto);
         return ResponseBuilder.build(ResponseStatusType.CREATE_SUCCESS, resData);
     }
 
     @GetMapping
-    public ResponseEntity<SuccessResponse<List<CreateTagResDto>>> getAllProject() {
-        List<CreateTagResDto> resData = tagService.getAllTags();
+    public ResponseEntity<SuccessResponse<List<TagResDto>>> getAllProject() {
+        List<TagResDto> resData = tagService.getAllTags();
         return ResponseBuilder.build(ResponseStatusType.READ_SUCCESS, resData);
     }
-    
-    	@PutMapping
-	public ResponseEntity<SuccessResponse<UpdateTagResDto>> updateTag(@Valid @RequestBody UpdateTagReqDto reqDto){
-		UpdateTagResDto resData = tagService.updateTag(reqDto);
-		return ResponseBuilder.build(ResponseStatusType.UPDATE_SUCCESS, resData);
-	}
 
+    @PutMapping
+    public ResponseEntity<SuccessResponse<UpdateTagResDto>> updateTag(@Valid @RequestBody UpdateTagReqDto reqDto) {
+        UpdateTagResDto resData = tagService.updateTag(reqDto);
+        return ResponseBuilder.build(ResponseStatusType.UPDATE_SUCCESS, resData);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<SuccessResponse<TagResDto>> findByTagId(Long id) {
+        TagResDto resData = tagService.findById(id);
+        return ResponseBuilder.build(ResponseStatusType.READ_SUCCESS, resData);
+    }
 }
