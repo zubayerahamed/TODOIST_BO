@@ -23,7 +23,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "workflow")
+@Table(name = "workflows")
 @EqualsAndHashCode(callSuper = true)
 public class Workflow extends AbstractModel<Long> {
 

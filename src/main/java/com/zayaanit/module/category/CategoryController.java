@@ -42,25 +42,25 @@ public class CategoryController {
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<SuccessResponse<CategoryResDto>> findCategory(@PathVariable Long id){
+	public ResponseEntity<SuccessResponse<CategoryResDto>> find(@PathVariable Long id){
 		CategoryResDto resData = categoryService.findById(id);
 		return ResponseBuilder.build(ResponseStatusType.READ_SUCCESS, resData);
 	} 
 
 	@PostMapping
-	public ResponseEntity<SuccessResponse<CreateCategoryResDto>> createCategory(@Valid @RequestBody CreateCategoryReqDto reqDto){
-		CreateCategoryResDto resData = categoryService.createCategory(reqDto);
+	public ResponseEntity<SuccessResponse<CreateCategoryResDto>> create(@Valid @RequestBody CreateCategoryReqDto reqDto){
+		CreateCategoryResDto resData = categoryService.create(reqDto);
 		return ResponseBuilder.build(ResponseStatusType.CREATE_SUCCESS, resData);
 	}
 
 	@PutMapping
-	public ResponseEntity<SuccessResponse<UpdateCategoryResDto>> updateCategory(@RequestBody UpdateCategoryReqDto reqDto){
-		UpdateCategoryResDto resData = categoryService.updateCategory(reqDto);
+	public ResponseEntity<SuccessResponse<UpdateCategoryResDto>> update(@RequestBody UpdateCategoryReqDto reqDto){
+		UpdateCategoryResDto resData = categoryService.update(reqDto);
 		return ResponseBuilder.build(ResponseStatusType.UPDATE_SUCCESS, resData);
 	}
 
 	@DeleteMapping("/{id}")
-	public ResponseEntity<SuccessResponse<CategoryResDto>> deleteCategory(@PathVariable Long id){
+	public ResponseEntity<SuccessResponse<CategoryResDto>> delete(@PathVariable Long id){
 		categoryService.deleteById(id);
 		return ResponseBuilder.build(ResponseStatusType.DELETE_SUCCESS, null);
 	}

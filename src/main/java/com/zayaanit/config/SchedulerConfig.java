@@ -12,11 +12,6 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 @Configuration
 public class SchedulerConfig {
 
-//	@Bean
-//	TaskScheduler taskScheduler() {
-//		return new ConcurrentTaskScheduler(); // Can be ThreadPoolTaskScheduler too
-//	}
-
 	@Bean
 	ThreadPoolTaskScheduler taskScheduler() {
 		ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();

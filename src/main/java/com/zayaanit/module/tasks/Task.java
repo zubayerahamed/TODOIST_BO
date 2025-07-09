@@ -1,8 +1,10 @@
 package com.zayaanit.module.tasks;
 
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 import com.zayaanit.enums.PriorityType;
+import com.zayaanit.enums.TaskType;
 import com.zayaanit.model.AbstractModel;
 
 import jakarta.persistence.Column;
@@ -18,8 +20,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
 import jakarta.persistence.Table;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -54,51 +54,51 @@ public class Task extends AbstractModel<Long> {
 	@Column(name = "workflow_id", nullable = true)
 	private Long workflowId;
 
-	@Column(name = "title", length = 100)
+	@Column(name = "title", length = 100, nullable = false)
 	private String title;
 
 	@Lob
-	@Column(name = "description")
+	@Column(name = "description", nullable = true)
 	private String description;
 
-	@Column(name = "is_type_task", length = 1, nullable = false, columnDefinition = "BIT DEFAULT 0")
-	private Boolean isTypeTask;
+	@Enumerated(EnumType.STRING)
+	@Column(name = "task_type", nullable = false)
+	private TaskType taskType;
 
-	@Column(name = "is_type_event", length = 1, nullable = false, columnDefinition = "BIT DEFAULT 0")
-	private Boolean isTypeEvent;
+	@Column(name = "task_date", nullable = true)
+	private LocalDate taskDate; // Target user email for notification
 
-	@Temporal(TemporalType.DATE)
-	@Column(name = "task_date")
-	private Date taskDate; // Target user email for notification
+	@Column(name = "task_start_time", nullable = true)
+	private LocalTime taskStartTime;
 
-	@Temporal(TemporalType.TIME)
-	@Column(name = "task_start_time")
-	private Date taskStartTime;
+	@Column(name = "task_end_time", nullable = true)
+	private LocalTime taskEndTime;
 
-	@Temporal(TemporalType.TIME)
-	@Column(name = "task_end_time")
-	private Date taskEndTime;
+	@Column(name = "due_date", nullable = true)
+	private LocalDate dueDate;
 
-	@Temporal(TemporalType.DATE)
-	@Column(name = "due_date")
-	private Date dueDate;
-
-	@Column(name = "estTime")
+	@Column(name = "estTime", nullable = true)
 	private Integer estTime; // In minute
 
-	@Column(name = "reminder_before")
+	@Column(name = "reminder_before", nullable = true)
 	private Integer reminderBefore; // How many minutes before to send reminder
 
 	@Enumerated(EnumType.STRING)
-	@Column(name = "priority")
+	@Column(name = "priority", nullable = true)
 	private PriorityType priority;
 
-	@Column(name = "location", length = 50)
+	@Column(name = "location", length = 50, nullable = true)
 	private String location;
+
+	@Column(name = "is_reminder_eanbled", length = 1, nullable = false, columnDefinition = "BIT DEFAULT 0")
+	private Boolean isReminderEnabled;
 
 	@Column(name = "is_reminder_sent", length = 1, nullable = false, columnDefinition = "BIT DEFAULT 0")
 	private Boolean isReminderSent;
 
 	@Column(name = "is_completed", length = 1, nullable = false, columnDefinition = "BIT DEFAULT 0")
 	private Boolean isCompleted;
+
+	@Column(name = "is_partially_completed", length = 1, nullable = false, columnDefinition = "BIT DEFAULT 0")
+	private Boolean isPartiallyCompleted;
 }

@@ -45,6 +45,6 @@ public class Workspace extends AbstractModel<Long> {
 	private Boolean isSystemDefined;
 
 	@Lob
-	@Column(name = "logo")
+	@Column(name = "logo", nullable = true)
 	private byte[] logo;
 }

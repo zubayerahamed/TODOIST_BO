@@ -56,7 +56,7 @@ public class CategoryService extends BaseService {
 	}
 
 	@Transactional
-	public CreateCategoryResDto createCategory(CreateCategoryReqDto reqDto) throws CustomException {
+	public CreateCategoryResDto create(CreateCategoryReqDto reqDto) throws CustomException {
 		if(reqDto.getReferenceId() == null) {
 			reqDto.setReferenceId(loggedinUser().getWorkspace().getId());
 		} else {
@@ -75,7 +75,7 @@ public class CategoryService extends BaseService {
 	}
 
 	@Transactional
-	public UpdateCategoryResDto updateCategory(UpdateCategoryReqDto reqDto) throws CustomException {
+	public UpdateCategoryResDto update(UpdateCategoryReqDto reqDto) throws CustomException {
 		Optional<Category> categoryOp = categoryRepo.findById(reqDto.getId());
 		if(!categoryOp.isPresent()) {
 			throw new CustomException("Category not exist", HttpStatus.BAD_REQUEST);

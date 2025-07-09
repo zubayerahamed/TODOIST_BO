@@ -28,13 +28,14 @@ public class ReminderService {
 	}
 
 	public void scheduleReminder(Task task, Runnable reminderCallbackMethod) {
-		//var reminderTime = Date.from(task.getTaskTime().minusMinutes(task.getReminderBefore()).atZone(ZoneId.systemDefault()).toInstant());
+		LocalDateTime dateTime = LocalDateTime.of(task.getTaskDate(), task.getTaskStartTime()).minusMinutes(task.getReminderBefore());
+		Date reminderTime = Date.from(dateTime.atZone(ZoneId.systemDefault()).toInstant());
 
 		// Cancel previous if re-scheduling
 		cancelScheduledReminder(task.getId());
 
-		//ScheduledFuture<?> future = taskScheduler.schedule(reminderCallbackMethod, reminderTime.toInstant());
-		//scheduledTasks.put(task.getId(), future);
+		ScheduledFuture<?> future = taskScheduler.schedule(reminderCallbackMethod, reminderTime.toInstant());
+		scheduledTasks.put(task.getId(), future);
 	}
 
 	public void cancelScheduledReminder(Long taskId) {
