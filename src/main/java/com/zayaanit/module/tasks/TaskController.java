@@ -5,6 +5,8 @@ import java.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.zayaanit.enums.ResponseStatusType;
@@ -12,6 +14,8 @@ import com.zayaanit.model.ResponseBuilder;
 import com.zayaanit.model.SuccessResponse;
 import com.zayaanit.module.RestApiController;
 import com.zayaanit.module.reminder.ReminderService;
+
+import jakarta.validation.Valid;
 
 /**
  * Zubayer Ahamed
@@ -23,7 +27,13 @@ import com.zayaanit.module.reminder.ReminderService;
 public class TaskController {
 
 	@Autowired
-	private ReminderService reminderService;
+	private TaskService taskService;
+
+	@PostMapping
+	public ResponseEntity<SuccessResponse<CreateTaskResDto>> create(@Valid @RequestBody CreateTaskReqDto reqDto){
+		CreateTaskResDto resData = taskService.create(reqDto);
+		return ResponseBuilder.build(ResponseStatusType.CREATE_SUCCESS, resData);
+	}
 
 	@GetMapping("/sample")
 	public ResponseEntity<SuccessResponse<String>> runTask() {
