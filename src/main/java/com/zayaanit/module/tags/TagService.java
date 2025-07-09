@@ -15,6 +15,11 @@ import com.zayaanit.module.BaseService;
 import io.jsonwebtoken.lang.Collections;
 import jakarta.transaction.Transactional;
 
+/**
+ * Monaum
+ * @since Jul 9, 2025
+ */
+
 @Service
 public class TagService extends BaseService {
 
@@ -83,7 +88,9 @@ public class TagService extends BaseService {
 
     @Transactional
     public void deleteById(Long id) throws CustomException {
+
         Optional<Tag> tagOp = tagRepo.findByIdAndWorkspaceId(id, loggedinUser().getWorkspace().getId());
+        
         if (!tagOp.isPresent()) {
             throw new CustomException("Tag not exist", HttpStatus.NOT_FOUND);
         }
