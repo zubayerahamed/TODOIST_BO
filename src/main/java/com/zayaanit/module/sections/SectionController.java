@@ -4,8 +4,10 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -20,11 +22,12 @@ import jakarta.validation.Valid;
 @RequestMapping("/api/v1/sections")
 public class SectionController {
 
-    @Autowired private SectionService sectionService;
+    @Autowired
+    private SectionService sectionService;
 
     @GetMapping("/{id}")
     public ResponseEntity<SuccessResponse<SectionResDto>> findByTagId(Long id, Long projectId) {
-        SectionResDto resData = sectionService.findSectionById(id,projectId);
+        SectionResDto resData = sectionService.findSectionById(id, projectId);
         return ResponseBuilder.build(ResponseStatusType.READ_SUCCESS, resData);
     }
 
@@ -38,5 +41,17 @@ public class SectionController {
     public ResponseEntity<SuccessResponse<List<SectionResDto>>> getAllSection(Long projectId) {
         List<SectionResDto> resData = sectionService.getAllSections(projectId);
         return ResponseBuilder.build(ResponseStatusType.READ_SUCCESS, resData);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<SuccessResponse<SectionResDto>> updateSection(@Valid @RequestBody CreateSectionReqDto reqDto, Long id, Long projectId) {
+        SectionResDto resData = sectionService.updateSection(id, projectId, reqDto);
+        return ResponseBuilder.build(ResponseStatusType.UPDATE_SUCCESS, resData);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<SuccessResponse<Void>> deleteSection(Long id, Long projectId) {
+        sectionService.deleteSection(id, projectId);
+        return ResponseBuilder.build(ResponseStatusType.DELETE_SUCCESS, null);
     }
 }

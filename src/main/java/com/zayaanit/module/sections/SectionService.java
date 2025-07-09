@@ -11,22 +11,22 @@ import org.springframework.stereotype.Service;
 import com.zayaanit.exception.CustomException;
 import com.zayaanit.module.BaseService;
 
-
 import io.jsonwebtoken.lang.Collections;
 import jakarta.transaction.Transactional;
 
 /**
  * Monaum
+ *
  * @since Jul 9, 2025
  */
-
 @Service
 public class SectionService extends BaseService {
 
-    @Autowired private SectionRepo sectionRepo;
+    @Autowired
+    private SectionRepo sectionRepo;
 
     @Transactional
-    public SectionResDto createSection (CreateSectionReqDto reqDto) throws CustomException {
+    public SectionResDto createSection(CreateSectionReqDto reqDto) throws CustomException {
 
         Section section = reqDto.getBean();
         section = sectionRepo.save(section);
@@ -60,5 +60,33 @@ public class SectionService extends BaseService {
         return new SectionResDto(sectionOp.get());
     }
 
+    @Transactional
+    public SectionResDto updateSection(Long id, Long projectId, CreateSectionReqDto reqDto) throws CustomException {
+
+        Optional<Section> sectionOp = sectionRepo.findByIdAndProjectId(id, projectId);
+
+        if (!sectionOp.isPresent()) {
+            throw new CustomException("Section not exist", HttpStatus.NOT_FOUND);
+        }
+
+        Section section = sectionOp.get();
+        section.setName(reqDto.getName());
+        section.setSeqn(reqDto.getSeqn());
+        section = sectionRepo.save(section);
+
+        return new SectionResDto(section);
+    }
+
+    @Transactional
+    public void deleteSection(Long id, Long projectId) throws CustomException {
+
+        Optional<Section> sectionOp = sectionRepo.findByIdAndProjectId(id, projectId);
+
+        if (!sectionOp.isPresent()) {
+            throw new CustomException("Section not exist", HttpStatus.NOT_FOUND);
+        }
+
+        sectionRepo.delete(sectionOp.get());
+    }
 
 }
