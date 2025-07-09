@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,6 +16,7 @@ import com.zayaanit.model.SuccessResponse;
 import com.zayaanit.module.RestApiController;
 
 import jakarta.validation.Valid;
+
 import org.springframework.web.bind.annotation.PutMapping;
 
 @RestApiController
@@ -46,5 +48,11 @@ public class TagController {
     public ResponseEntity<SuccessResponse<TagResDto>> findByTagId(Long id) {
         TagResDto resData = tagService.findById(id);
         return ResponseBuilder.build(ResponseStatusType.READ_SUCCESS, resData);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<SuccessResponse<Void>> deleteTag(Long id) {
+        tagService.deleteById(id);
+        return ResponseBuilder.build(ResponseStatusType.DELETE_SUCCESS, null);
     }
 }

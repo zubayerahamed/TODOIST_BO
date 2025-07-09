@@ -47,10 +47,13 @@ public class TagService extends BaseService {
     }
 
     public TagResDto findById(Long id) throws CustomException {
+
         Optional<Tag> tagOp = tagRepo.findByIdAndWorkspaceId(id, loggedinUser().getWorkspace().getId());
+
         if (!tagOp.isPresent()) {
             throw new CustomException("Tag not exist", HttpStatus.NOT_FOUND);
         }
+
         return new TagResDto(tagOp.get());
     }
 
@@ -78,4 +81,14 @@ public class TagService extends BaseService {
                 .build();
     }
 
+    @Transactional
+    public void deleteById(Long id) throws CustomException {
+        Optional<Tag> tagOp = tagRepo.findByIdAndWorkspaceId(id, loggedinUser().getWorkspace().getId());
+        if (!tagOp.isPresent()) {
+            throw new CustomException("Tag not exist", HttpStatus.NOT_FOUND);
+        }
+
+        Tag tag = tagOp.get();
+        tagRepo.delete(tag);
+    }
 }
