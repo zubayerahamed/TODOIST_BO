@@ -25,7 +25,7 @@ server:
 spring: 
   datasource: 
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
-    url: jdbc:sqlserver://localhost;databaseName=todoist;encrypt=true;trustServerCertificate=true;
+    url: jdbc:sqlserver://localhost:1433;databaseName=todoist;encrypt=true;trustServerCertificate=true
     username: sa
     password: zubayer@123
     tomcat:

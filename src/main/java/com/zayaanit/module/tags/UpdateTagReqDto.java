@@ -1,3 +1,4 @@
+
 package com.zayaanit.module.tags;
 
 import jakarta.validation.constraints.NotBlank;
@@ -8,13 +9,19 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * @author monaum
+ */
+
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-
-public class CreateTagReqDto {
-
+public class UpdateTagReqDto {
+    
+    @NotNull(message = "Tag id required")
+    private Long id;
+    
     @NotBlank(message = "Tag name required.")
     @Size(min = 1, max = 25, message = "Tag name must be 1 to 25 characters long")
     private String name;
@@ -23,11 +30,4 @@ public class CreateTagReqDto {
 
     @NotNull(message = "Workspace ID required.")
     private Long workspaceId;
-
-    public Tag getBean() {
-        return Tag.builder()
-                .name(name)
-                .color(color == null ? "#000000" : color)
-                .build();
-    }
 }

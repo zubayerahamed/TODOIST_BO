@@ -15,9 +15,10 @@ import com.zayaanit.model.SuccessResponse;
 import com.zayaanit.module.RestApiController;
 
 import jakarta.validation.Valid;
+import org.springframework.web.bind.annotation.PutMapping;
 
 @RestApiController
-@RequestMapping("/api/v1/projects")
+@RequestMapping("/api/v1/tags")
 public class TagController {
 
     @Autowired
@@ -34,5 +35,11 @@ public class TagController {
         List<CreateTagResDto> resData = tagService.getAllTags();
         return ResponseBuilder.build(ResponseStatusType.READ_SUCCESS, resData);
     }
+    
+    	@PutMapping
+	public ResponseEntity<SuccessResponse<UpdateTagResDto>> updateTag(@Valid @RequestBody UpdateTagReqDto reqDto){
+		UpdateTagResDto resData = tagService.updateTag(reqDto);
+		return ResponseBuilder.build(ResponseStatusType.UPDATE_SUCCESS, resData);
+	}
 
 }

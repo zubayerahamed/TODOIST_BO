@@ -10,6 +10,10 @@ import com.zayaanit.exception.CustomException;
 import com.zayaanit.module.BaseService;
 
 import io.jsonwebtoken.lang.Collections;
+import jakarta.transaction.Transactional;
+import java.util.Optional;
+import org.springframework.beans.BeanUtils;
+import org.springframework.http.HttpStatus;
 
 
 @Service
@@ -34,6 +38,30 @@ public class TagService extends BaseService {
 			responseData.add(new CreateTagResDto(p));
 		});
         return responseData;
+    }
+
+    @Transactional
+    public UpdateTagResDto updateTag(UpdateTagReqDto reqDto) throws CustomException {
+        if (reqDto.getId() == null) {
+            throw new CustomException("Project id required", HttpStatus.BAD_REQUEST);
+        }
+
+        Optional<Tag> tagOp = tagRepo.findByIdAndWorkspaceId(reqDto.getId(), loggedinUser().getWorkspace().getId());
+        if (!tagOp.isPresent()) {
+            throw new CustomException("Project not exist", HttpStatus.NOT_FOUND);
+        }
+
+        Tag existobj = tagOp.get();
+        BeanUtils.copyProperties(reqDto, existobj);
+
+        existobj = tagRepo.save(existobj);
+
+        return UpdateTagResDto.builder()
+            .id(existobj.getId())
+            .name(existobj.getName())
+            .color(existobj.getColor())
+            .workspaceId(existobj.getWorkspaceId())
+            .build();
     }
 
 }
