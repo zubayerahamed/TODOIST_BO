@@ -6,7 +6,10 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Data
@@ -15,10 +18,6 @@ import lombok.*;
 @AllArgsConstructor
 @Table(name = "sections")
 public class Section {
-
-    static Object builder() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
