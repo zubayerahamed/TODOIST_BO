@@ -3,6 +3,8 @@ package com.zayaanit.module.reminder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.zayaanit.module.tasks.TaskService;
+
 import jakarta.annotation.PostConstruct;
 
 /**
@@ -12,14 +14,11 @@ import jakarta.annotation.PostConstruct;
 @Component
 public class ReminderStartupScheduler {
 
-	@Autowired private ReminderService reminderService;
+	@Autowired private TaskService taskService;
 
 	@PostConstruct
-    public void rescheduleFutureTasks() {
-		System.out.println("======> Running this auto schedular");
-//        List<Task> futureTasks = taskRepository.findAllTasksWithReminderInFuture();
-//        for (Task task : futureTasks) {
-//            reminderService.scheduleReminder(task);
-//        }
-    }
+	public void rescheduleFutureTasks() {
+		System.out.println("======> Running this auto schedular for reshedule all pending reminder on startuup the program");
+		taskService.rescheduleAllReminders();
+	}
 }

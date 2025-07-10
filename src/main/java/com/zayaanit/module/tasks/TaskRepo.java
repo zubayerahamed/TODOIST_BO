@@ -9,6 +9,16 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface TaskRepo extends JpaRepository<Task, Long> {
 
-	@Query("SELECT t FROM Task t WHERE t.isReminderSent = false AND t.taskDate >= CURRENT_DATE")
+	@Query(value = """
+			SELECT * 
+			FROM tasks 
+			WHERE is_reminder_sent = 0 
+			  AND DATEADD(SECOND, 
+			              DATEDIFF(SECOND, 0, task_start_time), 
+			              CAST(task_date AS DATETIME)
+			          ) >= GETDATE()
+		""", nativeQuery = true)
 	List<Task> findAllPendingReminders();
+
+	List<Task> findAllByProjectId(Long projectId);
 }

@@ -23,8 +23,10 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateTaskReqDto {
+public class UpdateTaskReqDto {
 
+	@NotNull(message = "Task id required")
+	private Long id;
 	@NotNull(message = "Project reference required")
 	private Long projectId;
 	private Long sectionId;

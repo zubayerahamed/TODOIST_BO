@@ -34,7 +34,20 @@ public class ReminderService {
 		// Cancel previous if re-scheduling
 		cancelScheduledReminder(task.getId());
 
-		ScheduledFuture<?> future = taskScheduler.schedule(reminderCallbackMethod, reminderTime.toInstant());
+//		if (reminderTime.before(new Date())) {
+//			System.out.println("Reminder time already passed for task: " + task.getTitle());
+//			return;
+//		}
+
+		System.out.println("====> Reminder time : " + reminderTime);
+
+		ScheduledFuture<?> future = taskScheduler.schedule(() -> {
+			try {
+				reminderCallbackMethod.run();
+			} finally {
+				cancelScheduledReminder(task.getId());
+			}
+		}, reminderTime.toInstant());
 		scheduledTasks.put(task.getId(), future);
 	}
 
@@ -43,6 +56,7 @@ public class ReminderService {
 		ScheduledFuture<?> future = scheduledTasks.get(taskId);
 		if (future != null && !future.isDone()) {
 			future.cancel(true);
+			scheduledTasks.remove(taskId);
 		}
 	}
 

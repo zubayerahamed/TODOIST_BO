@@ -15,8 +15,10 @@ public class SchedulerConfig {
 	@Bean
 	ThreadPoolTaskScheduler taskScheduler() {
 		ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
-		scheduler.setPoolSize(10); // tune based on load
+		scheduler.setPoolSize(50); // tune based on load
 		scheduler.setThreadNamePrefix("task-reminder-");
+		scheduler.setRemoveOnCancelPolicy(true);
+		scheduler.initialize();
 		return scheduler;
 	}
 }

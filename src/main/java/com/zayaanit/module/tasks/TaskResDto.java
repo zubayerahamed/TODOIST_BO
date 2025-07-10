@@ -21,7 +21,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateTaskResDto {
+public class TaskResDto {
 
 	private Long id;
 	private Long projectId;
@@ -43,7 +43,13 @@ public class CreateTaskResDto {
 	private Boolean isCompleted;
 	private Boolean isPartiallyCompleted;
 
-	public CreateTaskResDto(Task obj) {
+	public TaskResDto(Task obj) {
 		BeanUtils.copyProperties(obj, this);
+	}
+
+	public static TaskResDto from(Task obj) {
+		TaskResDto dto = new TaskResDto();
+		BeanUtils.copyProperties(obj, dto);
+		return dto;
 	}
 }
