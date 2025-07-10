@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,8 +27,8 @@ public class SectionController {
     private SectionService sectionService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<SuccessResponse<SectionResDto>> findByTagId(Long id, Long projectId) {
-        SectionResDto resData = sectionService.findSectionById(id, projectId);
+    public ResponseEntity<SuccessResponse<SectionResDto>> findByTagId(@PathVariable Long id) {
+        SectionResDto resData = sectionService.findSectionById(id);
         return ResponseBuilder.build(ResponseStatusType.READ_SUCCESS, resData);
     }
 
@@ -43,15 +44,15 @@ public class SectionController {
         return ResponseBuilder.build(ResponseStatusType.READ_SUCCESS, resData);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<SuccessResponse<SectionResDto>> updateSection(@Valid @RequestBody CreateSectionReqDto reqDto, Long id, Long projectId) {
-        SectionResDto resData = sectionService.updateSection(id, projectId, reqDto);
+    @PutMapping
+    public ResponseEntity<SuccessResponse<SectionResDto>> updateSection(@Valid @RequestBody UpdateSectionReqDto reqDto) {
+        SectionResDto resData = sectionService.updateSection(reqDto);
         return ResponseBuilder.build(ResponseStatusType.UPDATE_SUCCESS, resData);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<SuccessResponse<Void>> deleteSection(Long id, Long projectId) {
-        sectionService.deleteSection(id, projectId);
+    public ResponseEntity<SuccessResponse<Void>> deleteSection(@PathVariable Long id) {
+        sectionService.deleteSection(id);
         return ResponseBuilder.build(ResponseStatusType.DELETE_SUCCESS, null);
     }
 }

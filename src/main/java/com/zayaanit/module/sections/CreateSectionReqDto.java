@@ -19,13 +19,10 @@ public class CreateSectionReqDto {
     @Size(min = 1, max = 25, message = "Section name must be 1 to 25 characters long")
     private String name;
 
-    private Integer seqn;
-
     public Section getBean() {
         return Section.builder()
                 .workflowId(workflowId)
                 .name(name)
-                .seqn(seqn)
                 .build();
     }
 }

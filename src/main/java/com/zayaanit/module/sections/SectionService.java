@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -36,7 +37,6 @@ public class SectionService extends BaseService {
 
     public List<SectionResDto> getAllSections(Long projectId) {
         List<Section> section = sectionRepo.findAllByProjectId(projectId);
-
         if (section.isEmpty()) {
             return Collections.emptyList();
         }
@@ -49,10 +49,9 @@ public class SectionService extends BaseService {
         return responseData;
     }
 
-    public SectionResDto findSectionById(Long id, Long projectId) throws CustomException {
+    public SectionResDto findSectionById(Long id) throws CustomException {
 
-        Optional<Section> sectionOp = sectionRepo.findByIdAndProjectId(id, projectId);
-
+        Optional<Section> sectionOp = sectionRepo.findById(id);
         if (!sectionOp.isPresent()) {
             throw new CustomException("Section not exist", HttpStatus.NOT_FOUND);
         }
@@ -61,27 +60,28 @@ public class SectionService extends BaseService {
     }
 
     @Transactional
-    public SectionResDto updateSection(Long id, Long projectId, CreateSectionReqDto reqDto) throws CustomException {
+    public SectionResDto updateSection(UpdateSectionReqDto reqDto) throws CustomException {
 
-        Optional<Section> sectionOp = sectionRepo.findByIdAndProjectId(id, projectId);
+        if (reqDto.getId() == null) {
+            throw new CustomException("Section id required", HttpStatus.BAD_REQUEST);
+        }
 
+        Optional<Section> sectionOp = sectionRepo.findById(reqDto.getId());
         if (!sectionOp.isPresent()) {
             throw new CustomException("Section not exist", HttpStatus.NOT_FOUND);
         }
 
         Section section = sectionOp.get();
-        section.setName(reqDto.getName());
-        section.setSeqn(reqDto.getSeqn());
-        section = sectionRepo.save(section);
+        BeanUtils.copyProperties(reqDto, section);
 
+        section = sectionRepo.save(section);
         return new SectionResDto(section);
     }
 
     @Transactional
-    public void deleteSection(Long id, Long projectId) throws CustomException {
+    public void deleteSection(Long id) throws CustomException {
 
-        Optional<Section> sectionOp = sectionRepo.findByIdAndProjectId(id, projectId);
-
+        Optional<Section> sectionOp = sectionRepo.findById(id);
         if (!sectionOp.isPresent()) {
             throw new CustomException("Section not exist", HttpStatus.NOT_FOUND);
         }
