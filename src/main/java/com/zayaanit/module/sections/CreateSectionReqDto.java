@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 public class CreateSectionReqDto {
 
     private Long workflowId;
-
+    private Long projectId;
     @NotBlank(message = "Section name is required.")
     @Size(min = 1, max = 25, message = "Section name must be 1 to 25 characters long")
     private String name;
@@ -22,6 +22,7 @@ public class CreateSectionReqDto {
     public Section getBean() {
         return Section.builder()
                 .workflowId(workflowId)
+                .projectId(projectId)
                 .name(name)
                 .build();
     }
