@@ -17,9 +17,9 @@ import jakarta.transaction.Transactional;
 
 /**
  * Monaum
+ *
  * @since Jul 9, 2025
  */
-
 @Service
 public class TagService extends BaseService {
 
@@ -81,7 +81,6 @@ public class TagService extends BaseService {
         return UpdateTagResDto.builder()
                 .id(existobj.getId())
                 .name(existobj.getName())
-                .color(existobj.getColor())
                 .workspaceId(existobj.getWorkspaceId())
                 .build();
     }
@@ -90,7 +89,7 @@ public class TagService extends BaseService {
     public void deleteById(Long id) throws CustomException {
 
         Optional<Tag> tagOp = tagRepo.findByIdAndWorkspaceId(id, loggedinUser().getWorkspace().getId());
-        
+
         if (!tagOp.isPresent()) {
             throw new CustomException("Tag not exist", HttpStatus.NOT_FOUND);
         }

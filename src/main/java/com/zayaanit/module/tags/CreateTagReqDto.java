@@ -1,7 +1,6 @@
 package com.zayaanit.module.tags;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,13 +18,9 @@ public class CreateTagReqDto {
     @Size(min = 1, max = 25, message = "Tag name must be 1 to 25 characters long")
     private String name;
 
-    private String color;
-
-
     public Tag getBean() {
         return Tag.builder()
                 .name(name)
-                .color(color == null ? "#000000" : color)
                 .build();
     }
 }

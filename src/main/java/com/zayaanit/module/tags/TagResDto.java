@@ -12,9 +12,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TagResDto {
+
     private Long id;
     private String name;
-    private String color;
     private Long workspaceId;
 
     public TagResDto(Tag tag) {

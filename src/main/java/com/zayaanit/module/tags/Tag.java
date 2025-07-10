@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "tags")
-public class Tag extends AbstractModel<Long>{
+public class Tag extends AbstractModel<Long> {
 
     private static final long serialVersionUID = 2572842083641054917L;
 
@@ -30,9 +30,6 @@ public class Tag extends AbstractModel<Long>{
 
     @Column(name = "name", length = 25)
     private String name;
-
-    @Column(name = "color", length = 10)
-    private String color;
 
     @Column(name = "workspace_id")
     private Long workspaceId;
