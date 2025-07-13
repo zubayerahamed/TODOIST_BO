@@ -30,6 +30,7 @@ public class SectionService extends BaseService {
     public SectionResDto createSection(CreateSectionReqDto reqDto) throws CustomException {
 
         Section section = reqDto.getBean();
+        section.setSeqn(1);
         section = sectionRepo.save(section);
 
         return new SectionResDto(section);
@@ -50,7 +51,6 @@ public class SectionService extends BaseService {
     }
 
     public SectionResDto findSectionById(Long id) throws CustomException {
-
         Optional<Section> sectionOp = sectionRepo.findById(id);
         if (!sectionOp.isPresent()) {
             throw new CustomException("Section not exist", HttpStatus.NOT_FOUND);
@@ -61,7 +61,6 @@ public class SectionService extends BaseService {
 
     @Transactional
     public SectionResDto updateSection(UpdateSectionReqDto reqDto) throws CustomException {
-
         if (reqDto.getId() == null) {
             throw new CustomException("Section id required", HttpStatus.BAD_REQUEST);
         }
@@ -80,7 +79,6 @@ public class SectionService extends BaseService {
 
     @Transactional
     public void deleteSection(Long id) throws CustomException {
-
         Optional<Section> sectionOp = sectionRepo.findById(id);
         if (!sectionOp.isPresent()) {
             throw new CustomException("Section not exist", HttpStatus.NOT_FOUND);
