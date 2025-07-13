@@ -1682,7 +1682,7 @@
 			]
 		},
 		{
-			"name": "Category",
+			"name": "Categories",
 			"item": [
 				{
 					"name": "Create Category",
@@ -2327,7 +2327,7 @@
 			"name": "Tasks",
 			"item": [
 				{
-					"name": "Create Category",
+					"name": "Create Task",
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -2343,7 +2343,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"referenceId\" : 1,\r\n    \"name\" : \"Angular\",\r\n    \"color\" : \"#dddddd\",\r\n    \"isForTask\" : true,\r\n    \"isForEvent\" : false\r\n}",
+							"raw": "{\r\n    \"projectId\": 1,\r\n    \"title\": \"TOSOIST Backend Development Meeting\",\r\n    \"description\": \"Merge tighub code and discuss some other areas\",\r\n    \"taskType\": \"EVENT\",\r\n    \"taskDate\": \"2025-07-13\",\r\n    \"taskStartTime\": \"13:43\",\r\n    \"estTime\": 30,\r\n    \"reminderBefore\": 0,\r\n    \"isReminderEnabled\": true,\r\n    \"priority\": \"HIGH\",\r\n    \"location\": \"Google Meet\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -2351,24 +2351,24 @@
 							}
 						},
 						"url": {
-							"raw": "{{baseurl}}/categories",
+							"raw": "{{baseurl}}/tasks",
 							"host": [
 								"{{baseurl}}"
 							],
 							"path": [
-								"categories"
+								"tasks"
 							]
 						}
 					},
 					"response": [
 						{
-							"name": "Success",
+							"name": "Create Task",
 							"originalRequest": {
 								"method": "POST",
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"referenceId\" : 1,\r\n    \"name\" : \"Angular\",\r\n    \"color\" : \"#dddddd\",\r\n    \"isForTask\" : true,\r\n    \"isForEvent\" : false\r\n}",
+									"raw": "{\r\n    \"projectId\": 1,\r\n    \"title\": \"Finish project report\",\r\n    \"description\": \"Prepare final version of the project report\",\r\n    \"taskType\": \"EVENT\",\r\n    \"taskDate\": \"2025-07-09\",\r\n    \"taskStartTime\": \"16:10\",\r\n    \"estTime\": 30,\r\n    \"reminderBefore\": 5,\r\n    \"isReminderEnabled\": true,\r\n    \"priority\": \"HIGH\",\r\n    \"location\": \"Conference Room\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -2376,12 +2376,12 @@
 									}
 								},
 								"url": {
-									"raw": "{{baseurl}}/categories",
+									"raw": "{{baseurl}}/tasks",
 									"host": [
 										"{{baseurl}}"
 									],
 									"path": [
-										"categories"
+										"tasks"
 									]
 								}
 							},
@@ -2435,7 +2435,7 @@
 								},
 								{
 									"key": "Date",
-									"value": "Thu, 03 Jul 2025 05:11:03 GMT"
+									"value": "Wed, 09 Jul 2025 09:59:16 GMT"
 								},
 								{
 									"key": "Keep-Alive",
@@ -2447,12 +2447,12 @@
 								}
 							],
 							"cookie": [],
-							"body": "{\n    \"status\": 201,\n    \"message\": \"Resource created successfully\",\n    \"data\": {\n        \"id\": 2,\n        \"referenceId\": 1,\n        \"name\": \"Angular\",\n        \"color\": \"#dddddd\",\n        \"isForTask\": true,\n        \"isForEvent\": false,\n        \"seqn\": 0\n    },\n    \"timestamp\": \"2025-07-03T11:11:03.4300446\"\n}"
+							"body": "{\n    \"status\": 201,\n    \"message\": \"Resource created successfully\",\n    \"data\": {\n        \"id\": 2,\n        \"projectId\": 1,\n        \"sectionId\": null,\n        \"categoryId\": null,\n        \"workflowId\": null,\n        \"title\": \"Finish project report\",\n        \"description\": \"Prepare final version of the project report\",\n        \"taskType\": \"EVENT\",\n        \"taskDate\": \"2025-07-09\",\n        \"taskStartTime\": \"16:10:00\",\n        \"taskEndTime\": null,\n        \"dueDate\": null,\n        \"estTime\": 30,\n        \"reminderBefore\": 0,\n        \"priority\": \"HIGH\",\n        \"location\": \"Conference Room\",\n        \"isReminderSent\": false,\n        \"isCompleted\": false,\n        \"isPartiallyCompleted\": false\n    },\n    \"timestamp\": \"2025-07-09T15:59:16.9296845\"\n}"
 						}
 					]
 				},
 				{
-					"name": "Update Category",
+					"name": "Update Task",
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -2468,7 +2468,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"id\" : 2,\r\n    \"name\" : \"Angular\",\r\n    \"color\" : \"#dddddd\",\r\n    \"isForTask\" : true,\r\n    \"isForEvent\" : true\r\n}",
+							"raw": "{\r\n    \"id\" : 24,\r\n    \"projectId\": 1,\r\n    \"title\": \"Current 1\",\r\n    \"description\": \"Prepare final version of the project report\",\r\n    \"taskType\": \"EVENT\",\r\n    \"taskDate\": \"2025-07-10\",\r\n    \"taskStartTime\": \"16:42\",\r\n    \"estTime\": 30,\r\n    \"reminderBefore\": 0,\r\n    \"isReminderEnabled\": true,\r\n    \"priority\": \"HIGH\",\r\n    \"location\": \"Conference Room\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -2476,12 +2476,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{baseurl}}/categories",
+							"raw": "{{baseurl}}/tasks",
 							"host": [
 								"{{baseurl}}"
 							],
 							"path": [
-								"categories"
+								"tasks"
 							]
 						}
 					},
@@ -2604,144 +2604,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{baseurl}}/categories/all/workspace",
+							"raw": "{{baseurl}}/tasks/all/1",
 							"host": [
 								"{{baseurl}}"
 							],
 							"path": [
-								"categories",
+								"tasks",
 								"all",
-								"workspace"
-							]
-						}
-					},
-					"response": [
-						{
-							"name": "Success",
-							"originalRequest": {
-								"method": "POST",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\r\n    \"referenceId\" : 1,\r\n    \"name\" : \"Angular\",\r\n    \"color\" : \"#dddddd\",\r\n    \"isForTask\" : true,\r\n    \"isForEvent\" : false\r\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "{{baseurl}}/categories",
-									"host": [
-										"{{baseurl}}"
-									],
-									"path": [
-										"categories"
-									]
-								}
-							},
-							"status": "Created",
-							"code": 201,
-							"_postman_previewlanguage": "json",
-							"header": [
-								{
-									"key": "Vary",
-									"value": "Origin"
-								},
-								{
-									"key": "Vary",
-									"value": "Access-Control-Request-Method"
-								},
-								{
-									"key": "Vary",
-									"value": "Access-Control-Request-Headers"
-								},
-								{
-									"key": "X-Content-Type-Options",
-									"value": "nosniff"
-								},
-								{
-									"key": "X-XSS-Protection",
-									"value": "0"
-								},
-								{
-									"key": "Cache-Control",
-									"value": "no-cache, no-store, max-age=0, must-revalidate"
-								},
-								{
-									"key": "Pragma",
-									"value": "no-cache"
-								},
-								{
-									"key": "Expires",
-									"value": "0"
-								},
-								{
-									"key": "X-Frame-Options",
-									"value": "DENY"
-								},
-								{
-									"key": "Content-Type",
-									"value": "application/json"
-								},
-								{
-									"key": "Transfer-Encoding",
-									"value": "chunked"
-								},
-								{
-									"key": "Date",
-									"value": "Thu, 03 Jul 2025 05:11:03 GMT"
-								},
-								{
-									"key": "Keep-Alive",
-									"value": "timeout=60"
-								},
-								{
-									"key": "Connection",
-									"value": "keep-alive"
-								}
-							],
-							"cookie": [],
-							"body": "{\n    \"status\": 201,\n    \"message\": \"Resource created successfully\",\n    \"data\": {\n        \"id\": 2,\n        \"referenceId\": 1,\n        \"name\": \"Angular\",\n        \"color\": \"#dddddd\",\n        \"isForTask\": true,\n        \"isForEvent\": false,\n        \"seqn\": 0\n    },\n    \"timestamp\": \"2025-07-03T11:11:03.4300446\"\n}"
-						}
-					]
-				},
-				{
-					"name": "Get all project categories",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{accessToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{baseurl}}/categories/all/project/1",
-							"host": [
-								"{{baseurl}}"
-							],
-							"path": [
-								"categories",
-								"all",
-								"project",
 								"1"
 							]
 						}
@@ -2838,7 +2707,137 @@
 					]
 				},
 				{
-					"name": "Get all project categories Copy",
+					"name": "Find task",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/tasks/find/20",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"tasks",
+								"find",
+								"20"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"referenceId\" : 1,\r\n    \"name\" : \"Angular\",\r\n    \"color\" : \"#dddddd\",\r\n    \"isForTask\" : true,\r\n    \"isForEvent\" : false\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseurl}}/categories",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"categories"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "0"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "Expires",
+									"value": "0"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "DENY"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 03 Jul 2025 05:11:03 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": 201,\n    \"message\": \"Resource created successfully\",\n    \"data\": {\n        \"id\": 2,\n        \"referenceId\": 1,\n        \"name\": \"Angular\",\n        \"color\": \"#dddddd\",\n        \"isForTask\": true,\n        \"isForEvent\": false,\n        \"seqn\": 0\n    },\n    \"timestamp\": \"2025-07-03T11:11:03.4300446\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Delete Task",
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -2862,13 +2861,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{baseurl}}/categories/2",
+							"raw": "{{baseurl}}/tasks/20",
 							"host": [
 								"{{baseurl}}"
 							],
 							"path": [
-								"categories",
-								"2"
+								"tasks",
+								"20"
 							]
 						}
 					},
