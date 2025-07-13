@@ -26,9 +26,6 @@ import org.springframework.stereotype.Service;
 
 import com.zayaanit.exception.CustomException;
 
-import jakarta.activation.DataHandler;
-import jakarta.activation.DataSource;
-import jakarta.activation.FileDataSource;
 import jakarta.mail.Authenticator;
 import jakarta.mail.BodyPart;
 import jakarta.mail.Message;

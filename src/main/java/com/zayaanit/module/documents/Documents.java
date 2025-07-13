@@ -1,8 +1,12 @@
-package com.zayaanit.module.tags;
+package com.zayaanit.module.documents;
 
 import com.zayaanit.model.AbstractModel;
 
 import jakarta.persistence.Column;
+/**
+ * Zubayer Ahamed
+ * @since Jul 3, 2025
+ */
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -19,9 +23,9 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "tags")
+@Table(name = "documents")
 @EqualsAndHashCode(callSuper = true)
-public class Tag extends AbstractModel<Long> {
+public class Documents extends AbstractModel<Long> {
 
 	private static final long serialVersionUID = 2572842083641054917L;
 
@@ -30,10 +34,17 @@ public class Tag extends AbstractModel<Long> {
 	@Column(name = "id")
 	private Long id;
 
-	@Column(name = "name", length = 25)
-	private String name;
+	@Column(name = "reference_id", nullable = false)
+	private Long referenceId;
 
-	@Column(name = "workspace_id")
-	private Long workspaceId;
+	@Column(name = "doc_name", nullable = false, length = 100)
+	private String docName;
 
+	@Column(name = "old_name", nullable = false, length = 100)
+	private String oldName;
+
+	@Column(name = "doc_ext", length = 10)
+	private String docExt;
+
+	private boolean xtemp;
 }

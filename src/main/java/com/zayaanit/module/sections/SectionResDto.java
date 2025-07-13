@@ -13,13 +13,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class SectionResDto {
 
-    private Long id;
-    private Long projectId;
-    private String name;
-    private Long workflowId;
-    private Integer seqn;
+	private Long id;
+	private Long projectId;
+	private String name;
+	private Long workflowId;
+	private Integer seqn;
 
-    public SectionResDto(Section section) {
-        BeanUtils.copyProperties(section, this);
-    }
+	public SectionResDto(Section section) {
+		BeanUtils.copyProperties(section, this);
+	}
 }

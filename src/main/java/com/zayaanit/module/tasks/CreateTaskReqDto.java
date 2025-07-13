@@ -2,10 +2,12 @@ package com.zayaanit.module.tasks;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.zayaanit.enums.PriorityType;
 import com.zayaanit.enums.TaskType;
+import com.zayaanit.module.tasks.subtasks.SubTask;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -50,24 +52,50 @@ public class CreateTaskReqDto {
 	private String location;
 	private Boolean isReminderEnabled;
 
+	private List<Long> tags;
+	private List<Long> perticipants;
+	private List<SubTaskReqDto> subTasks;
+	private List<Long> files;
+
 	public Task getBean() {
 		return Task.builder()
+				.taskType(taskType)
+				.title(title)
+				.description(description)
 				.projectId(projectId)
 				.sectionId(sectionId)
 				.categoryId(categoryId)
 				.workflowId(workflowId)
-				.title(title)
-				.description(description)
-				.taskType(taskType)
 				.taskDate(taskDate)
-				.taskStartTime(taskStartTime)
-				.taskEndTime(taskEndTime)
-				.dueDate(dueDate)
+				.taskStartTime(taskStartTime == null ? LocalTime.MIDNIGHT : taskStartTime)
 				.estTime(estTime)
+				.dueDate(dueDate)
+				.taskEndTime(taskEndTime == null ? LocalTime.of(23, 59) : taskEndTime)
+				.priority(priority)
+				
+				
 				.isReminderEnabled(taskType.equals(TaskType.EVENT) ? isReminderEnabled : false)
 				.reminderBefore(taskType.equals(TaskType.EVENT) && Boolean.TRUE.equals(isReminderEnabled) ? (reminderBefore == null ? 0 : reminderBefore) : 0)
-				.priority(priority)
+				
 				.location(location)
+				.build();
+	}
+}
+
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+class SubTaskReqDto{
+	private Long taskId;
+	private Long userId;
+	private String title;
+
+	public SubTask getBean() {
+		return SubTask.builder()
+				.userId(userId)
+				.taskId(taskId)
+				.title(title)
 				.build();
 	}
 }

@@ -11,16 +11,13 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-
 public class CreateTagReqDto {
 
-    @NotBlank(message = "Tag name required.")
-    @Size(min = 1, max = 25, message = "Tag name must be 1 to 25 characters long")
-    private String name;
+	@NotBlank(message = "Tag name required.")
+	@Size(min = 1, max = 25, message = "Tag name must be 1 to 25 characters long")
+	private String name;
 
-    public Tag getBean() {
-        return Tag.builder()
-                .name(name)
-                .build();
-    }
+	public Tag getBean() {
+		return Tag.builder().name(name).build();
+	}
 }

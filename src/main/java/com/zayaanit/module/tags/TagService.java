@@ -23,76 +23,57 @@ import jakarta.transaction.Transactional;
 @Service
 public class TagService extends BaseService {
 
-    @Autowired
-    private TagRepo tagRepo;
+	@Autowired private TagRepo tagRepo;
 
-    @Transactional
-    public TagResDto createTag(CreateTagReqDto reqDto) throws CustomException {
+	@Transactional
+	public TagResDto createTag(CreateTagReqDto reqDto) throws CustomException {
+		Tag tag = reqDto.getBean();
+		tag.setWorkspaceId(loggedinUser().getWorkspace().getId());
+		tag = tagRepo.save(tag);
 
-        Tag tag = reqDto.getBean();
-        tag.setWorkspaceId(loggedinUser().getWorkspace().getId());
-        tag = tagRepo.save(tag);
+		return new TagResDto(tag);
+	}
 
-        return new TagResDto(tag);
-    }
+	public List<TagResDto> getAllTags() {
+		List<Tag> tag = tagRepo.findAllByWorkspaceId(loggedinUser().getWorkspace().getId());
+		if (tag.isEmpty()) return Collections.emptyList();
 
-    public List<TagResDto> getAllTags() {
-        List<Tag> tag = tagRepo.findAllByWorkspaceId(loggedinUser().getWorkspace().getId());
+		List<TagResDto> responseData = new ArrayList<>();
+		tag.stream().forEach(p -> {
+			responseData.add(new TagResDto(p));
+		});
 
-        if (tag.isEmpty()) {
-            return Collections.emptyList();
-        }
+		return responseData;
+	}
 
-        List<TagResDto> responseData = new ArrayList<>();
-        tag.stream().forEach(p -> {
-            responseData.add(new TagResDto(p));
-        });
+	public TagResDto findById(Long id) throws CustomException {
 
-        return responseData;
-    }
+		Optional<Tag> tagOp = tagRepo.findByIdAndWorkspaceId(id, loggedinUser().getWorkspace().getId());
+		if (!tagOp.isPresent()) throw new CustomException("Tag not exist", HttpStatus.NOT_FOUND);
 
-    public TagResDto findById(Long id) throws CustomException {
+		return new TagResDto(tagOp.get());
+	}
 
-        Optional<Tag> tagOp = tagRepo.findByIdAndWorkspaceId(id, loggedinUser().getWorkspace().getId());
-        if (!tagOp.isPresent()) {
-            throw new CustomException("Tag not exist", HttpStatus.NOT_FOUND);
-        }
+	@Transactional
+	public UpdateTagResDto updateTag(UpdateTagReqDto reqDto) throws CustomException {
+		Optional<Tag> tagOp = tagRepo.findByIdAndWorkspaceId(reqDto.getId(), loggedinUser().getWorkspace().getId());
+		if (!tagOp.isPresent()) throw new CustomException("Project not exist", HttpStatus.NOT_FOUND);
 
-        return new TagResDto(tagOp.get());
-    }
+		Tag existobj = tagOp.get();
+		BeanUtils.copyProperties(reqDto, existobj);
 
-    @Transactional
-    public UpdateTagResDto updateTag(UpdateTagReqDto reqDto) throws CustomException {
-        if (reqDto.getId() == null) {
-            throw new CustomException("Project id required", HttpStatus.BAD_REQUEST);
-        }
+		existobj = tagRepo.save(existobj);
 
-        Optional<Tag> tagOp = tagRepo.findByIdAndWorkspaceId(reqDto.getId(), loggedinUser().getWorkspace().getId());
-        if (!tagOp.isPresent()) {
-            throw new CustomException("Project not exist", HttpStatus.NOT_FOUND);
-        }
+		return new UpdateTagResDto(existobj);
+	}
 
-        Tag existobj = tagOp.get();
-        BeanUtils.copyProperties(reqDto, existobj);
+	@Transactional
+	public void deleteById(Long id) throws CustomException {
 
-        existobj = tagRepo.save(existobj);
+		Optional<Tag> tagOp = tagRepo.findByIdAndWorkspaceId(id, loggedinUser().getWorkspace().getId());
+		if (!tagOp.isPresent()) throw new CustomException("Tag not exist", HttpStatus.NOT_FOUND);
 
-        return UpdateTagResDto.builder()
-                .id(existobj.getId())
-                .name(existobj.getName())
-                .workspaceId(existobj.getWorkspaceId())
-                .build();
-    }
-
-    @Transactional
-    public void deleteById(Long id) throws CustomException {
-
-        Optional<Tag> tagOp = tagRepo.findByIdAndWorkspaceId(id, loggedinUser().getWorkspace().getId());
-        if (!tagOp.isPresent()) {
-            throw new CustomException("Tag not exist", HttpStatus.NOT_FOUND);
-        }
-
-        Tag tag = tagOp.get();
-        tagRepo.delete(tag);
-    }
+		Tag tag = tagOp.get();
+		tagRepo.delete(tag);
+	}
 }
