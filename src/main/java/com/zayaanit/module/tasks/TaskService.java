@@ -58,6 +58,8 @@ public class TaskService extends BaseService {
 		task.setIsReminderSent(false);
 		Task finaltask = taskRepo.save(task);
 
+		// TODO: add task assignee
+
 		// After creating task, if it is event type, then schedule it for reminder
 		setTaskForReminder(finaltask);
 
