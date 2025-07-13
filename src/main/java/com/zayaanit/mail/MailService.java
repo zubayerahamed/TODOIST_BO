@@ -9,6 +9,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -63,12 +64,16 @@ public class MailService {
 		props.setProperty("mail.smtp.auth", env.getProperty("mail.smtp.auth"));
 		props.setProperty("mail.smtp.starttls.enable", env.getProperty("mail.smtp.starttls.enable"));
 		props.setProperty("mail.smtp.ssl.protocols", "TLSv1.2");
+		
+//		String encoded = Base64.getEncoder().encodeToString("oakvpmvxlbwivsyg".getBytes());
+//		System.out.println(encoded);
 
+		byte[] decodedBytes = Base64.getDecoder().decode(env.getProperty("mail.passwd"));
 		// Login accout 
 		Session session = Session.getInstance(props, new Authenticator() {
 			@Override
 			protected PasswordAuthentication getPasswordAuthentication() {
-				return new PasswordAuthentication(env.getProperty("mail.user"), env.getProperty("mail.passwd"));
+				return new PasswordAuthentication(env.getProperty("mail.user"), new String(decodedBytes));
 			}
 		});
 

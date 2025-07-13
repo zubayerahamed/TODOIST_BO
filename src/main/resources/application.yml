@@ -24,7 +24,7 @@ spring:
 
 mail: 
   user: zubayerahamed.freelancer@gmail.com
-  passwd: oakvpmvxlbwivsyg
+  passwd: b2FrdnBtdnhsYndpdnN5Zw==
   debug: true
   smtp: 
     host: smtp.gmail.com

@@ -71,12 +71,12 @@ public class TaskService extends BaseService {
 			System.out.println("Reminder for task : " + task.getTitle());
 
 			Map<String, Object> contextData = new HashMap<>();
-			contextData.put("userName", "Monaum");
+			contextData.put("userName", "Zubayer Ahamed");
 			contextData.put("task", task);
 
 			MailReqDto reqDto = MailReqDto.builder()
 					.from("zubayerahamed.freelancer@gmail.com")
-					.to("monaum.202@gmail.com")
+					.to("zubayerahamed.freelancer@gmail.com")
 					.subject("Test Email")
 					.mailType(MailType.EVENT_REMINDER)
 					.body("Nothing to say")
