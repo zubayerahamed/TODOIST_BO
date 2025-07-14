@@ -22,6 +22,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@StartBeforeEndTime
 public class CreateEventReqDto {
 
 	@NotBlank(message = "Title required")

@@ -28,6 +28,7 @@ import com.zayaanit.module.documents.DocumentRepo;
 import com.zayaanit.module.documents.DocumentService;
 import com.zayaanit.module.events.perticipants.EventPerticipants;
 import com.zayaanit.module.events.perticipants.EventPerticipantsRepo;
+import com.zayaanit.module.notification.AsyncNotificationService;
 import com.zayaanit.module.reminder.ReminderService;
 import com.zayaanit.module.users.User;
 import com.zayaanit.module.users.UserRepo;
@@ -54,6 +55,7 @@ public class EventService extends BaseService {
 	@Autowired private EventPerticipantsRepo epRepo;
 	@Autowired private UserRepo userRepo;
 	@Autowired private UserPreferenceRepo userPrefenceRepo;
+	@Autowired private AsyncNotificationService asyncNotificationService;
 
 	public List<EventResDto> getAllByProjectId(Long projectId) {
 		List<Event> events = eventRepo.findAllByProjectId(projectId);
@@ -113,54 +115,13 @@ public class EventService extends BaseService {
 		scheduleEventReminder(finalEvent, false);
 
 		// Send Email Notification
-		sendEmailNotification(finalEvent, eventCreatorId, MailType.EVENT_CREATED);
-		sendEmailNotification(finalEvent, allPerticipantsId, MailType.EVENT_ASSIGNED);
+		asyncNotificationService.sendEmailNotification(finalEvent, eventCreatorId, MailType.EVENT_CREATED);
+		asyncNotificationService.sendEmailNotification(finalEvent, allPerticipantsId, MailType.EVENT_ASSIGNED);
 
 		// TODO: send push notification
 		// TODO: send sms notification
 
 		return new EventResDto(finalEvent);
-	}
-
-	private void sendEmailNotification(Event event, List<Long> participentsId, MailType mailType) {
-		if(participentsId == null || participentsId.isEmpty()) return;
-
-		List<User> users = userRepo.findAllByIdIn(participentsId);
-
-		// Check all the perticipants, who is eligible for email push notification
-		List<User> eligiblePerticipants = new ArrayList<>();
-		users.stream().forEach(p -> {
-			Optional<UserPreference> upOp = userPrefenceRepo.findById(p.getId());
-			if(upOp.isPresent() && Boolean.TRUE.equals(upOp.get().getEnabledEmailNoti())) {
-				eligiblePerticipants.add(p);
-			}
-		});
-
-		if(eligiblePerticipants.isEmpty()) return;
-
-		// Now send email to all eligible perticipants
-		for(User perticipant : eligiblePerticipants) {
-			Map<String, Object> contextData = new HashMap<>();
-			contextData.put("userName", perticipant.getFirstName() + " " + perticipant.getLastName());
-			contextData.put("event", event);
-
-			MailReqDto reqDto = MailReqDto.builder()
-					.from("tasksnest@gmail.com")
-					.to(perticipant.getEmail())
-					.subject(mailType.getSubject())
-					.mailType(mailType)
-					.body("")
-					.contextData(contextData)
-					.build();
-
-			try {
-				mailService.sendMail(reqDto);
-			} catch (ParseErrorException | MethodInvocationException 
-					| ResourceNotFoundException | CustomException
-					| MessagingException | IOException e) {
-				throw new CustomException(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-			}
-		}
 	}
 
 	@Transactional
@@ -238,9 +199,9 @@ public class EventService extends BaseService {
 		scheduleEventReminder(finalEvent, true);
 
 		// Send Email Notification
-		sendEmailNotification(finalEvent, existingPerticipantsIdForMail.stream().filter(e -> !removedPerticipantsIdForMail.contains(e)).collect(Collectors.toList()), MailType.EVENT_UPDATED);
-		sendEmailNotification(finalEvent, removedPerticipantsIdForMail, MailType.EVENT_UNASSIGNED);
-		sendEmailNotification(finalEvent, newPerticipantsIdForMail, MailType.EVENT_ASSIGNED);
+		asyncNotificationService.sendEmailNotification(finalEvent, existingPerticipantsIdForMail.stream().filter(e -> !removedPerticipantsIdForMail.contains(e)).collect(Collectors.toList()), MailType.EVENT_UPDATED);
+		asyncNotificationService.sendEmailNotification(finalEvent, removedPerticipantsIdForMail, MailType.EVENT_UNASSIGNED);
+		asyncNotificationService.sendEmailNotification(finalEvent, newPerticipantsIdForMail, MailType.EVENT_ASSIGNED);
 
 		// TODO: send push notification
 		// TODO: send sms notification
@@ -268,7 +229,7 @@ public class EventService extends BaseService {
 		eventRepo.delete(eventOp.get());
 
 		// Send Email Notification
-		sendEmailNotification(copy, allPerticipants, MailType.EVENT_DELETED);
+		asyncNotificationService.sendEmailNotification(copy, allPerticipants, MailType.EVENT_DELETED);
 
 		// TODO: send push notification
 		// TODO: send sms notification
