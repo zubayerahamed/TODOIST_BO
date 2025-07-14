@@ -18,8 +18,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CreateDocumentReqDto {
 
-	@NotNull(message = "Reference required")
-	private Long referenceId;
 	private String title;
 	private String description;
 	@NotNull(message = "File required")

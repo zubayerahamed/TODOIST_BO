@@ -1,10 +1,9 @@
-package com.zayaanit.module.tasks;
+package com.zayaanit.module.events;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 import org.springframework.beans.BeanUtils;
-
-import com.zayaanit.enums.PriorityType;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,27 +18,28 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class TaskResDto {
+public class EventResDto {
 
 	private Long id;
 	private String title;
 	private String description;
 	private Long projectId;
-	private Long sectionId;
 	private Long categoryId;
-	private Long workflowId;
-	private LocalDate taskDate;
-	private LocalDate dueDate;
-	private Integer estTime;
-	private PriorityType priority;
+	private LocalDate eventDate;
+	private LocalTime startTime;
+	private LocalTime endTime;
+	private String location;
+	private Boolean isReminderEnabled;
+	private Integer reminderBefore; // How many minutes before to send reminder
+	private Boolean isReminderSent;
 	private Boolean isCompleted;
 
-	public TaskResDto(Task obj) {
+	public EventResDto(Event obj) {
 		BeanUtils.copyProperties(obj, this);
 	}
 
-	public static TaskResDto from(Task obj) {
-		TaskResDto dto = new TaskResDto();
+	public static EventResDto from(Event obj) {
+		EventResDto dto = new EventResDto();
 		BeanUtils.copyProperties(obj, dto);
 		return dto;
 	}

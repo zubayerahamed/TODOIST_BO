@@ -1,30 +1,29 @@
 package com.zayaanit.module.tasks;
 
-import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.apache.velocity.exception.MethodInvocationException;
-import org.apache.velocity.exception.ParseErrorException;
-import org.apache.velocity.exception.ResourceNotFoundException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import com.zayaanit.enums.PerticipantAccess;
+import com.zayaanit.enums.PerticipantType;
 import com.zayaanit.exception.CustomException;
-import com.zayaanit.mail.MailReqDto;
-import com.zayaanit.mail.MailService;
-import com.zayaanit.mail.MailType;
 import com.zayaanit.module.BaseService;
-import com.zayaanit.module.reminder.ReminderService;
-import com.zayaanit.module.users.UserRepo;
-import com.zayaanit.module.users.UserService;
+import com.zayaanit.module.documents.Document;
+import com.zayaanit.module.documents.DocumentRepo;
+import com.zayaanit.module.documents.DocumentService;
+import com.zayaanit.module.tasks.perticipants.TaskPerticipants;
+import com.zayaanit.module.tasks.perticipants.TaskPerticipantsRepo;
+import com.zayaanit.module.tasks.subtasks.SubTask;
+import com.zayaanit.module.tasks.subtasks.SubTaskRepo;
+import com.zayaanit.module.tasks.subtasks.UpdateSubTaskReqDto;
+import com.zayaanit.module.tasks.tags.TaskTag;
+import com.zayaanit.module.tasks.tags.TaskTagRepo;
 
-import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
 
 /**
@@ -35,9 +34,11 @@ import jakarta.transaction.Transactional;
 public class TaskService extends BaseService {
 
 	@Autowired private TaskRepo taskRepo;
-	@Autowired private ReminderService reminderService;
-	@Autowired private MailService mailService;
-	@Autowired private UserRepo userRepo;
+	@Autowired private TaskPerticipantsRepo tpRepo;
+	@Autowired private TaskTagRepo taskTagRepo;
+	@Autowired private DocumentRepo documentRepo;
+	@Autowired private SubTaskRepo subTaskRepo;
+	@Autowired private DocumentService documentService;
 
 	public List<TaskResDto> getAllByProjectId(Long projectId) {
 		List<Task> taskList = taskRepo.findAllByProjectId(projectId);
@@ -54,45 +55,61 @@ public class TaskService extends BaseService {
 	public TaskResDto create(CreateTaskReqDto reqDto) throws CustomException {
 		Task task = reqDto.getBean();
 		task.setIsCompleted(false);
-		task.setIsPartiallyCompleted(false);
-		task.setIsReminderSent(false);
 		Task finaltask = taskRepo.save(task);
 
-		// TODO: add task assignee
+		// Add tags
+		reqDto.getTags().stream().forEach(t -> {
+			TaskTag tt = TaskTag.builder()
+					.taskId(finaltask.getId())
+					.tagId(t)
+					.build();
 
-		// After creating task, if it is event type, then schedule it for reminder
-		setTaskForReminder(finaltask);
+			taskTagRepo.save(tt);
+		});
+
+		// Update attached documents reference with task id
+		reqDto.getDocuments().stream().forEach(d -> {
+			Optional<Document> documentOp = documentRepo.findById(d);
+			if(documentOp.isPresent()) {
+				Document document = documentOp.get();
+				document.setReferenceId(finaltask.getId());
+				documentRepo.save(document);
+			}
+		});
+
+		// Add task creator
+		TaskPerticipants tp = TaskPerticipants.builder()
+				.userId(loggedinUser().getUserId())
+				.taskId(finaltask.getId())
+				.perticipantType(PerticipantType.CREATOR)
+				.perticipantAccess(PerticipantAccess.ALL)
+				.build();
+
+		tp = tpRepo.save(tp);
+
+		// Add task collaborators
+		reqDto.getPerticipants().stream().forEach(p -> {
+			TaskPerticipants collaborator = TaskPerticipants.builder()
+					.userId(p)
+					.taskId(finaltask.getId())
+					.perticipantType(PerticipantType.CONTRIBUTOR)
+					.perticipantAccess(PerticipantAccess.READ)
+					.build();
+
+			tpRepo.save(collaborator);
+		});
+
+		// Create & Add Sub Tasks
+		reqDto.getSubTasks().stream().forEach(s -> {
+			SubTask subTask = s.getBean();
+			subTask.setTaskId(finaltask.getId());
+			subTaskRepo.save(subTask);
+		});
+
+		// TODO: Send Email to all participants that a task is created and assigned them
+		
 
 		return new TaskResDto(finaltask);
-	}
-
-	private void setTaskForReminder(final Task task) {
-		reminderService.scheduleReminder(task, () -> {
-			System.out.println("Reminder for task : " + task.getTitle());
-
-			Map<String, Object> contextData = new HashMap<>();
-			contextData.put("userName", "Zubayer Ahamed");
-			contextData.put("task", task);
-
-			MailReqDto reqDto = MailReqDto.builder()
-					.from("zubayerahamed.freelancer@gmail.com")
-					.to("zubayerahamed.freelancer@gmail.com")
-					.subject("Test Email")
-					.mailType(MailType.EVENT_REMINDER)
-					.body("Nothing to say")
-					.contextData(contextData)
-					.build();
-			try {
-				mailService.sendMail(reqDto);
-			} catch (ParseErrorException | MethodInvocationException | ResourceNotFoundException | CustomException
-					| MessagingException | IOException e) {
-				throw new CustomException(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-			}
-
-			// Updat the task reminder status to be sent already
-			task.setIsReminderSent(true);
-			taskRepo.save(task);
-		});
 	}
 
 	@Transactional
@@ -104,8 +121,94 @@ public class TaskService extends BaseService {
 		BeanUtils.copyProperties(reqDto, existObj);
 		Task finaltask = taskRepo.save(existObj);
 
-		// After creating task, if it is event type, then schedule it for reminder
-		setTaskForReminder(finaltask);
+		// Update documents reference
+		// Remove existing documents which are not available in this request
+		// Add new documents which is newly added
+		List<Document> existingDocuments = documentRepo.findAllByReferenceId(finaltask.getId());
+		List<Document> deletableDocuments = existingDocuments.stream().filter(d -> !reqDto.getDocuments().contains(d.getId())).collect(Collectors.toList());
+
+		List<Long> existingDocIds = existingDocuments.stream().map(Document::getId).collect(Collectors.toList());
+		List<Long> newDocumentIds = reqDto.getDocuments().stream()
+				.filter(id -> !existingDocIds.contains(id))
+				.collect(Collectors.toList());
+
+		deletableDocuments.stream().forEach(d -> {
+			documentService.delete(d.getId());
+		});
+
+		newDocumentIds.stream().forEach(nd -> {
+			Optional<Document> documentOp = documentRepo.findById(nd);
+			if(documentOp.isPresent()) {
+				Document document = documentOp.get();
+				document.setReferenceId(finaltask.getId());
+				documentRepo.save(document);
+			}
+		});
+
+		// Update tags
+		taskTagRepo.deleteAllByTaskId(finaltask.getId());
+		reqDto.getTags().stream().forEach(t -> {
+			TaskTag tt = TaskTag.builder()
+					.taskId(finaltask.getId())
+					.tagId(t)
+					.build();
+
+			taskTagRepo.save(tt);
+		});
+
+		// Update perticipants
+		List<TaskPerticipants> existingPerticipants = tpRepo.findAllByTaskId(finaltask.getId());
+		List<TaskPerticipants> deletablePerticipants = existingPerticipants.stream().filter(d -> !reqDto.getPerticipants().contains(d.getUserId())).collect(Collectors.toList());
+
+		List<Long> existingPerticipantsIds = existingPerticipants.stream().map(TaskPerticipants::getUserId).collect(Collectors.toList());
+		List<Long> newPerticipantsIds = reqDto.getPerticipants().stream()
+				.filter(id -> !existingPerticipantsIds.contains(id))
+				.collect(Collectors.toList());
+
+		deletablePerticipants.stream().forEach(d -> {
+			tpRepo.delete(d);
+		});
+
+		newPerticipantsIds.stream().forEach(n -> {
+			TaskPerticipants eventPerticipant = TaskPerticipants.builder()
+					.userId(n)
+					.taskId(finaltask.getId())
+					.perticipantType(PerticipantType.CONTRIBUTOR)
+					.perticipantAccess(PerticipantAccess.READ)
+					.build();
+			tpRepo.save(eventPerticipant);
+		});
+
+		// Update sub tasks
+		List<SubTask> existingSubTasks = subTaskRepo.findAllByTaskId(finaltask.getId());
+		List<Long> requestedSubTaskIds = reqDto.getSubTasks().stream().map(UpdateSubTaskReqDto::getId).collect(Collectors.toList());
+		List<SubTask> deletableSubTasks = existingSubTasks.stream().filter(f -> !requestedSubTaskIds.contains(f.getId())).collect(Collectors.toList());
+		deletableSubTasks.stream().forEach(d -> {
+			subTaskRepo.delete(d);
+		});
+
+		reqDto.getSubTasks().stream().forEach(s -> {
+			if(s.getId() == -1) {  // Newly added subtask
+				SubTask subTask = SubTask.builder()
+						.taskId(finaltask.getId())
+						.userId(s.getUserId())
+						.title(s.getTitle())
+						.build();
+				
+				subTaskRepo.save(subTask);
+			} else {  // existing subtask need to be updated
+				Optional<SubTask> subTaskOp = subTaskRepo.findById(s.getId());
+				if(subTaskOp.isPresent()) {
+					SubTask existSubTask = subTaskOp.get();
+					BeanUtils.copyProperties(s, existingSubTasks);
+					subTaskRepo.save(existSubTask);
+				}
+			}
+		});
+
+		// Send email notification about task update 
+		
+		// Send email to those percipants are removed from task
 
 		return new TaskResDto(finaltask);
 	}
@@ -115,14 +218,19 @@ public class TaskService extends BaseService {
 		Optional<Task> taskOp = taskRepo.findById(id);
 		if(!taskOp.isPresent()) throw new CustomException("Task not found", HttpStatus.NOT_FOUND);
 
-		reminderService.cancelScheduledReminder(taskOp.get().getId());
-		taskRepo.delete(taskOp.get());
-	}
+		// Remove all tags
+		taskTagRepo.deleteAllByTaskId(id);
 
-	public void rescheduleAllReminders() {
-		List<Task> futureTasks = taskRepo.findAllPendingReminders();
-		futureTasks.forEach(t -> {
-			setTaskForReminder(t);
-		});
+		// Remove all documents
+		documentService.deleteAllByReferenceId(id);
+
+		// Delete all perticipants relations
+		tpRepo.deleteAllByTaskId(id);
+
+		// Delete all subtasks
+		subTaskRepo.deleteAllByTaskId(id);
+
+		// Delete task
+		taskRepo.delete(taskOp.get());
 	}
 }

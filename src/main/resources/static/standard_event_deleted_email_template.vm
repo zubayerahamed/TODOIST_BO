@@ -2,9 +2,9 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Event Reminder</title>
+  <title>Event Cancelled</title>
   <style>
-    body {
+   body {
   font-family: Arial, sans-serif;
   background-color: #f4f4f4;
   padding: 0;
@@ -56,21 +56,17 @@ a.button {
 </head>
 <body>
   <div class="email-container">
-    <div class="header" style="background-color: #00796b;">
-      <h2 style="color: #fff">Event Reminder</h2>
+    <div class="header" style="background-color: #d32f2f;">
+      <h2 style="color: #fff">Event Cancelled</h2>
     </div>
     <div class="content">
       <p>Hi <strong>$userName</strong>,</p>
-      <p>This is a friendly reminder for your upcoming event:</p>
+      <p>The following event has been cancelled or removed:</p>
       <div class="task-title">$event.title</div>
       <div class="task-details">
-        <strong>Description:</strong> $event.description<br>
-        <strong>Date:</strong> $event.eventDate<br>
-        <strong>Start Time:</strong> $event.startTime<br>
-        <strong>End Time:</strong> $event.endTime<br>
-        <strong>Location:</strong> $event.location
+        <strong>Previously Scheduled On:</strong> $event.eventDate<br>
+        <strong>Time:</strong> $event.startTime - $event.endTime
       </div>
-      <a href="#" class="button">View Event</a>
     </div>
     <div class="footer">
   &copy; 2025 Zayaan IT | All rights reserved.

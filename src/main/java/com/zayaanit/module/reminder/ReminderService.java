@@ -10,7 +10,7 @@ import java.util.concurrent.ScheduledFuture;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.stereotype.Service;
 
-import com.zayaanit.module.tasks.Task;
+import com.zayaanit.module.events.Event;
 
 /**
  * Zubayer Ahamed
@@ -21,42 +21,36 @@ import com.zayaanit.module.tasks.Task;
 public class ReminderService {
 
 	private final TaskScheduler taskScheduler;
-	private final Map<Long, ScheduledFuture<?>> scheduledTasks = new ConcurrentHashMap<>();
+	private final Map<Long, ScheduledFuture<?>> scheduledEvents = new ConcurrentHashMap<>();
 
 	public ReminderService(TaskScheduler taskScheduler) {
 		this.taskScheduler = taskScheduler;
 	}
 
-	public void scheduleReminder(Task task, Runnable reminderCallbackMethod) {
-		LocalDateTime dateTime = LocalDateTime.of(task.getTaskDate(), task.getTaskStartTime()).minusMinutes(task.getReminderBefore());
+	public void scheduleEventReminder(Event event, Runnable reminderCallbackMethod) {
+		LocalDateTime dateTime = LocalDateTime.of(event.getEventDate(), event.getStartTime()).minusMinutes(event.getReminderBefore());
 		Date reminderTime = Date.from(dateTime.atZone(ZoneId.systemDefault()).toInstant());
 
 		// Cancel previous if re-scheduling
-		cancelScheduledReminder(task.getId());
-
-//		if (reminderTime.before(new Date())) {
-//			System.out.println("Reminder time already passed for task: " + task.getTitle());
-//			return;
-//		}
-
-		System.out.println("====> Reminder time : " + reminderTime);
+		cancelScheduledReminder(event.getId());
 
 		ScheduledFuture<?> future = taskScheduler.schedule(() -> {
 			try {
 				reminderCallbackMethod.run();
 			} finally {
-				cancelScheduledReminder(task.getId());
+				cancelScheduledReminder(event.getId());
 			}
 		}, reminderTime.toInstant());
-		scheduledTasks.put(task.getId(), future);
+
+		scheduledEvents.put(event.getId(), future);
 	}
 
 	public void cancelScheduledReminder(Long taskId) {
-		if(scheduledTasks == null || scheduledTasks.get(taskId) == null) return;
-		ScheduledFuture<?> future = scheduledTasks.get(taskId);
+		if(scheduledEvents == null || scheduledEvents.get(taskId) == null) return;
+		ScheduledFuture<?> future = scheduledEvents.get(taskId);
 		if (future != null && !future.isDone()) {
 			future.cancel(true);
-			scheduledTasks.remove(taskId);
+			scheduledEvents.remove(taskId);
 		}
 	}
 

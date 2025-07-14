@@ -151,16 +151,7 @@ public class MailService {
 	}
 
 	private File getTemplateFile(MailType mailType) {
-		File file = null;
-		if(MailType.EVENT_REMINDER.equals(mailType)) {
-			String serverTemplate = env.getProperty("mail.template.server");
-			if(StringUtils.isBlank(serverTemplate)) serverTemplate = "src/main/resources/static/standard_event_reminder_email_template.vm";
-			file = new File(serverTemplate);
-		} else if(MailType.TASK_REMINDER.equals(mailType)) {
-			String serverTemplate = env.getProperty("mail.template.service");
-			if(StringUtils.isBlank(serverTemplate)) serverTemplate = "src/main/resources/static/standard_task_reminder_email_template.vm";
-			file = new File(serverTemplate);
-		} 
+		File file = new File(mailType.getTemplate());
 		return file;
 	}
 

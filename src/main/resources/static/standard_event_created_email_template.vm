@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Event Reminder</title>
+  <title>New Event Created</title>
   <style>
     body {
   font-family: Arial, sans-serif;
@@ -52,16 +52,17 @@ a.button {
   color: #999999;
   background-color: #f9f9f9;
 }
+
   </style>
 </head>
 <body>
   <div class="email-container">
-    <div class="header" style="background-color: #00796b;">
-      <h2 style="color: #fff">Event Reminder</h2>
+    <div class="header" style="background-color: #388e3c;">
+      <h2 style="color: #fff">New Event Created</h2>
     </div>
     <div class="content">
       <p>Hi <strong>$userName</strong>,</p>
-      <p>This is a friendly reminder for your upcoming event:</p>
+      <p>A new event has been created.</p>
       <div class="task-title">$event.title</div>
       <div class="task-details">
         <strong>Description:</strong> $event.description<br>

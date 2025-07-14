@@ -1,8 +1,8 @@
-package com.zayaanit.module.tasks;
+package com.zayaanit.module.events;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 
-import com.zayaanit.enums.PriorityType;
 import com.zayaanit.model.AbstractModel;
 
 import jakarta.persistence.Column;
@@ -11,8 +11,6 @@ import jakarta.persistence.Column;
  * @since Jul 3, 2025
  */
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -29,9 +27,9 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "tasks")
+@Table(name = "events")
 @EqualsAndHashCode(callSuper = true)
-public class Task extends AbstractModel<Long> {
+public class Event extends AbstractModel<Long> {
 
 	private static final long serialVersionUID = 2572842083641054917L;
 
@@ -44,35 +42,35 @@ public class Task extends AbstractModel<Long> {
 	private String title;
 
 	@Lob
-	@Column(name = "description")
+	@Column(name = "description", nullable = true)
 	private String description;
 
 	@Column(name = "project_id", nullable = false)
 	private Long projectId;
 
-	@Column(name = "section_id")
-	private Long sectionId;
-
 	@Column(name = "category_id")
 	private Long categoryId;
 
-	@Column(name = "workflow_id")
-	private Long workflowId;
+	@Column(name = "event_date", nullable = false)
+	private LocalDate eventDate;
 
+	@Column(name = "start_time", nullable = false)
+	private LocalTime startTime;
 
+	@Column(name = "end_time", nullable = false)
+	private LocalTime endTime;
 
-	@Column(name = "task_date", nullable = true)
-	private LocalDate taskDate; // Target user email for notification
+	@Column(name = "location", length = 50)
+	private String location;
 
-	@Column(name = "due_date", nullable = true)
-	private LocalDate dueDate;
+	@Column(name = "is_reminder_eanbled", length = 1, nullable = false, columnDefinition = "BIT DEFAULT 0")
+	private Boolean isReminderEnabled;
 
-	@Column(name = "estTime", nullable = true)
-	private Integer estTime; // In minute
+	@Column(name = "reminder_before", nullable = false)
+	private Integer reminderBefore; // How many minutes before to send reminder
 
-	@Enumerated(EnumType.STRING)
-	@Column(name = "priority", nullable = true)
-	private PriorityType priority;
+	@Column(name = "is_reminder_sent", length = 1, nullable = false, columnDefinition = "BIT DEFAULT 0")
+	private Boolean isReminderSent;
 
 	@Column(name = "is_completed", length = 1, nullable = false, columnDefinition = "BIT DEFAULT 0")
 	private Boolean isCompleted;
