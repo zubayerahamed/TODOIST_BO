@@ -8,7 +8,9 @@ logging:
       SQL: DEBUG
       type: DEBUG
 
-app: 
+app:
+  max-file-size-kb: 2048 
+  documents-location: D:/todoist/documents
   logging-path: D:/todoist/logs
   database-name: todoist
   version: "@project.version@"

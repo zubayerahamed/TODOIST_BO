@@ -25,7 +25,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Table(name = "documents")
 @EqualsAndHashCode(callSuper = true)
-public class Documents extends AbstractModel<Long> {
+public class Document extends AbstractModel<Long> {
 
 	private static final long serialVersionUID = 2572842083641054917L;
 
@@ -36,6 +36,12 @@ public class Documents extends AbstractModel<Long> {
 
 	@Column(name = "reference_id", nullable = false)
 	private Long referenceId;
+
+	@Column(name = "title", length = 100)
+	private String title;
+
+	@Column(name = "description", length = 100)
+	private String description;
 
 	@Column(name = "doc_name", nullable = false, length = 100)
 	private String docName;

@@ -7,9 +7,6 @@ server:
         name: JSESSIONID_TODOIST
   port: 8081
 
-springdoc: 
-  default-produces-media-type: application/json
-
 spring:
   servlet: 
     multipart: 

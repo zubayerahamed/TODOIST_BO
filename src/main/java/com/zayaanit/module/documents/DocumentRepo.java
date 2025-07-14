@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
  * @since Jul 13, 2025
  */
 @Repository
-public interface DocumentsRepo extends JpaRepository<Documents, Long> {
+public interface DocumentRepo extends JpaRepository<Document, Long> {
 
-	List<Documents> findByReferenceId(Long referenceId);
+	List<Document> findAllByReferenceId(Long referenceId);
 }

@@ -87,14 +87,12 @@ public class CreateTaskReqDto {
 @AllArgsConstructor
 @NoArgsConstructor
 class SubTaskReqDto{
-	private Long taskId;
 	private Long userId;
 	private String title;
 
 	public SubTask getBean() {
 		return SubTask.builder()
 				.userId(userId)
-				.taskId(taskId)
 				.title(title)
 				.build();
 	}
