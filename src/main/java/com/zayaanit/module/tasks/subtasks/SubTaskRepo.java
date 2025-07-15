@@ -16,4 +16,6 @@ public interface SubTaskRepo extends JpaRepository<SubTask, Long> {
 	List<SubTask> findAllByTaskId(Long taskId);
 
 	List<SubTask> findAllByUserId(Long userId);
+
+	void deleteAllByTaskId(Long taskId);
 }

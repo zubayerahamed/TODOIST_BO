@@ -1,4 +1,4 @@
-package com.zayaanit.module.tasks;
+package com.zayaanit.module.events;
 
 import java.util.List;
 
@@ -25,39 +25,39 @@ import jakarta.validation.Valid;
  * @since Jul 3, 2025
  */
 @RestApiController
-@RequestMapping("/api/v1/tasks")
-public class TaskController {
+@RequestMapping("/api/v1/events")
+public class EventController {
 
 	@Autowired
-	private TaskService taskService;
+	private EventService eventService;
 
 	@GetMapping("/all/{projectId}")
-	public ResponseEntity<SuccessResponse<List<TaskResDto>>> getAll(@PathVariable Long projectId){
-		List<TaskResDto> resData = taskService.getAllByProjectId(projectId);
+	public ResponseEntity<SuccessResponse<List<EventResDto>>> getAll(@PathVariable Long projectId){
+		List<EventResDto> resData = eventService.getAllByProjectId(projectId);
 		return ResponseBuilder.build(ResponseStatusType.READ_SUCCESS, resData);
 	}
 
 	@GetMapping("/find/{id}")
-	public ResponseEntity<SuccessResponse<TaskResDto>> find(@PathVariable Long id){
-		TaskResDto resData = taskService.findById(id);
+	public ResponseEntity<SuccessResponse<EventResDto>> find(@PathVariable Long id){
+		EventResDto resData = eventService.findById(id);
 		return ResponseBuilder.build(ResponseStatusType.READ_SUCCESS, resData);
 	} 
 
 	@PostMapping
-	public ResponseEntity<SuccessResponse<TaskResDto>> create(@Valid @RequestBody CreateTaskReqDto reqDto){
-		TaskResDto resData = taskService.create(reqDto);
+	public ResponseEntity<SuccessResponse<EventResDto>> create(@Valid @RequestBody CreateEventReqDto reqDto){
+		EventResDto resData = eventService.create(reqDto);
 		return ResponseBuilder.build(ResponseStatusType.CREATE_SUCCESS, resData);
 	}
 
 	@PutMapping
-	public ResponseEntity<SuccessResponse<TaskResDto>> update(@Valid @RequestBody UpdateTaskReqDto reqDto){
-		TaskResDto resData = taskService.update(reqDto);
+	public ResponseEntity<SuccessResponse<EventResDto>> update(@Valid @RequestBody UpdateEventReqDto reqDto){
+		EventResDto resData = eventService.update(reqDto);
 		return ResponseBuilder.build(ResponseStatusType.UPDATE_SUCCESS, resData);
 	}
 
 	@DeleteMapping("/{id}")
-	public ResponseEntity<SuccessResponse<TaskResDto>> delete(@PathVariable Long id){
-		taskService.delete(id);
+	public ResponseEntity<SuccessResponse<EventResDto>> delete(@PathVariable Long id){
+		eventService.delete(id);
 		return ResponseBuilder.build(ResponseStatusType.DELETE_NO_CONTENT, null);
 	} 
 }

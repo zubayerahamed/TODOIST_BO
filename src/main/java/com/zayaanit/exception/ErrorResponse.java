@@ -21,4 +21,5 @@ public class ErrorResponse {
 	private String error;
 	private String message;
 	Map<String, String> fieldErrors;
+	Map<String, String> globalErrors;
 }

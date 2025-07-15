@@ -34,7 +34,7 @@ public class Document extends AbstractModel<Long> {
 	@Column(name = "id")
 	private Long id;
 
-	@Column(name = "reference_id", nullable = false)
+	@Column(name = "reference_id")
 	private Long referenceId;
 
 	@Column(name = "title", length = 100)

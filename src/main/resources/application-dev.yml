@@ -9,6 +9,8 @@ logging:
       type: DEBUG
 
 app:
+  save-email-body: Y
+  save-email-location: D:/todoist/emails
   max-file-size-kb: 2048 
   documents-location: D:/todoist/documents
   logging-path: D:/todoist/logs

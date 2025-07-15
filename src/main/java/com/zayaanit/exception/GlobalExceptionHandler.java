@@ -2,6 +2,7 @@ package com.zayaanit.exception;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.StringJoiner;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,22 +43,33 @@ public class GlobalExceptionHandler {
 
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	public ResponseEntity<ErrorResponse> handleValidationExceptions(MethodArgumentNotValidException ex) {
-		StringBuilder errorMessages = new StringBuilder();
-		Map<String, String> errors = new HashMap<>();
+		StringJoiner errorMessages = new StringJoiner(" | ");
+		Map<String, String> globalErrors = new HashMap<>();
+		Map<String, String> fieldErrors = new HashMap<>();
+
+		// Field-level errors
 		ex.getBindingResult().getFieldErrors().forEach(error -> {
-			errors.put(error.getField(), error.getDefaultMessage());
-			errorMessages.append(error.getDefaultMessage() + "|");
+			fieldErrors.put(error.getField(), error.getDefaultMessage());
+			errorMessages.add(error.getDefaultMessage());
+		});
+
+		// Class-level (global) errors like @StartBeforeEndTime
+		ex.getBindingResult().getGlobalErrors().forEach(error -> {
+			// Use "global" as a key, or error.getObjectName() if needed
+			globalErrors.put(error.getObjectName(), error.getDefaultMessage());
+			errorMessages.add(error.getDefaultMessage());
 		});
 
 		String message = errorMessages.toString();
-		if (message.endsWith("|")) {
-			message = message.substring(0, message.lastIndexOf("|"));
+		if (message.endsWith(" | ")) {
+			message = message.substring(0, message.length() - 3);
 		}
 
 		ErrorResponse error = ErrorResponse.builder()
 				.status(HttpStatus.BAD_REQUEST.value())
 				.error(HttpStatus.BAD_REQUEST.getReasonPhrase())
-				.fieldErrors(errors)
+				.fieldErrors(fieldErrors)
+				.globalErrors(globalErrors)
 				.message(message)
 				.build();
 		

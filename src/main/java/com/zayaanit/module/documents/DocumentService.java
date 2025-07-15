@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.zayaanit.exception.CustomException;
+import com.zayaanit.module.BaseService;
 
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
@@ -33,7 +34,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @Service
-public class DocumentService {
+public class DocumentService extends BaseService {
 	private static final SimpleDateFormat SDF = new SimpleDateFormat("MMyyyy");
 
 	@Autowired private DocumentRepo documentRepo;
@@ -93,7 +94,6 @@ public class DocumentService {
 
 		// Save record to Document
 		Document doc = Document.builder()
-				.referenceId(reqDto.getReferenceId())
 				.title(reqDto.getTitle())
 				.description(reqDto.getDescription())
 				.docName(fileName.toString())
@@ -130,6 +130,31 @@ public class DocumentService {
 
 		// Delete document record
 		documentRepo.delete(doc);
+	}
+
+	@Transactional
+	public void deleteAllByReferenceId(Long referenceId) throws CustomException {
+		List<Document> documents = documentRepo.findAllByReferenceId(referenceId);
+
+		for(Document doc : documents) {
+			String fileName = doc.getDocName() + doc.getDocExt();
+
+			String storage = createAndGetStorageLocation();
+			Path filePath = Paths.get(storage).resolve(fileName);
+
+			// Check file exist, then delete the files from storage
+			if (!Files.exists(filePath)) {
+				try {
+					Files.delete(filePath);
+				} catch (IOException e) {
+					log.error(e.getMessage());
+					throw new CustomException("Can't delete the file.", HttpStatus.INTERNAL_SERVER_ERROR);
+				}
+			}
+
+			// Delete document record
+			documentRepo.delete(doc);
+		}
 	}
 
 	private void saveChunkToDisk(byte[] chunk, int bytesRead, String directory, String fileName, int chunkNumber) throws IOException {

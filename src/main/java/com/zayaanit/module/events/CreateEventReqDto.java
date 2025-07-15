@@ -1,11 +1,10 @@
-package com.zayaanit.module.tasks;
+package com.zayaanit.module.events;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.zayaanit.enums.PriorityType;
-import com.zayaanit.module.tasks.subtasks.UpdateSubTaskReqDto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -23,10 +22,9 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UpdateTaskReqDto {
+@ValidCreateEventRequest
+public class CreateEventReqDto {
 
-	@NotNull(message = "Task id required")
-	private Long id;
 	@NotBlank(message = "Title required")
 	@Size(min = 1, max = 100, message = "Title must be 1 to 100 characters long")
 	private String title;
@@ -34,35 +32,37 @@ public class UpdateTaskReqDto {
 
 	@NotNull(message = "Project reference required")
 	private Long projectId;
-	private Long sectionId;
 	private Long categoryId;
-	private Long workflowId;
 
+	@NotNull(message = "Event date required")
 	@JsonFormat(pattern = "yyyy-MM-dd")
-	private LocalDate taskDate;
-	@JsonFormat(pattern = "yyyy-MM-dd")
-	private LocalDate dueDate;
-	private Integer estTime;
-	private PriorityType priority;
+	private LocalDate eventDate;
+	@NotNull(message = "Event start time required")
+	@JsonFormat(pattern = "HH:mm")
+	private LocalTime startTime;
+	@NotNull(message = "Event end time required")
+	@JsonFormat(pattern = "HH:mm")
+	private LocalTime endTime;
 
-	private List<Long> tags;
+	private String location;
+	private Boolean isReminderEnabled;
+	private Integer reminderBefore;
+
 	private List<Long> perticipants;
 	private List<Long> documents;
-	private List<UpdateSubTaskReqDto> subTasks;
 
-	public Task getBean() {
-		return Task.builder()
+	public Event getBean() {
+		return Event.builder()
 				.title(title)
 				.description(description)
 				.projectId(projectId)
-				.sectionId(sectionId)
 				.categoryId(categoryId)
-				.workflowId(workflowId)
-				.taskDate(taskDate)
-				.estTime(estTime)
-				.dueDate(dueDate)
-				.priority(priority)
-				.isCompleted(false)
+				.eventDate(eventDate)
+				.startTime(startTime == null ? LocalTime.MIDNIGHT : startTime)
+				.endTime(endTime == null ? LocalTime.of(23, 59) : endTime)
+				.location(location)
+				.isReminderEnabled(Boolean.TRUE.equals(isReminderEnabled))
+				.reminderBefore(reminderBefore == null ? 0 : reminderBefore)
 				.build();
 	}
 }

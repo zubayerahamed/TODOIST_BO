@@ -88,7 +88,7 @@ public class AuthenticationService {
 				.nextWeek(Days.SUN.name())
 				.weekend(Days.FRI.name())
 				.enabledBrowserNoti(false)
-				.enabledEmailNoti(false)
+				.enabledEmailNoti(true)
 				.enabledPushNoti(false)
 				.enabledSmsNoti(false)
 				.build();

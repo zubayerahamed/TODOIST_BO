@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Event Reminder</title>
+  <title>Event Assigned</title>
   <style>
     body {
   font-family: Arial, sans-serif;
@@ -56,18 +56,17 @@ a.button {
 </head>
 <body>
   <div class="email-container">
-    <div class="header" style="background-color: #00796b;">
-      <h2 style="color: #fff">Event Reminder</h2>
+    <div class="header" style="background-color: #1976d2;">
+      <h2 style="color: #fff">Event Assigned to You</h2>
     </div>
     <div class="content">
       <p>Hi <strong>$userName</strong>,</p>
-      <p>This is a friendly reminder for your upcoming event:</p>
+      <p>You have been assigned to the following event:</p>
       <div class="task-title">$event.title</div>
       <div class="task-details">
         <strong>Description:</strong> $event.description<br>
         <strong>Date:</strong> $event.eventDate<br>
-        <strong>Start Time:</strong> $event.startTime<br>
-        <strong>End Time:</strong> $event.endTime<br>
+        <strong>Time:</strong> $event.startTime - $event.endTime<br>
         <strong>Location:</strong> $event.location
       </div>
       <a href="#" class="button">View Event</a>
