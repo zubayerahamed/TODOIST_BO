@@ -38,37 +38,24 @@ public class SectionService extends BaseService {
 
     public List<SectionResDto> getAllSections(Long projectId) {
         List<Section> section = sectionRepo.findAllByProjectId(projectId);
-        if (section.isEmpty()) {
-            return Collections.emptyList();
-        }
+        if (section.isEmpty()) return Collections.emptyList();
 
         List<SectionResDto> responseData = new ArrayList<>();
-        section.stream().forEach(p -> {
-            responseData.add(new SectionResDto(p));
-        });
+        section.stream().forEach(p -> {responseData.add(new SectionResDto(p));});
 
         return responseData;
     }
 
     public SectionResDto findSectionById(Long id) throws CustomException {
         Optional<Section> sectionOp = sectionRepo.findById(id);
-        if (!sectionOp.isPresent()) {
-            throw new CustomException("Section not exist", HttpStatus.NOT_FOUND);
-        }
+        if (!sectionOp.isPresent()) throw new CustomException("Section not exist", HttpStatus.NOT_FOUND);
 
         return new SectionResDto(sectionOp.get());
     }
 
     @Transactional
     public SectionResDto updateSection(UpdateSectionReqDto reqDto) throws CustomException {
-        if (reqDto.getId() == null) {
-            throw new CustomException("Section id required", HttpStatus.BAD_REQUEST);
-        }
-
         Optional<Section> sectionOp = sectionRepo.findById(reqDto.getId());
-        if (!sectionOp.isPresent()) {
-            throw new CustomException("Section not exist", HttpStatus.NOT_FOUND);
-        }
 
         Section section = sectionOp.get();
         BeanUtils.copyProperties(reqDto, section);
@@ -80,9 +67,7 @@ public class SectionService extends BaseService {
     @Transactional
     public void deleteSection(Long id) throws CustomException {
         Optional<Section> sectionOp = sectionRepo.findById(id);
-        if (!sectionOp.isPresent()) {
-            throw new CustomException("Section not exist", HttpStatus.NOT_FOUND);
-        }
+        if (!sectionOp.isPresent()) throw new CustomException("Section not exist", HttpStatus.NOT_FOUND);
 
         sectionRepo.delete(sectionOp.get());
     }

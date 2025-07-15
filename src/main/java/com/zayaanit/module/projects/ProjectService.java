@@ -6,6 +6,10 @@ import java.util.Optional;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -82,6 +86,15 @@ public class ProjectService extends BaseService {
 		// Delete all project settings
 		// Delete project
 		projectRepo.delete(projectOp.get());
+	}
+
+	public Page<ProjectResDto> getAll(int page, int size) {
+		Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
+		Page<Project> projectPage = projectRepo.findAllByWorkspaceId(
+				loggedinUser().getWorkspace().getId(), pageable
+		);
+
+		return projectPage.map(ProjectResDto::new);
 	}
 
 }
