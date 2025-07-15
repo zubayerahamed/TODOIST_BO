@@ -34,6 +34,11 @@ public enum MailType {
 	EVENT_REMINDER(
 		"TasksNest - Event Reminder: Don't Miss Your Upcoming Event!",
 		"src/main/resources/static/standard_event_reminder_email_template.vm"
+	),
+
+	EVENT_COMPLETED(
+		"TasksNest - Event Completed",
+		"src/main/resources/static/standard_event_completed_email_template.vm"
 	);
 
 	private String subject;

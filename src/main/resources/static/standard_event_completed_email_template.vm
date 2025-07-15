@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Event Completed</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      padding: 0;
+      margin: 0;
+    }
+    .email-container {
+      background-color: #ffffff;
+      width: 100%;
+      max-width: 600px;
+      margin: 30px auto;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    .header {
+      background-color: #43a047;
+      color: #ffffff;
+      padding: 20px;
+      text-align: center;
+    }
+    .content {
+      padding: 30px 20px;
+      color: #333333;
+    }
+    .task-title {
+      font-size: 20px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+    .task-details {
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+    .footer {
+      text-align: center;
+      padding: 15px;
+      font-size: 12px;
+      color: #999999;
+      background-color: #f9f9f9;
+    }
+    a.button {
+      display: inline-block;
+      padding: 10px 18px;
+      background-color: #43a047;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 4px;
+      font-weight: bold;
+    }
+    @media only screen and (max-width: 600px) {
+      .content {
+        padding: 20px 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="email-container">
+    <div class="header">
+      <h2 style="color: #fff">Event Completed</h2>
+    </div>
+
+    <div class="content">
+      <p>Hi <strong>${userName}</strong>,</p>
+
+      <p>We're happy to inform you that the following event has been successfully completed:</p>
+
+      <div class="task-title">${event.title}</div>
+
+      <div class="task-details">
+        <strong>Description:</strong> ${event.description}<br>
+        <strong>Date:</strong> ${event.eventDate}<br>
+        <strong>Start Time:</strong> ${event.startTime}<br>
+        <strong>End Time:</strong> ${event.endTime}<br>
+      </div>
+
+      <a href="#" class="button">View Event</a>
+    </div>
+
+    <div class="footer">
+      &copy; 2025 TasksNest | All rights reserved.
+    </div>
+  </div>
+
+</body>
+</html>

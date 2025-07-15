@@ -1,17 +1,11 @@
 package com.zayaanit.module.events;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.SerializationUtils;
-import org.apache.velocity.exception.MethodInvocationException;
-import org.apache.velocity.exception.ParseErrorException;
-import org.apache.velocity.exception.ResourceNotFoundException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,8 +13,6 @@ import org.springframework.stereotype.Service;
 
 import com.zayaanit.enums.PerticipantType;
 import com.zayaanit.exception.CustomException;
-import com.zayaanit.mail.MailReqDto;
-import com.zayaanit.mail.MailService;
 import com.zayaanit.mail.MailType;
 import com.zayaanit.module.BaseService;
 import com.zayaanit.module.documents.Document;
@@ -29,13 +21,9 @@ import com.zayaanit.module.documents.DocumentService;
 import com.zayaanit.module.events.perticipants.EventPerticipants;
 import com.zayaanit.module.events.perticipants.EventPerticipantsRepo;
 import com.zayaanit.module.notification.AsyncNotificationService;
+import com.zayaanit.module.notification.NotificationType;
 import com.zayaanit.module.reminder.ReminderService;
-import com.zayaanit.module.users.User;
-import com.zayaanit.module.users.UserRepo;
-import com.zayaanit.module.users.preferences.UserPreference;
-import com.zayaanit.module.users.preferences.UserPreferenceRepo;
 
-import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 
@@ -51,10 +39,7 @@ public class EventService extends BaseService {
 	@Autowired private DocumentService documentService;
 	@Autowired private EventRepo eventRepo;
 	@Autowired private ReminderService reminderService;
-	@Autowired private MailService mailService;
 	@Autowired private EventPerticipantsRepo epRepo;
-	@Autowired private UserRepo userRepo;
-	@Autowired private UserPreferenceRepo userPrefenceRepo;
 	@Autowired private AsyncNotificationService asyncNotificationService;
 
 	public List<EventResDto> getAllByProjectId(Long projectId) {
@@ -112,14 +97,41 @@ public class EventService extends BaseService {
 		});
 
 		// Schedule it for reminder
-		scheduleEventReminder(finalEvent, false);
+		scheduleEventReminder(finalEvent);
 
 		// Send Email Notification
 		asyncNotificationService.sendEmailNotification(finalEvent, eventCreatorId, MailType.EVENT_CREATED);
 		asyncNotificationService.sendEmailNotification(finalEvent, allPerticipantsId, MailType.EVENT_ASSIGNED);
 
-		// TODO: send push notification
+		// Send push notification
+		asyncNotificationService.sendPushNotification(finalEvent, eventCreatorId, NotificationType.EVENT_CREATED);
+		asyncNotificationService.sendPushNotification(finalEvent, allPerticipantsId, NotificationType.EVENT_ASSIGNED);
+
 		// TODO: send sms notification
+
+		return new EventResDto(finalEvent);
+	}
+
+	@Transactional
+	public EventResDto complete(Long id) throws CustomException {
+		Optional<Event> eventOp = eventRepo.findById(id);
+		if(!eventOp.isPresent()) throw new CustomException("Event not found", HttpStatus.NOT_FOUND);
+
+		Event existObj = eventOp.get();
+		existObj.setIsCompleted(true);
+		Event finalEvent = eventRepo.save(existObj);
+
+		// Find All the event perticipants
+		List<EventPerticipants> perticipants = epRepo.findAllByEventId(id);
+		if(!perticipants.isEmpty()) {
+			List<Long> perticipantsId = perticipants.stream().map(EventPerticipants::getUserId).collect(Collectors.toList());
+
+			// Send Email Notification
+			asyncNotificationService.sendEmailNotification(finalEvent, perticipantsId, MailType.EVENT_COMPLETED);
+
+			// Send Push Notification
+			asyncNotificationService.sendPushNotification(finalEvent, perticipantsId, NotificationType.EVENT_COMPLETED);
+		}
 
 		return new EventResDto(finalEvent);
 	}
@@ -135,6 +147,7 @@ public class EventService extends BaseService {
 
 		Event existObj = eventOp.get();
 		BeanUtils.copyProperties(reqDto, existObj);
+		existObj.setIsReminderSent(false);  // Reset Reminder Status
 		Event finalEvent = eventRepo.save(existObj);
 
 		// Update documents reference
@@ -174,7 +187,7 @@ public class EventService extends BaseService {
 				.collect(Collectors.toList());
 
 		existingPerticipants.stream().forEach(p -> {
-			p.setIsReminderSent(false);
+			p.setIsReminderSent(false);  // Reset all existing participants reminder status
 			epRepo.save(p);
 			existingPerticipantsIdForMail.add(p.getUserId());
 		});
@@ -196,14 +209,18 @@ public class EventService extends BaseService {
 		});
 
 		// After creating event, schedule it for reminder
-		scheduleEventReminder(finalEvent, true);
+		scheduleEventReminder(finalEvent);
 
 		// Send Email Notification
 		asyncNotificationService.sendEmailNotification(finalEvent, existingPerticipantsIdForMail.stream().filter(e -> !removedPerticipantsIdForMail.contains(e)).collect(Collectors.toList()), MailType.EVENT_UPDATED);
 		asyncNotificationService.sendEmailNotification(finalEvent, removedPerticipantsIdForMail, MailType.EVENT_UNASSIGNED);
 		asyncNotificationService.sendEmailNotification(finalEvent, newPerticipantsIdForMail, MailType.EVENT_ASSIGNED);
 
-		// TODO: send push notification
+		// Send push notification
+		asyncNotificationService.sendPushNotification(finalEvent, existingPerticipantsIdForMail.stream().filter(e -> !removedPerticipantsIdForMail.contains(e)).collect(Collectors.toList()), NotificationType.EVENT_UPDATED);
+		asyncNotificationService.sendPushNotification(finalEvent, removedPerticipantsIdForMail, NotificationType.EVENT_UNASSIGNED);
+		asyncNotificationService.sendPushNotification(finalEvent, newPerticipantsIdForMail, NotificationType.EVENT_ASSIGNED);
+
 		// TODO: send sms notification
 
 		return new EventResDto(finalEvent);
@@ -231,14 +248,16 @@ public class EventService extends BaseService {
 		// Send Email Notification
 		asyncNotificationService.sendEmailNotification(copy, allPerticipants, MailType.EVENT_DELETED);
 
-		// TODO: send push notification
+		// Send push notification
+		asyncNotificationService.sendPushNotification(copy, allPerticipants, NotificationType.EVENT_DELETED);
+
 		// TODO: send sms notification
 	}
 
-	
-
-	private void scheduleEventReminder(final Event event, boolean updateEvent) {
+	private void scheduleEventReminder(final Event event) {
+		if(Boolean.TRUE.equals(event.getIsCompleted())) return;
 		if(Boolean.FALSE.equals(event.getIsReminderEnabled())) return;
+		if(Boolean.TRUE.equals(event.getIsReminderSent())) return;
 
 		reminderService.scheduleEventReminder(event, () -> {
 			log.info("Sending Reminder for Event : " + event.getTitle());
@@ -247,60 +266,20 @@ public class EventService extends BaseService {
 			List<EventPerticipants> perticipants = epRepo.findAllByEventId(event.getId());
 			if(perticipants.isEmpty()) return;
 
-			// Check all the perticipants, who is eligible for email push notification
-			List<User> eligiblePerticipants = new ArrayList<>();
-			perticipants.stream().forEach(p -> {
-				Optional<UserPreference> upOp = userPrefenceRepo.findById(p.getUserId());
-				if(upOp.isPresent() && Boolean.TRUE.equals(upOp.get().getEnabledEmailNoti())) {
-					Optional<User> userOp = userRepo.findById(upOp.get().getUserId());
-					if(userOp.isPresent()) eligiblePerticipants.add(userOp.get());
-				}
-			});
+			List<Long> perticipantsId = perticipants.stream().map(EventPerticipants::getUserId).collect(Collectors.toList());
 
-			if(eligiblePerticipants.isEmpty()) return;
+			// Send Email Notification
+			asyncNotificationService.sendEmailNotification(event, perticipantsId, MailType.EVENT_REMINDER);
 
-			// Now send email to all eligible perticipants
-			for(User perticipant : eligiblePerticipants) {
-				Map<String, Object> contextData = new HashMap<>();
-				contextData.put("userName", perticipant.getFirstName() + " " + perticipant.getLastName());
-				contextData.put("event", event);
-
-				MailType mailType = MailType.EVENT_REMINDER;
-
-				MailReqDto reqDto = MailReqDto.builder()
-						.from("tasksnest@gmail.com")
-						.to(perticipant.getEmail())
-						.subject(mailType.getSubject())
-						.mailType(mailType)
-						.body("")
-						.contextData(contextData)
-						.build();
-
-				try {
-					mailService.sendMail(reqDto);
-
-					EventPerticipants tp = perticipants.stream().filter(p -> p.getUserId().equals(perticipant.getId())).findFirst().orElse(null);
-					if(tp != null) {
-						tp.setIsReminderSent(Boolean.TRUE); 
-						epRepo.save(tp);
-					}
-				} catch (ParseErrorException | MethodInvocationException 
-						| ResourceNotFoundException | CustomException
-						| MessagingException | IOException e) {
-					throw new CustomException(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-				}
-			}
-
-			// Updat the task reminder sent status to true
-			event.setIsReminderSent(true);
-			eventRepo.save(event);
+			// Send Push Notification
+			asyncNotificationService.sendPushNotification(event, perticipantsId, NotificationType.EVENT_REMINDER);
 		});
 	}
 
 	public void rescheduleAllEventReminders() {
 		List<Event> futureEvents = eventRepo.findAllPendingReminders();
 		futureEvents.forEach(t -> {
-			scheduleEventReminder(t, false);
+			scheduleEventReminder(t);
 		});
 	}
 }

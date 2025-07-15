@@ -59,5 +59,11 @@ public class EventController {
 	public ResponseEntity<SuccessResponse<EventResDto>> delete(@PathVariable Long id){
 		eventService.delete(id);
 		return ResponseBuilder.build(ResponseStatusType.DELETE_NO_CONTENT, null);
-	} 
+	}
+
+	@PutMapping("/complete/{id}")
+	public ResponseEntity<SuccessResponse<EventResDto>> complete(@PathVariable Long id){
+		EventResDto resData = eventService.complete(id);
+		return ResponseBuilder.build(ResponseStatusType.UPDATE_SUCCESS, resData);
+	}
 }
