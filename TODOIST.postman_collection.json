@@ -19,7 +19,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"firstName\": \"Zubayer\",\r\n    \"lastName\": \"Ahamed\",\r\n    \"email\": \"zubayer@test.com\",\r\n    \"password\": \"1234\"\r\n}",
+							"raw": "{\r\n    \"firstName\": \"Zubayer\",\r\n    \"lastName\": \"Ahamed\",\r\n    \"email\": \"zubayerahamed.freelancer@gmail.com\",\r\n    \"password\": \"1234\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -139,7 +139,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"zubayer@test.com\",\r\n    \"password\": \"1234\"\r\n}",
+							"raw": "{\r\n    \"email\": \"zubayerahamed.freelancer@gmail.com\",\r\n    \"password\": \"1234\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -2343,7 +2343,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"projectId\": 1,\r\n    \"title\": \"TOSOIST Backend Development Meeting\",\r\n    \"description\": \"Merge tighub code and discuss some other areas\",\r\n    \"taskType\": \"EVENT\",\r\n    \"taskDate\": \"2025-07-13\",\r\n    \"taskStartTime\": \"13:43\",\r\n    \"estTime\": 30,\r\n    \"reminderBefore\": 0,\r\n    \"isReminderEnabled\": true,\r\n    \"priority\": \"HIGH\",\r\n    \"location\": \"Google Meet\"\r\n}",
+							"raw": "{\r\n    \"projectId\": 1,\r\n    \"title\": \"TOSOIST Backend Development Meeting\",\r\n    \"description\": \"Merge github code and discuss some other areas\",\r\n    \"taskType\": \"EVENT\",\r\n    \"taskDate\": \"2025-07-13\",\r\n    \"taskStartTime\": \"15:08\",\r\n    \"estTime\": 30,\r\n    \"reminderBefore\": 0,\r\n    \"isReminderEnabled\": true,\r\n    \"priority\": \"HIGH\",\r\n    \"location\": \"Google Meet\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -2868,6 +2868,1180 @@
 							"path": [
 								"tasks",
 								"20"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"referenceId\" : 1,\r\n    \"name\" : \"Angular\",\r\n    \"color\" : \"#dddddd\",\r\n    \"isForTask\" : true,\r\n    \"isForEvent\" : false\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseurl}}/categories",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"categories"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "0"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "Expires",
+									"value": "0"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "DENY"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 03 Jul 2025 05:11:03 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": 201,\n    \"message\": \"Resource created successfully\",\n    \"data\": {\n        \"id\": 2,\n        \"referenceId\": 1,\n        \"name\": \"Angular\",\n        \"color\": \"#dddddd\",\n        \"isForTask\": true,\n        \"isForEvent\": false,\n        \"seqn\": 0\n    },\n    \"timestamp\": \"2025-07-03T11:11:03.4300446\"\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Events",
+			"item": [
+				{
+					"name": "Create Event",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"title\": \"Software Mail Testing\",\r\n  \"description\": \"Update issue fixed\",\r\n  \"projectId\": 1,\r\n  \"eventDate\": \"2025-07-14\",\r\n  \"startTime\": \"10:20\",\r\n  \"endTime\": \"09:30\",\r\n  \"location\": \"Conference Room A\",\r\n  \"isReminderEnabled\": true,\r\n  \"reminderBefore\": 5,\r\n  \"perticipants\": [3],\r\n  \"documents\": []\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/events",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"events"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Create Task",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"projectId\": 1,\r\n    \"title\": \"Finish project report\",\r\n    \"description\": \"Prepare final version of the project report\",\r\n    \"taskType\": \"EVENT\",\r\n    \"taskDate\": \"2025-07-09\",\r\n    \"taskStartTime\": \"16:10\",\r\n    \"estTime\": 30,\r\n    \"reminderBefore\": 5,\r\n    \"isReminderEnabled\": true,\r\n    \"priority\": \"HIGH\",\r\n    \"location\": \"Conference Room\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseurl}}/tasks",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"tasks"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "0"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "Expires",
+									"value": "0"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "DENY"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 09 Jul 2025 09:59:16 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": 201,\n    \"message\": \"Resource created successfully\",\n    \"data\": {\n        \"id\": 2,\n        \"projectId\": 1,\n        \"sectionId\": null,\n        \"categoryId\": null,\n        \"workflowId\": null,\n        \"title\": \"Finish project report\",\n        \"description\": \"Prepare final version of the project report\",\n        \"taskType\": \"EVENT\",\n        \"taskDate\": \"2025-07-09\",\n        \"taskStartTime\": \"16:10:00\",\n        \"taskEndTime\": null,\n        \"dueDate\": null,\n        \"estTime\": 30,\n        \"reminderBefore\": 0,\n        \"priority\": \"HIGH\",\n        \"location\": \"Conference Room\",\n        \"isReminderSent\": false,\n        \"isCompleted\": false,\n        \"isPartiallyCompleted\": false\n    },\n    \"timestamp\": \"2025-07-09T15:59:16.9296845\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Update Event",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": 9,\r\n    \"title\": \"Software Mail Testing\",\r\n    \"description\": \"Update issue fixed\",\r\n    \"projectId\": 1,\r\n    \"eventDate\": \"2025-07-15\",\r\n    \"startTime\": \"10:20\",\r\n    \"endTime\": \"22:30\",\r\n    \"location\": \"Conference Room A\",\r\n    \"isReminderEnabled\": true,\r\n    \"reminderBefore\": 5,\r\n    \"perticipants\": [\r\n        3\r\n    ],\r\n    \"documents\": []\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/events",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"events"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"referenceId\" : 1,\r\n    \"name\" : \"Angular\",\r\n    \"color\" : \"#dddddd\",\r\n    \"isForTask\" : true,\r\n    \"isForEvent\" : false\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseurl}}/categories",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"categories"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "0"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "Expires",
+									"value": "0"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "DENY"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 03 Jul 2025 05:11:03 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": 201,\n    \"message\": \"Resource created successfully\",\n    \"data\": {\n        \"id\": 2,\n        \"referenceId\": 1,\n        \"name\": \"Angular\",\n        \"color\": \"#dddddd\",\n        \"isForTask\": true,\n        \"isForEvent\": false,\n        \"seqn\": 0\n    },\n    \"timestamp\": \"2025-07-03T11:11:03.4300446\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Get All Events",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/events/all/1",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"events",
+								"all",
+								"1"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"referenceId\" : 1,\r\n    \"name\" : \"Angular\",\r\n    \"color\" : \"#dddddd\",\r\n    \"isForTask\" : true,\r\n    \"isForEvent\" : false\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseurl}}/categories",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"categories"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "0"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "Expires",
+									"value": "0"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "DENY"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 03 Jul 2025 05:11:03 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": 201,\n    \"message\": \"Resource created successfully\",\n    \"data\": {\n        \"id\": 2,\n        \"referenceId\": 1,\n        \"name\": \"Angular\",\n        \"color\": \"#dddddd\",\n        \"isForTask\": true,\n        \"isForEvent\": false,\n        \"seqn\": 0\n    },\n    \"timestamp\": \"2025-07-03T11:11:03.4300446\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Find Events",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/events/find/8",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"events",
+								"find",
+								"8"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"referenceId\" : 1,\r\n    \"name\" : \"Angular\",\r\n    \"color\" : \"#dddddd\",\r\n    \"isForTask\" : true,\r\n    \"isForEvent\" : false\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseurl}}/categories",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"categories"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "0"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "Expires",
+									"value": "0"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "DENY"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 03 Jul 2025 05:11:03 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": 201,\n    \"message\": \"Resource created successfully\",\n    \"data\": {\n        \"id\": 2,\n        \"referenceId\": 1,\n        \"name\": \"Angular\",\n        \"color\": \"#dddddd\",\n        \"isForTask\": true,\n        \"isForEvent\": false,\n        \"seqn\": 0\n    },\n    \"timestamp\": \"2025-07-03T11:11:03.4300446\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Delete Task",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/events/8",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"events",
+								"8"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"referenceId\" : 1,\r\n    \"name\" : \"Angular\",\r\n    \"color\" : \"#dddddd\",\r\n    \"isForTask\" : true,\r\n    \"isForEvent\" : false\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseurl}}/categories",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"categories"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "0"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "Expires",
+									"value": "0"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "DENY"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 03 Jul 2025 05:11:03 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": 201,\n    \"message\": \"Resource created successfully\",\n    \"data\": {\n        \"id\": 2,\n        \"referenceId\": 1,\n        \"name\": \"Angular\",\n        \"color\": \"#dddddd\",\n        \"isForTask\": true,\n        \"isForEvent\": false,\n        \"seqn\": 0\n    },\n    \"timestamp\": \"2025-07-03T11:11:03.4300446\"\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Documents",
+			"item": [
+				{
+					"name": "Upload Document",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "title",
+									"value": "my document",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "this is a test document",
+									"type": "text"
+								},
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/C:/Users/zubayer/OneDrive/Pictures/12743772_1135793963119883_3382593672054216683_n.jpg"
+								},
+								{
+									"key": "referenceId",
+									"value": "1",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseurl}}/documents/upload",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"documents",
+								"upload"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Create Task",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"projectId\": 1,\r\n    \"title\": \"Finish project report\",\r\n    \"description\": \"Prepare final version of the project report\",\r\n    \"taskType\": \"EVENT\",\r\n    \"taskDate\": \"2025-07-09\",\r\n    \"taskStartTime\": \"16:10\",\r\n    \"estTime\": 30,\r\n    \"reminderBefore\": 5,\r\n    \"isReminderEnabled\": true,\r\n    \"priority\": \"HIGH\",\r\n    \"location\": \"Conference Room\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseurl}}/tasks",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"tasks"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "0"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "Expires",
+									"value": "0"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "DENY"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 09 Jul 2025 09:59:16 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": 201,\n    \"message\": \"Resource created successfully\",\n    \"data\": {\n        \"id\": 2,\n        \"projectId\": 1,\n        \"sectionId\": null,\n        \"categoryId\": null,\n        \"workflowId\": null,\n        \"title\": \"Finish project report\",\n        \"description\": \"Prepare final version of the project report\",\n        \"taskType\": \"EVENT\",\n        \"taskDate\": \"2025-07-09\",\n        \"taskStartTime\": \"16:10:00\",\n        \"taskEndTime\": null,\n        \"dueDate\": null,\n        \"estTime\": 30,\n        \"reminderBefore\": 0,\n        \"priority\": \"HIGH\",\n        \"location\": \"Conference Room\",\n        \"isReminderSent\": false,\n        \"isCompleted\": false,\n        \"isPartiallyCompleted\": false\n    },\n    \"timestamp\": \"2025-07-09T15:59:16.9296845\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Get All Documents",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/documents/all/1",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"documents",
+								"all",
+								"1"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"referenceId\" : 1,\r\n    \"name\" : \"Angular\",\r\n    \"color\" : \"#dddddd\",\r\n    \"isForTask\" : true,\r\n    \"isForEvent\" : false\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseurl}}/categories",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"categories"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "0"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "Expires",
+									"value": "0"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "DENY"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 03 Jul 2025 05:11:03 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": 201,\n    \"message\": \"Resource created successfully\",\n    \"data\": {\n        \"id\": 2,\n        \"referenceId\": 1,\n        \"name\": \"Angular\",\n        \"color\": \"#dddddd\",\n        \"isForTask\": true,\n        \"isForEvent\": false,\n        \"seqn\": 0\n    },\n    \"timestamp\": \"2025-07-03T11:11:03.4300446\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Download File",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/documents/download/4",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"documents",
+								"download",
+								"4"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"referenceId\" : 1,\r\n    \"name\" : \"Angular\",\r\n    \"color\" : \"#dddddd\",\r\n    \"isForTask\" : true,\r\n    \"isForEvent\" : false\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseurl}}/categories",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"categories"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "0"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "Expires",
+									"value": "0"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "DENY"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 03 Jul 2025 05:11:03 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": 201,\n    \"message\": \"Resource created successfully\",\n    \"data\": {\n        \"id\": 2,\n        \"referenceId\": 1,\n        \"name\": \"Angular\",\n        \"color\": \"#dddddd\",\n        \"isForTask\": true,\n        \"isForEvent\": false,\n        \"seqn\": 0\n    },\n    \"timestamp\": \"2025-07-03T11:11:03.4300446\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Delete Document",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/documents/1",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"documents",
+								"1"
 							]
 						}
 					},

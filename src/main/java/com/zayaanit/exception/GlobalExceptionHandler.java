@@ -2,6 +2,7 @@ package com.zayaanit.exception;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.StringJoiner;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,21 +43,21 @@ public class GlobalExceptionHandler {
 
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	public ResponseEntity<ErrorResponse> handleValidationExceptions(MethodArgumentNotValidException ex) {
-		StringBuilder errorMessages = new StringBuilder();
+		StringJoiner errorMessages = new StringJoiner(" | ");
 		Map<String, String> globalErrors = new HashMap<>();
 		Map<String, String> fieldErrors = new HashMap<>();
 
 		// Field-level errors
 		ex.getBindingResult().getFieldErrors().forEach(error -> {
 			fieldErrors.put(error.getField(), error.getDefaultMessage());
-			errorMessages.append(error.getDefaultMessage() + " | ");
+			errorMessages.add(error.getDefaultMessage());
 		});
 
 		// Class-level (global) errors like @StartBeforeEndTime
 		ex.getBindingResult().getGlobalErrors().forEach(error -> {
 			// Use "global" as a key, or error.getObjectName() if needed
-			globalErrors.put("global", error.getDefaultMessage());
-			errorMessages.append(error.getDefaultMessage()).append(" | ");
+			globalErrors.put(error.getObjectName(), error.getDefaultMessage());
+			errorMessages.add(error.getDefaultMessage());
 		});
 
 		String message = errorMessages.toString();

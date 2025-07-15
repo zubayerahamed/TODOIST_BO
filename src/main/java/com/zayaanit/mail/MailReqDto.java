@@ -27,4 +27,14 @@ public class MailReqDto {
 	private String replyTo;
 	private Map<String, Object> contextData;
 	private MailType mailType;
+	private Map<String, String> attachments;
 }
+
+
+// Example to set attachment files
+//private Map<String, String> getFiles(){
+//	Map<String, String> map = new HashMap<>();
+//	map.put("attachment.csv", "src/main/resources/static/mail-attachment-template.csv");
+//	map.put("attachment.pdf", "src/main/resources/static/in_DUMMY088990_20200825-025718.pdf");
+//	return map;
+//}

@@ -3,6 +3,7 @@ package com.zayaanit.mail;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -10,7 +11,6 @@ import java.io.Reader;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
@@ -26,6 +26,9 @@ import org.springframework.stereotype.Service;
 
 import com.zayaanit.exception.CustomException;
 
+import jakarta.activation.DataHandler;
+import jakarta.activation.DataSource;
+import jakarta.activation.FileDataSource;
 import jakarta.mail.Authenticator;
 import jakarta.mail.BodyPart;
 import jakarta.mail.Message;
@@ -61,7 +64,7 @@ public class MailService {
 		props.setProperty("mail.smtp.auth", env.getProperty("mail.smtp.auth"));
 		props.setProperty("mail.smtp.starttls.enable", env.getProperty("mail.smtp.starttls.enable"));
 		props.setProperty("mail.smtp.ssl.protocols", "TLSv1.2");
-		
+
 //		String encoded = Base64.getEncoder().encodeToString("oakvpmvxlbwivsyg".getBytes());
 //		System.out.println(encoded);
 
@@ -121,33 +124,43 @@ public class MailService {
 		// Add Attachment 
 		Multipart multipart = new MimeMultipart();
 		multipart.addBodyPart(mailBody);
-//		for(Map.Entry<String, String> attachment : getFiles().entrySet()){
-//			BodyPart multipartBody = new MimeBodyPart();
-//			DataSource source = new FileDataSource(attachment.getValue());
-//			multipartBody.setDataHandler(new DataHandler(source));
-//			multipartBody.setFileName(attachment.getKey());
-//			multipart.addBodyPart(multipartBody);
-//		}
+		if(reqDto.getAttachments() != null && !reqDto.getAttachments().isEmpty()) {
+			for(Map.Entry<String, String> attachment : reqDto.getAttachments().entrySet()){
+				BodyPart multipartBody = new MimeBodyPart();
+				DataSource source = new FileDataSource(attachment.getValue());
+				multipartBody.setDataHandler(new DataHandler(source));
+				multipartBody.setFileName(attachment.getKey());
+				multipart.addBodyPart(multipartBody);
+			}
+		}
 
 		message.setContent(multipart);
 
 		// Save mail file before send
-//		File file = new File(EML_FILE);
-//		if(!file.exists()) {
-//			file.createNewFile();
-//		}
-		//message.writeTo(new FileOutputStream(file));
+		String saveEmail = env.getProperty("app.save-email-body", "N");
+		if ("Y".equalsIgnoreCase(saveEmail)) {
+			String storageLocation = env.getProperty("app.save-email-location");
+			if (StringUtils.isNotBlank(storageLocation)) {
+				File directory = new File(storageLocation);
+
+				// Create directory if not exists
+				if (!directory.exists()) {
+					directory.mkdirs();
+				}
+
+				// Generate a unique file name (e.g., with timestamp or subject)
+				String fileName = "email_" + System.currentTimeMillis() + ".eml";
+				File emailFile = new File(directory, fileName);
+
+				// Save the email content
+				try (FileOutputStream fos = new FileOutputStream(emailFile)) {
+					message.writeTo(fos);
+				}
+			}
+		}
 
 		// send mail
 		Transport.send(message);
-
-	}
-
-	private Map<String, String> getFiles(){
-		Map<String, String> map = new HashMap<>();
-		map.put("attachment.csv", "src/main/resources/static/mail-attachment-template.csv");
-		map.put("attachment.pdf", "src/main/resources/static/in_DUMMY088990_20200825-025718.pdf");
-		return map;
 	}
 
 	private File getTemplateFile(MailType mailType) {

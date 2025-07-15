@@ -15,12 +15,12 @@ import jakarta.validation.Payload;
  * @since Jul 14, 2025
  */
 @Documented
-@Constraint(validatedBy = StartBeforeEndValidator.class)
 @Target({ ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
-public @interface StartBeforeEndTime {
+@Constraint(validatedBy = CreateEventRequestValidator.class)
+public @interface ValidCreateEventRequest {
 
-	String message() default "Event start time must be before event end time";
+	String message() default "Invalid event request";
 
 	Class<?>[] groups() default {};
 
