@@ -1,5 +1,8 @@
 package com.zayaanit.security;
 
+import java.security.Security;
+
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,6 +23,8 @@ import com.zayaanit.exception.CustomAuthenticationEntryPoint;
 import com.zayaanit.module.auth.LogoutService;
 import com.zayaanit.module.users.UserService;
 
+import jakarta.annotation.PostConstruct;
+
 /**
  * Zubayer Ahamed
  * 
@@ -38,8 +43,16 @@ public class SecurityConfiguration {
 
 	private static final String[] WHITE_LIST_URL = new String[] { 
 		"/api/v1/auth/**",
-		"/api/v1/ws/**"
+		"/api/v1/ws/**",
+		"/api/v1/notifications/**"
 	};
+
+	@PostConstruct
+	public void setupBouncyCastle() {
+		if (Security.getProvider(BouncyCastleProvider.PROVIDER_NAME) == null) {
+			Security.addProvider(new BouncyCastleProvider());
+		}
+	}
 
 	@Bean
 	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {

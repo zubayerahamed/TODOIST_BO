@@ -19,6 +19,11 @@ spring:
     ansi:
       enabled: always 
 
+vapid: 
+  public-key: BLKLhXbDE4jE2pSF86t2_dYY-C6qFFW0RWSprOzvI2ih67Q3gpH1EUWwXH2FLLi-m1PpVUBS1P_l-uaCFo1Dag0
+  private-key: QVndJrpRYLcwJzshu3ulMeSuKX5_hTEHsjdPVfiO4eQ
+  subject: "mailto: <zubayerahamed.freelancer@gmail.com>"
+
 mail: 
   user: zubayerahamed.freelancer@gmail.com
   passwd: b2FrdnBtdnhsYndpdnN5Zw==

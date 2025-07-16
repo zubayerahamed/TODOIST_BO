@@ -132,7 +132,21 @@
 			<version>1.7</version>
 		</dependency>
 
-
+		<!--<dependency>
+			<groupId>org.bouncycastle</groupId>
+			<artifactId>bcpkix-jdk15on</artifactId>
+			<version>1.68</version>
+		</dependency>-->
+		<dependency>
+			<groupId>nl.martijndwars</groupId>
+			<artifactId>web-push</artifactId>
+			<version>5.1.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.bouncycastle</groupId>
+			<artifactId>bcprov-jdk15to18</artifactId>
+			<version>1.70</version> <!-- Or the latest -->
+		</dependency>
 	</dependencies>
 
 	<build>

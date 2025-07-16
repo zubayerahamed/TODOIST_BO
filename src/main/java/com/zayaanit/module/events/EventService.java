@@ -103,9 +103,13 @@ public class EventService extends BaseService {
 		asyncNotificationService.sendEmailNotification(finalEvent, eventCreatorId, MailType.EVENT_CREATED);
 		asyncNotificationService.sendEmailNotification(finalEvent, allPerticipantsId, MailType.EVENT_ASSIGNED);
 
-		// Send push notification
-		asyncNotificationService.sendPushNotification(finalEvent, eventCreatorId, NotificationType.EVENT_CREATED);
-		asyncNotificationService.sendPushNotification(finalEvent, allPerticipantsId, NotificationType.EVENT_ASSIGNED);
+		// Send socket push notification
+		asyncNotificationService.sendSocketPushNotification(finalEvent, eventCreatorId, NotificationType.EVENT_CREATED);
+		asyncNotificationService.sendSocketPushNotification(finalEvent, allPerticipantsId, NotificationType.EVENT_ASSIGNED);
+
+		// Send web push notification
+		asyncNotificationService.sendBrowserPushNotification(finalEvent, eventCreatorId, NotificationType.EVENT_CREATED);
+		asyncNotificationService.sendBrowserPushNotification(finalEvent, allPerticipantsId, NotificationType.EVENT_ASSIGNED);
 
 		// TODO: send sms notification
 
@@ -130,7 +134,12 @@ public class EventService extends BaseService {
 			asyncNotificationService.sendEmailNotification(finalEvent, perticipantsId, MailType.EVENT_COMPLETED);
 
 			// Send Push Notification
-			asyncNotificationService.sendPushNotification(finalEvent, perticipantsId, NotificationType.EVENT_COMPLETED);
+			asyncNotificationService.sendSocketPushNotification(finalEvent, perticipantsId, NotificationType.EVENT_COMPLETED);
+
+			// Send browser push notification
+			asyncNotificationService.sendBrowserPushNotification(finalEvent, perticipantsId, NotificationType.EVENT_COMPLETED);
+
+			// TODO: send sms notification
 		}
 
 		return new EventResDto(finalEvent);
@@ -217,9 +226,14 @@ public class EventService extends BaseService {
 		asyncNotificationService.sendEmailNotification(finalEvent, newPerticipantsIdForMail, MailType.EVENT_ASSIGNED);
 
 		// Send push notification
-		asyncNotificationService.sendPushNotification(finalEvent, existingPerticipantsIdForMail.stream().filter(e -> !removedPerticipantsIdForMail.contains(e)).collect(Collectors.toList()), NotificationType.EVENT_UPDATED);
-		asyncNotificationService.sendPushNotification(finalEvent, removedPerticipantsIdForMail, NotificationType.EVENT_UNASSIGNED);
-		asyncNotificationService.sendPushNotification(finalEvent, newPerticipantsIdForMail, NotificationType.EVENT_ASSIGNED);
+		asyncNotificationService.sendSocketPushNotification(finalEvent, existingPerticipantsIdForMail.stream().filter(e -> !removedPerticipantsIdForMail.contains(e)).collect(Collectors.toList()), NotificationType.EVENT_UPDATED);
+		asyncNotificationService.sendSocketPushNotification(finalEvent, removedPerticipantsIdForMail, NotificationType.EVENT_UNASSIGNED);
+		asyncNotificationService.sendSocketPushNotification(finalEvent, newPerticipantsIdForMail, NotificationType.EVENT_ASSIGNED);
+
+		// Send browser push notification
+		asyncNotificationService.sendBrowserPushNotification(finalEvent, existingPerticipantsIdForMail.stream().filter(e -> !removedPerticipantsIdForMail.contains(e)).collect(Collectors.toList()), NotificationType.EVENT_UPDATED);
+		asyncNotificationService.sendBrowserPushNotification(finalEvent, removedPerticipantsIdForMail, NotificationType.EVENT_UNASSIGNED);
+		asyncNotificationService.sendBrowserPushNotification(finalEvent, newPerticipantsIdForMail, NotificationType.EVENT_ASSIGNED);
 
 		// TODO: send sms notification
 
@@ -249,7 +263,10 @@ public class EventService extends BaseService {
 		asyncNotificationService.sendEmailNotification(copy, allPerticipants, MailType.EVENT_DELETED);
 
 		// Send push notification
-		asyncNotificationService.sendPushNotification(copy, allPerticipants, NotificationType.EVENT_DELETED);
+		asyncNotificationService.sendSocketPushNotification(copy, allPerticipants, NotificationType.EVENT_DELETED);
+
+		// Send browser push notification
+		asyncNotificationService.sendBrowserPushNotification(copy, allPerticipants, NotificationType.EVENT_DELETED);
 
 		// TODO: send sms notification
 	}
@@ -272,7 +289,10 @@ public class EventService extends BaseService {
 			asyncNotificationService.sendEmailNotification(event, perticipantsId, MailType.EVENT_REMINDER);
 
 			// Send Push Notification
-			asyncNotificationService.sendPushNotification(event, perticipantsId, NotificationType.EVENT_REMINDER);
+			asyncNotificationService.sendSocketPushNotification(event, perticipantsId, NotificationType.EVENT_REMINDER);
+
+			// Send Push Notification
+			asyncNotificationService.sendBrowserPushNotification(event, perticipantsId, NotificationType.EVENT_REMINDER);
 		});
 	}
 
