@@ -69,6 +69,7 @@ public class EventService extends BaseService {
 			if(documentOp.isPresent()) {
 				Document document = documentOp.get();
 				document.setReferenceId(finalEvent.getId());
+				document.setXtemp(false);
 				documentRepo.save(document);
 			}
 		});
@@ -179,6 +180,7 @@ public class EventService extends BaseService {
 			if(documentOp.isPresent()) {
 				Document document = documentOp.get();
 				document.setReferenceId(finalEvent.getId());
+				document.setXtemp(false);
 				documentRepo.save(document);
 			}
 		});
