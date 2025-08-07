@@ -30,7 +30,7 @@ public class CreateProjectReqDto {
 	@NotNull(message = "Is favourite required, Value should be either true or false")
 	private Boolean isFavourite;
 	@NotNull(message = "Layout type required, Value should be withing LIST, BOARD, CALENDAR")
-	@ValidEnum(enumClass = LayoutType.class, message = "Invalid layout type, Value should be withing LIST, BOARD, CALENDAR")
+	//@ValidEnum(enumClass = LayoutType.class, message = "Invalid layout type, Value should be withing LIST, BOARD, CALENDAR")
 	private LayoutType layoutType;
 
 	public Project getBean() {

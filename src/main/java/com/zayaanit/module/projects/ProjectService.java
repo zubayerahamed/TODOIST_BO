@@ -51,6 +51,7 @@ public class ProjectService extends BaseService {
 		project.setWorkspaceId(loggedinUser().getWorkspace().getId());
 		project.setSeqn(0);
 		project.setIsSystemDefined(false);
+		project.setIsInheritSettings(true);
 
 		project = projectRepo.save(project);
 		return new CreateProjectResDto(project);
