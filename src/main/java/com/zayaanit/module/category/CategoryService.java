@@ -57,7 +57,7 @@ public class CategoryService extends BaseService {
 
 	@Transactional
 	public CreateCategoryResDto create(CreateCategoryReqDto reqDto) throws CustomException {
-		if(reqDto.getReferenceId() == null) {
+		if(reqDto.getReferenceId() == null || reqDto.getReferenceId() == 0) {
 			reqDto.setReferenceId(loggedinUser().getWorkspace().getId());
 		} else {
 			// Valdate id with project id

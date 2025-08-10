@@ -46,6 +46,10 @@ public class MyUserDetail implements UserDetails {
 				.collect(Collectors.toList());
 	}
 
+	public List<String> getRoles(){
+		return Arrays.stream(roles.split(",")).collect(Collectors.toList());
+	}
+
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		return this.authorities;

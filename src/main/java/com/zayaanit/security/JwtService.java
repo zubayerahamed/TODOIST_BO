@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import com.zayaanit.model.MyUserDetail;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
@@ -58,19 +60,28 @@ public class JwtService {
 		return Keys.hmacShaKeyFor(keyBytes);
 	}
 
-	public String generateToken(UserDetails userDetails) {
+	public String generateToken(MyUserDetail userDetails) {
 		return generateToken(new HashMap<>(), userDetails);
 	}
 
-	public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
+	public String generateToken(Map<String, Object> extraClaims, MyUserDetail userDetails) {
 		return buildToken(extraClaims, userDetails, jwtExpiration);
 	}
 
-	public String generateRefreshToken(UserDetails userDetails) {
+	public String generateRefreshToken(MyUserDetail userDetails) {
 		return buildToken(new HashMap<>(), userDetails, refreshExpiration);
 	}
 
-	private String buildToken(Map<String, Object> extraClaims, UserDetails userDetails, long expiration) {
+	private String buildToken(Map<String, Object> extraClaims, MyUserDetail userDetails, long expiration) {
+		extraClaims.put("email", userDetails.getEmail());
+		extraClaims.put("workspaceId", userDetails.getWorkspace().getId());
+		extraClaims.put("workspaceName", userDetails.getWorkspace().getName());
+		extraClaims.put("workspaceActive", userDetails.getWorkspace().getIsActive());
+		extraClaims.put("workspaceSystemDefined", userDetails.getWorkspace().getIsSystemDefined());
+		extraClaims.put("workspaceLogo", userDetails.getWorkspace().getLogo());
+		extraClaims.put("roles", userDetails.getRoles());
+		extraClaims.put("isPrimaryWorkspace", userDetails.isPrimaryWorkspace());
+
 		return Jwts.builder()
 				.claims().add(extraClaims)
 				.subject(userDetails.getUsername())
