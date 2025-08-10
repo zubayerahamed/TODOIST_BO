@@ -1,9 +1,12 @@
 package com.zayaanit.module.workflows;
 
+import com.zayaanit.enums.ReferenceType;
 import com.zayaanit.model.AbstractModel;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -36,6 +39,10 @@ public class Workflow extends AbstractModel<Long> {
 
 	@Column(name = "reference_id")
 	private Long referenceId;   // It can be workspace id or can be project id
+
+	@Enumerated(EnumType.STRING)
+	@Column(name = "reference_type", nullable = false)
+	private ReferenceType referenceType;
 
 	@Column(name = "name", length = 25)
 	private String name;

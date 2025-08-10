@@ -64,4 +64,16 @@ public class CategoryController {
 		categoryService.deleteById(id);
 		return ResponseBuilder.build(ResponseStatusType.DELETE_SUCCESS, null);
 	}
+
+	@PutMapping("/add-to-default-task/{referenceid}/{id}")
+	public ResponseEntity<SuccessResponse<CategoryResDto>> addToDefaultTask(@PathVariable Long referenceid, @PathVariable Long id){
+		CategoryResDto resData = categoryService.addToDefaultTask(referenceid, id);
+		return ResponseBuilder.build(ResponseStatusType.UPDATE_SUCCESS, resData);
+	}
+
+	@PutMapping("/add-to-default-event/{referenceid}/{id}")
+	public ResponseEntity<SuccessResponse<CategoryResDto>> addToDefaultEvent(@PathVariable Long referenceid, @PathVariable Long id){
+		CategoryResDto resData = categoryService.addToDefaultEvent(referenceid, id);
+		return ResponseBuilder.build(ResponseStatusType.UPDATE_SUCCESS, resData);
+	}
 }

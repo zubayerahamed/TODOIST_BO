@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import com.zayaanit.enums.ReferenceType;
 import com.zayaanit.exception.CustomException;
 import com.zayaanit.module.BaseService;
 import com.zayaanit.module.projects.Project;
@@ -57,10 +58,13 @@ public class CategoryService extends BaseService {
 
 	@Transactional
 	public CreateCategoryResDto create(CreateCategoryReqDto reqDto) throws CustomException {
+		ReferenceType referenceType = null;
 		if(reqDto.getReferenceId() == null || reqDto.getReferenceId() == 0) {
+			referenceType = ReferenceType.WORKSPACE;
 			reqDto.setReferenceId(loggedinUser().getWorkspace().getId());
 		} else {
 			// Valdate id with project id
+			referenceType = ReferenceType.PROJECT;
 			Optional<Project> projectOp = projectRepo.findByIdAndWorkspaceId(reqDto.getReferenceId(), loggedinUser().getWorkspace().getId());
 			if(!projectOp.isPresent()) {
 				throw new CustomException("Reference id is not valid project id", HttpStatus.BAD_REQUEST);
@@ -69,6 +73,9 @@ public class CategoryService extends BaseService {
 
 		Category category = reqDto.getBean();
 		category.setSeqn(0);
+		category.setIsDefaultForEvent(false);
+		category.setIsDefaultForTask(false);
+		category.setReferenceType(referenceType);
 
 		category = categoryRepo.save(category);
 		return new CreateCategoryResDto(category);
@@ -96,5 +103,61 @@ public class CategoryService extends BaseService {
 		}
 
 		categoryRepo.delete(categoryOp.get());
+	}
+
+	@Transactional
+	public CategoryResDto addToDefaultTask(Long referenceid, Long id) throws CustomException {
+		ReferenceType referenceType = ReferenceType.PROJECT;
+		if(referenceid == null || referenceid == 0) {
+			referenceid = loggedinUser().getWorkspace().getId();
+			referenceType = ReferenceType.WORKSPACE;
+		}
+
+		Optional<Category> categoryOp = categoryRepo.findById(id);
+		if(!categoryOp.isPresent()) {
+			throw new CustomException("Category not exist", HttpStatus.BAD_REQUEST);
+		}
+
+		// Remove existing default first
+		Optional<Category> existingDefaultOp = categoryRepo.findByReferenceIdAndReferenceTypeAndIsDefaultForTask(referenceid, referenceType, Boolean.TRUE);
+		if(existingDefaultOp.isPresent()) {
+			Category existingDefaultCategory = existingDefaultOp.get();
+			existingDefaultCategory.setIsDefaultForTask(false);
+			categoryRepo.save(existingDefaultCategory);
+		}
+
+		Category exisObj = categoryOp.get();
+		exisObj.setIsDefaultForTask(true);
+		exisObj = categoryRepo.save(exisObj);
+
+		return new CategoryResDto(exisObj);
+	}
+
+	@Transactional
+	public CategoryResDto addToDefaultEvent(Long referenceid, Long id) throws CustomException {
+		ReferenceType referenceType = ReferenceType.PROJECT;
+		if(referenceid == null || referenceid == 0) {
+			referenceid = loggedinUser().getWorkspace().getId();
+			referenceType = ReferenceType.WORKSPACE;
+		}
+
+		Optional<Category> categoryOp = categoryRepo.findById(id);
+		if(!categoryOp.isPresent()) {
+			throw new CustomException("Category not exist", HttpStatus.BAD_REQUEST);
+		}
+
+		// Remove existing default first
+		Optional<Category> existingDefaultOp = categoryRepo.findByReferenceIdAndReferenceTypeAndIsDefaultForEvent(referenceid, referenceType, Boolean.TRUE);
+		if(existingDefaultOp.isPresent()) {
+			Category existingDefaultCategory = existingDefaultOp.get();
+			existingDefaultCategory.setIsDefaultForEvent(false);
+			categoryRepo.save(existingDefaultCategory);
+		}
+
+		Category exisObj = categoryOp.get();
+		exisObj.setIsDefaultForEvent(true);
+		exisObj = categoryRepo.save(exisObj);
+
+		return new CategoryResDto(exisObj);
 	}
 }

@@ -42,6 +42,18 @@ public class ProjectController {
 		return ResponseBuilder.build(ResponseStatusType.CREATE_SUCCESS, resData);
 	}
 
+	@PutMapping("/add-to-favourite/{id}")
+	public ResponseEntity<SuccessResponse<ProjectResDto>> addToFavourite(@PathVariable Long id){
+		ProjectResDto resData = projectService.addToFavourite(id);
+		return ResponseBuilder.build(ResponseStatusType.UPDATE_SUCCESS, resData);
+	}
+
+	@PutMapping("/remove-from-favourite/{id}")
+	public ResponseEntity<SuccessResponse<ProjectResDto>> removeFromFavourite(@PathVariable Long id){
+		ProjectResDto resData = projectService.removeFromFavourite(id);
+		return ResponseBuilder.build(ResponseStatusType.UPDATE_SUCCESS, resData);
+	}
+
 	@PutMapping
 	public ResponseEntity<SuccessResponse<UpdateProjectResDto>> update(@Valid @RequestBody UpdateProjectReqDto reqDto){
 		UpdateProjectResDto resData = projectService.update(reqDto);

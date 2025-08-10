@@ -1,9 +1,12 @@
 package com.zayaanit.module.category;
 
+import com.zayaanit.enums.ReferenceType;
 import com.zayaanit.model.AbstractModel;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -37,6 +40,10 @@ public class Category extends AbstractModel<Long> {
 	@Column(name = "reference_id", nullable = false)
 	private Long referenceId;
 
+	@Enumerated(EnumType.STRING)
+	@Column(name = "reference_type", nullable = false)
+	private ReferenceType referenceType;
+
 	@Column(name = "name", length = 25, nullable = false)
 	private String name;
 
@@ -51,4 +58,10 @@ public class Category extends AbstractModel<Long> {
 
 	@Column(name = "seqn")
 	private Integer seqn;
+
+	@Column(name = "is_default_for_task", length = 1, nullable = false, columnDefinition = "BIT DEFAULT 0")
+	private Boolean isDefaultForTask;
+
+	@Column(name = "is_default_for_event", length = 1, nullable = false, columnDefinition = "BIT DEFAULT 0")
+	private Boolean isDefaultForEvent;
 }

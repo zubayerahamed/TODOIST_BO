@@ -15,6 +15,7 @@ import com.zayaanit.enums.DateFormat;
 import com.zayaanit.enums.Days;
 import com.zayaanit.enums.Language;
 import com.zayaanit.enums.LayoutType;
+import com.zayaanit.enums.ReferenceType;
 import com.zayaanit.enums.TimeFormat;
 import com.zayaanit.enums.TokenType;
 import com.zayaanit.exception.CustomException;
@@ -131,6 +132,7 @@ public class AuthenticationService {
 		// 6. Create a default status (Completed)
 		Workflow workflow = Workflow.builder()
 				.referenceId(workspace.getId())
+				.referenceType(ReferenceType.WORKSPACE)
 				.name("Completed")
 				.isSystemDefined(Boolean.TRUE)
 				.seqn(999)
@@ -138,6 +140,17 @@ public class AuthenticationService {
 				.build();
 
 		workflow = workflowRepo.save(workflow);
+
+		Workflow indexworkflow = Workflow.builder()
+				.referenceId(project.getId())
+				.referenceType(ReferenceType.PROJECT)
+				.name("Completed")
+				.isSystemDefined(Boolean.TRUE)
+				.seqn(999)
+				.color("#000000")
+				.build();
+
+		indexworkflow = workflowRepo.save(indexworkflow);
 
 		// 7. Generate JWT token and Refresh token
 		var jwtToken = jwtService.generateToken(new MyUserDetail(user, workspace, userWorkspace));

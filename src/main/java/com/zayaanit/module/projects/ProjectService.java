@@ -72,6 +72,30 @@ public class ProjectService extends BaseService {
 	}
 
 	@Transactional
+	public ProjectResDto addToFavourite(Long id) {
+		Optional<Project> projectOp = projectRepo.findByIdAndWorkspaceId(id, loggedinUser().getWorkspace().getId());
+		if(!projectOp.isPresent()) throw new CustomException("Project not exist", HttpStatus.NOT_FOUND);
+
+		Project existobj = projectOp.get();
+		existobj.setIsFavourite(true);
+		existobj = projectRepo.save(existobj);
+
+		return new ProjectResDto(existobj);
+	}
+
+	@Transactional
+	public ProjectResDto removeFromFavourite(Long id) {
+		Optional<Project> projectOp = projectRepo.findByIdAndWorkspaceId(id, loggedinUser().getWorkspace().getId());
+		if(!projectOp.isPresent()) throw new CustomException("Project not exist", HttpStatus.NOT_FOUND);
+
+		Project existobj = projectOp.get();
+		existobj.setIsFavourite(false);
+		existobj = projectRepo.save(existobj);
+
+		return new ProjectResDto(existobj);
+	}
+
+	@Transactional
 	public void deleteById(Long id) throws CustomException {
 		Optional<Project> projectOp = projectRepo.findByIdAndWorkspaceId(id, loggedinUser().getWorkspace().getId());
 		if(!projectOp.isPresent()) throw new CustomException("Project not exist", HttpStatus.NOT_FOUND);
