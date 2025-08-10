@@ -11,7 +11,7 @@ import com.zayaanit.enums.ReferenceType;
 @Repository
 public interface CategoryRepo extends JpaRepository<Category, Long> {
 
-	List<Category> findAllByReferenceId(Long referenceId);
+	List<Category> findAllByReferenceIdAndReferenceType(Long referenceId, ReferenceType referenceType);
 
 	Optional<Category> findByReferenceIdAndReferenceTypeAndIsDefaultForTask(Long referenceId, ReferenceType referenceType, Boolean isDefaultForTask);
 	Optional<Category> findByReferenceIdAndReferenceTypeAndIsDefaultForEvent(Long referenceId, ReferenceType referenceType, Boolean isDefaultForEvent);

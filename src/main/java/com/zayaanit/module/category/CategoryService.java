@@ -29,7 +29,7 @@ public class CategoryService extends BaseService {
 	@Autowired private ProjectRepo projectRepo;
 
 	public List<CategoryResDto> getAllWorkspaceCategories() {
-		List<Category> categories = categoryRepo.findAllByReferenceId(loggedinUser().getWorkspace().getId());
+		List<Category> categories = categoryRepo.findAllByReferenceIdAndReferenceType(loggedinUser().getWorkspace().getId(), ReferenceType.WORKSPACE);
 		if(categories.isEmpty()) return Collections.emptyList(); 
 
 		List<CategoryResDto> responseData = new ArrayList<>();
@@ -40,7 +40,7 @@ public class CategoryService extends BaseService {
 	}
 
 	public List<CategoryResDto> getAllProjectCategories(Long projectId) {
-		List<Category> categories = categoryRepo.findAllByReferenceId(projectId);
+		List<Category> categories = categoryRepo.findAllByReferenceIdAndReferenceType(projectId, ReferenceType.PROJECT);
 		if(categories.isEmpty()) return Collections.emptyList(); 
 
 		List<CategoryResDto> responseData = new ArrayList<>();
