@@ -13,8 +13,13 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import com.zayaanit.enums.ReferenceType;
 import com.zayaanit.exception.CustomException;
 import com.zayaanit.module.BaseService;
+import com.zayaanit.module.category.Category;
+import com.zayaanit.module.category.CategoryRepo;
+import com.zayaanit.module.workflows.Workflow;
+import com.zayaanit.module.workflows.WorkflowRepo;
 
 import io.jsonwebtoken.lang.Collections;
 import jakarta.transaction.Transactional;
@@ -27,6 +32,8 @@ import jakarta.transaction.Transactional;
 public class ProjectService extends BaseService {
 
 	@Autowired private ProjectRepo projectRepo;
+	@Autowired private CategoryRepo categoryRepo;
+	@Autowired private WorkflowRepo workflowRepo;
 
 	public List<ProjectResDto> getAll() {
 		List<Project> projects = projectRepo.findAllByWorkspaceId(loggedinUser().getWorkspace().getId());
@@ -81,6 +88,49 @@ public class ProjectService extends BaseService {
 		existobj = projectRepo.save(existobj);
 
 		return new ProjectResDto(existobj);
+	}
+
+	@Transactional
+	public void inheritWorkspaceSettings(Long id) {
+		Optional<Project> projectOp = projectRepo.findByIdAndWorkspaceId(id, loggedinUser().getWorkspace().getId());
+		if(!projectOp.isPresent()) throw new CustomException("Project not exist", HttpStatus.NOT_FOUND);
+
+		// Copy categories
+		List<Category> categories = categoryRepo.findAllByReferenceIdAndReferenceType(loggedinUser().getWorkspace().getId(), ReferenceType.WORKSPACE);
+		if(!categories.isEmpty()) {
+			categories.stream().forEach(c -> {
+				Category category = new Category();
+				category.setReferenceId(id);
+				category.setReferenceType(ReferenceType.PROJECT);
+				category.setName(c.getName());
+				category.setColor(c.getColor());
+				category.setIsForTask(c.getIsForTask());
+				category.setIsForEvent(c.getIsForEvent());
+				category.setSeqn(c.getSeqn());
+				category.setIsDefaultForTask(c.getIsDefaultForTask());
+				category.setIsDefaultForEvent(c.getIsDefaultForEvent());
+				categoryRepo.save(category);
+			});
+		}
+
+
+		// Copy workflows without the completed, because completed already created
+		List<Workflow> workflows = workflowRepo.findAllByReferenceIdAndReferenceType(loggedinUser().getWorkspace().getId(), ReferenceType.WORKSPACE);
+		if(!workflows.isEmpty()) {
+			workflows.stream().forEach(w -> {
+				if(Boolean.FALSE.equals(w.getIsSystemDefined())) {
+					Workflow workflow = new Workflow();
+					workflow.setReferenceId(id);
+					workflow.setReferenceType(ReferenceType.PROJECT);
+					workflow.setName(w.getName());
+					workflow.setIsSystemDefined(false);
+					workflow.setSeqn(w.getSeqn());
+					workflow.setColor(w.getColor());
+					workflowRepo.save(workflow);
+				}
+			});
+		}
+
 	}
 
 	@Transactional

@@ -48,6 +48,12 @@ public class ProjectController {
 		return ResponseBuilder.build(ResponseStatusType.UPDATE_SUCCESS, resData);
 	}
 
+	@PostMapping("/inherit-workspace-settings/{id}")
+	public ResponseEntity<SuccessResponse<ProjectResDto>> inheritWorkspaceSettings(@PathVariable Long id){
+		projectService.inheritWorkspaceSettings(id);
+		return ResponseBuilder.build(ResponseStatusType.CREATE_SUCCESS, null);
+	}
+
 	@PutMapping("/remove-from-favourite/{id}")
 	public ResponseEntity<SuccessResponse<ProjectResDto>> removeFromFavourite(@PathVariable Long id){
 		ProjectResDto resData = projectService.removeFromFavourite(id);
