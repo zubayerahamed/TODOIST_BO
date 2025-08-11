@@ -26,6 +26,8 @@ public class WorkflowResDto {
 	private Boolean isSystemDefined;
 	private Integer seqn;
 	private String color;
+	private Boolean isInherited;
+	private Long parentId;
 
 	public WorkflowResDto(Workflow workflow) {
 		BeanUtils.copyProperties(workflow, this);

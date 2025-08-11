@@ -48,14 +48,14 @@ public class CategoryController {
 	} 
 
 	@PostMapping
-	public ResponseEntity<SuccessResponse<CreateCategoryResDto>> create(@Valid @RequestBody CreateCategoryReqDto reqDto){
-		CreateCategoryResDto resData = categoryService.create(reqDto);
+	public ResponseEntity<SuccessResponse<CategoryResDto>> create(@Valid @RequestBody CreateCategoryReqDto reqDto){
+		CategoryResDto resData = categoryService.create(reqDto);
 		return ResponseBuilder.build(ResponseStatusType.CREATE_SUCCESS, resData);
 	}
 
 	@PutMapping
-	public ResponseEntity<SuccessResponse<UpdateCategoryResDto>> update(@RequestBody UpdateCategoryReqDto reqDto){
-		UpdateCategoryResDto resData = categoryService.update(reqDto);
+	public ResponseEntity<SuccessResponse<CategoryResDto>> update(@RequestBody UpdateCategoryReqDto reqDto){
+		CategoryResDto resData = categoryService.update(reqDto);
 		return ResponseBuilder.build(ResponseStatusType.UPDATE_SUCCESS, resData);
 	}
 

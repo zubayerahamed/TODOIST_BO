@@ -26,6 +26,8 @@ public class CategoryResDto {
 	private Integer seqn;
 	private Boolean isDefaultForTask;
 	private Boolean isDefaultForEvent;
+	private Boolean isInherited;
+	private Long parentId;
 
 	public CategoryResDto(Category category) {
 		BeanUtils.copyProperties(category, this);

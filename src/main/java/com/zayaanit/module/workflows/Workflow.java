@@ -55,4 +55,10 @@ public class Workflow extends AbstractModel<Long> {
 
 	@Column(name = "color", length = 10)
 	private String color;
+
+	@Column(name = "is_inherited", length = 1, nullable = false, columnDefinition = "BIT DEFAULT 0")
+	private Boolean isInherited;
+
+	@Column(name = "parent_id")
+	private Long parentId;  // parent id means category id of workspace, it will trace the parent changes
 }

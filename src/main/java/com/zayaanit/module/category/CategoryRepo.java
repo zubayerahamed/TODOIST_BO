@@ -12,7 +12,20 @@ import com.zayaanit.enums.ReferenceType;
 public interface CategoryRepo extends JpaRepository<Category, Long> {
 
 	List<Category> findAllByReferenceIdAndReferenceType(Long referenceId, ReferenceType referenceType);
+	List<Category> findAllByReferenceIdAndReferenceTypeAndIsInheritedTrue(Long referenceId, ReferenceType referenceType);
+	List<Category> findAllByReferenceIdAndReferenceTypeAndIsInheritedFalse(Long referenceId, ReferenceType referenceType);
 
-	Optional<Category> findByReferenceIdAndReferenceTypeAndIsDefaultForTask(Long referenceId, ReferenceType referenceType, Boolean isDefaultForTask);
-	Optional<Category> findByReferenceIdAndReferenceTypeAndIsDefaultForEvent(Long referenceId, ReferenceType referenceType, Boolean isDefaultForEvent);
+	Optional<Category> findByReferenceIdAndReferenceTypeAndIsDefaultForTaskTrue(Long referenceId, ReferenceType referenceType);
+	Optional<Category> findByReferenceIdAndReferenceTypeAndIsDefaultForTaskFalse(Long referenceId, ReferenceType referenceType);
+	Optional<Category> findByReferenceIdAndReferenceTypeAndIsDefaultForTaskTrueAndIsInheritedTrue(Long referenceId, ReferenceType referenceType);
+	Optional<Category> findByReferenceIdAndReferenceTypeAndIsDefaultForTaskTrueAndIsInheritedFalse(Long referenceId, ReferenceType referenceType);
+
+	Optional<Category> findByReferenceIdAndReferenceTypeAndIsDefaultForEventTrue(Long referenceId, ReferenceType referenceType);
+	Optional<Category> findByReferenceIdAndReferenceTypeAndIsDefaultForEventFalse(Long referenceId, ReferenceType referenceType);
+	Optional<Category> findByReferenceIdAndReferenceTypeAndIsDefaultForEventTrueAndIsInheritedTrue(Long referenceId, ReferenceType referenceType);
+	Optional<Category> findByReferenceIdAndReferenceTypeAndIsDefaultForEventTrueAndIsInheritedFalse(Long referenceId, ReferenceType referenceType);
+
+	Optional<Category> findByReferenceIdAndReferenceTypeAndParentId(Long referenceId, ReferenceType referenceType, Long parentId);
+
+	List<Category> findAllByParentIdAndIsInheritedTrue(Long parentId);
 }

@@ -39,8 +39,21 @@ public class WorkflowService extends BaseService {
 		return responseData;
 	}
 
-	public List<WorkflowResDto> getAllProjectWorkflows(Long projectId) {
-		List<Workflow> workflows = workflowRepo.findAllByReferenceIdAndReferenceType(projectId, ReferenceType.PROJECT);
+	public List<WorkflowResDto> getAllProjectWorkflows(Long projectId) throws CustomException {
+		// Get the project record first to check the inheritence
+		Optional<Project> projectOp = projectRepo.findByIdAndWorkspaceId(projectId, loggedinUser().getWorkspace().getId());
+		if(!projectOp.isPresent()) {
+			throw new CustomException("Project not eixsit", HttpStatus.NOT_FOUND);
+		}
+
+		List<Workflow> workflows = new ArrayList<>();
+		Project project = projectOp.get();
+		if(Boolean.TRUE.equals(project.getIsInheritSettings())) {
+			workflows = workflowRepo.findAllByReferenceIdAndReferenceTypeAndIsInheritedTrue(projectId, ReferenceType.PROJECT);
+		} else {
+			workflows = workflowRepo.findAllByReferenceIdAndReferenceTypeAndIsInheritedFalse(projectId, ReferenceType.PROJECT);
+		}
+
 		if(workflows.isEmpty()) return Collections.emptyList(); 
 
 		List<WorkflowResDto> responseData = new ArrayList<>();
@@ -69,11 +82,16 @@ public class WorkflowService extends BaseService {
 			if(!projectOp.isPresent()) {
 				throw new CustomException("Reference id is not valid project id", HttpStatus.BAD_REQUEST);
 			}
+			if(Boolean.TRUE.equals(projectOp.get().getIsInheritSettings())) {
+				throw new CustomException("Project settings inherited from workspace is enabled! Disable it first.", HttpStatus.BAD_REQUEST);
+			}
 		}
 
 		Workflow workflow = reqDto.getBean();
 		workflow.setReferenceType(referenceType);
 		workflow.setIsSystemDefined(false);
+		workflow.setIsInherited(false);
+		workflow.setParentId(null);
 		workflow = workflowRepo.save(workflow);
 
 		return new WorkflowResDto(workflow);

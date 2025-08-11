@@ -124,7 +124,7 @@ public class AuthenticationService {
 				.layoutType(LayoutType.LIST)
 				.isSystemDefined(Boolean.TRUE)
 				.isFavourite(Boolean.FALSE)
-				.isInheritSettings(Boolean.FALSE)
+				.isInheritSettings(Boolean.TRUE)
 				.build();
 
 		project  = projectRepo.save(project);
@@ -137,20 +137,37 @@ public class AuthenticationService {
 				.isSystemDefined(Boolean.TRUE)
 				.seqn(999)
 				.color("#000000")
+				.isInherited(false)
+				.parentId(null)
 				.build();
 
 		workflow = workflowRepo.save(workflow);
 
-		Workflow indexworkflow = Workflow.builder()
+		Workflow indexInheritedWorkflow = Workflow.builder()
 				.referenceId(project.getId())
 				.referenceType(ReferenceType.PROJECT)
 				.name("Completed")
 				.isSystemDefined(Boolean.TRUE)
 				.seqn(999)
 				.color("#000000")
+				.isInherited(true)
+				.parentId(workflow.getId())
 				.build();
 
-		indexworkflow = workflowRepo.save(indexworkflow);
+		indexInheritedWorkflow = workflowRepo.save(indexInheritedWorkflow);
+
+		Workflow indexWorkflow = Workflow.builder()
+				.referenceId(project.getId())
+				.referenceType(ReferenceType.PROJECT)
+				.name("Completed")
+				.isSystemDefined(Boolean.TRUE)
+				.seqn(999)
+				.color("#000000")
+				.isInherited(false)
+				.parentId(null)
+				.build();
+
+		indexWorkflow = workflowRepo.save(indexWorkflow);
 
 		// 7. Generate JWT token and Refresh token
 		var jwtToken = jwtService.generateToken(new MyUserDetail(user, workspace, userWorkspace));

@@ -54,18 +54,81 @@ public class ProjectService extends BaseService {
 
 	@Transactional
 	public CreateProjectResDto create(CreateProjectReqDto reqDto) throws CustomException {
+		// Project reserved name validation
+		if("INBOX".equalsIgnoreCase(reqDto.getName())) {
+			throw new CustomException("Projec name Inbox is resereved for system", HttpStatus.BAD_REQUEST);
+		}
+
 		Project project = reqDto.getBean();
 		project.setWorkspaceId(loggedinUser().getWorkspace().getId());
 		project.setSeqn(0);
 		project.setIsSystemDefined(false);
 		project.setIsInheritSettings(true);
-
 		project = projectRepo.save(project);
+
+		// Partially need to create project settings also
+		// Workflow duplication from workspace
+		List<Workflow> workflows =  workflowRepo.findAllByReferenceIdAndReferenceType(loggedinUser().getWorkspace().getId(), ReferenceType.WORKSPACE);
+		if(workflows.isEmpty()) {
+			throw new CustomException("Data missing! Workspace don't have system defiend workflow.", HttpStatus.NOT_FOUND);
+		}
+
+		for(Workflow w : workflows) {
+			Workflow projectWorkflow = Workflow.builder()
+					.referenceId(project.getId())
+					.referenceType(ReferenceType.PROJECT)
+					.name(w.getName())
+					.isSystemDefined(w.getIsSystemDefined())
+					.seqn(w.getSeqn())
+					.color(w.getColor())
+					.isInherited(true)
+					.parentId(w.getId())
+					.build();
+			workflowRepo.save(projectWorkflow);
+		}
+
+		// Create a system defined workflow fo this project which is not inherited
+		Workflow projectWorkflow = Workflow.builder()
+				.referenceId(project.getId())
+				.referenceType(ReferenceType.PROJECT)
+				.name("Completed")
+				.isSystemDefined(true)
+				.seqn(999)
+				.color("#000000")
+				.isInherited(false)
+				.parentId(null)
+				.build();
+		workflowRepo.save(projectWorkflow);
+
+		// Now duplicate all the categories
+		List<Category> categories = categoryRepo.findAllByReferenceIdAndReferenceType(loggedinUser().getWorkspace().getId(), ReferenceType.WORKSPACE);
+		for(Category c : categories) {
+			Category category = Category.builder()
+					.referenceId(project.getId())
+					.referenceType(ReferenceType.PROJECT)
+					.name(c.getName())
+					.color(c.getColor())
+					.isForTask(c.getIsForTask())
+					.isForEvent(c.getIsForEvent())
+					.seqn(c.getSeqn())
+					.isDefaultForTask(c.getIsDefaultForTask())
+					.isDefaultForEvent(c.getIsDefaultForEvent())
+					.isInherited(true)
+					.parentId(c.getId())
+					.build();
+			categoryRepo.save(category);
+		}
+
 		return new CreateProjectResDto(project);
 	}
 
 	@Transactional
 	public UpdateProjectResDto update(UpdateProjectReqDto reqDto) throws CustomException {
+		// Project reserved name validation
+		if("INBOX".equalsIgnoreCase(reqDto.getName())) {
+			throw new CustomException("Projec name Inbox is resereved for system", HttpStatus.BAD_REQUEST);
+		}
+
 		if(reqDto.getId() == null) throw new CustomException("Project id required", HttpStatus.BAD_REQUEST);
 
 		Optional<Project> projectOp = projectRepo.findByIdAndWorkspaceId(reqDto.getId(), loggedinUser().getWorkspace().getId());
@@ -91,15 +154,34 @@ public class ProjectService extends BaseService {
 	}
 
 	@Transactional
+	public void disableInheritWorkspaceSettings(Long id) {
+		Optional<Project> projectOp = projectRepo.findByIdAndWorkspaceId(id, loggedinUser().getWorkspace().getId());
+		if(!projectOp.isPresent()) throw new CustomException("Project not exist", HttpStatus.NOT_FOUND);
+
+		Project project = projectOp.get();
+		project.setIsInheritSettings(false);
+		projectRepo.save(project);
+	}
+
+	@Transactional
 	public void inheritWorkspaceSettings(Long id) {
 		Optional<Project> projectOp = projectRepo.findByIdAndWorkspaceId(id, loggedinUser().getWorkspace().getId());
 		if(!projectOp.isPresent()) throw new CustomException("Project not exist", HttpStatus.NOT_FOUND);
+
+		Project project = projectOp.get();
+		project.setIsInheritSettings(true);
+		projectRepo.save(project);
 
 		// Copy categories
 		List<Category> categories = categoryRepo.findAllByReferenceIdAndReferenceType(loggedinUser().getWorkspace().getId(), ReferenceType.WORKSPACE);
 		if(!categories.isEmpty()) {
 			categories.stream().forEach(c -> {
 				Category category = new Category();
+
+				// check the category already exist, so then just update it, so that it can align with workspace
+				Optional<Category> existCategoryOp = categoryRepo.findByReferenceIdAndReferenceTypeAndParentId(id, ReferenceType.PROJECT, c.getId());
+				if(existCategoryOp.isPresent()) category = existCategoryOp.get();
+
 				category.setReferenceId(id);
 				category.setReferenceType(ReferenceType.PROJECT);
 				category.setName(c.getName());
@@ -109,6 +191,8 @@ public class ProjectService extends BaseService {
 				category.setSeqn(c.getSeqn());
 				category.setIsDefaultForTask(c.getIsDefaultForTask());
 				category.setIsDefaultForEvent(c.getIsDefaultForEvent());
+				category.setIsInherited(true);
+				category.setParentId(c.getId());
 				categoryRepo.save(category);
 			});
 		}
@@ -118,16 +202,22 @@ public class ProjectService extends BaseService {
 		List<Workflow> workflows = workflowRepo.findAllByReferenceIdAndReferenceType(loggedinUser().getWorkspace().getId(), ReferenceType.WORKSPACE);
 		if(!workflows.isEmpty()) {
 			workflows.stream().forEach(w -> {
-				if(Boolean.FALSE.equals(w.getIsSystemDefined())) {
-					Workflow workflow = new Workflow();
-					workflow.setReferenceId(id);
-					workflow.setReferenceType(ReferenceType.PROJECT);
-					workflow.setName(w.getName());
-					workflow.setIsSystemDefined(false);
-					workflow.setSeqn(w.getSeqn());
-					workflow.setColor(w.getColor());
-					workflowRepo.save(workflow);
-				}
+				Workflow workflow = new Workflow();
+
+				// check the inherited already exist, then just update it again, so that it is align with workspace
+				Optional<Workflow> existWorkflowOp = workflowRepo.findByReferenceIdAndReferenceTypeAndParentId(id, ReferenceType.PROJECT, w.getId());
+				if(existWorkflowOp.isPresent()) workflow = existWorkflowOp.get();
+
+				workflow.setReferenceId(id);
+				workflow.setReferenceType(ReferenceType.PROJECT);
+				workflow.setName(w.getName());
+				workflow.setIsSystemDefined(w.getIsSystemDefined());
+				workflow.setSeqn(w.getSeqn());
+				workflow.setColor(w.getColor());
+				workflow.setIsInherited(true);
+				workflow.setParentId(w.getId());
+				workflowRepo.save(workflow);
+
 			});
 		}
 

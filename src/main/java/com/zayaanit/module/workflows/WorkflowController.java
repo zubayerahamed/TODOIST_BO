@@ -36,7 +36,7 @@ public class WorkflowController {
 	}
 
 	@GetMapping("/all/project/{id}")
-	public ResponseEntity<SuccessResponse<List<WorkflowResDto>>> getAllProjectCategories(@PathVariable Long id){
+	public ResponseEntity<SuccessResponse<List<WorkflowResDto>>> getAllProjectWorkflows(@PathVariable Long id){
 		List<WorkflowResDto> resData = workflowService.getAllProjectWorkflows(id);
 		return ResponseBuilder.build(ResponseStatusType.READ_SUCCESS, resData);
 	}

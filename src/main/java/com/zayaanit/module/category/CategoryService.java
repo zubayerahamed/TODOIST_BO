@@ -39,8 +39,21 @@ public class CategoryService extends BaseService {
 		return responseData;
 	}
 
-	public List<CategoryResDto> getAllProjectCategories(Long projectId) {
-		List<Category> categories = categoryRepo.findAllByReferenceIdAndReferenceType(projectId, ReferenceType.PROJECT);
+	public List<CategoryResDto> getAllProjectCategories(Long projectId) throws CustomException {
+		// Get the project record first to check the inheritence
+		Optional<Project> projectOp = projectRepo.findByIdAndWorkspaceId(projectId, loggedinUser().getWorkspace().getId());
+		if(!projectOp.isPresent()) {
+			throw new CustomException("Project not eixsit", HttpStatus.NOT_FOUND);
+		}
+
+		List<Category> categories = new ArrayList<>();
+		Project project = projectOp.get();
+		if(Boolean.TRUE.equals(project.getIsInheritSettings())) {
+			categories = categoryRepo.findAllByReferenceIdAndReferenceTypeAndIsInheritedTrue(projectId, ReferenceType.PROJECT);
+		} else {
+			categories = categoryRepo.findAllByReferenceIdAndReferenceTypeAndIsInheritedFalse(projectId, ReferenceType.PROJECT);
+		}
+
 		if(categories.isEmpty()) return Collections.emptyList(); 
 
 		List<CategoryResDto> responseData = new ArrayList<>();
@@ -57,7 +70,7 @@ public class CategoryService extends BaseService {
 	}
 
 	@Transactional
-	public CreateCategoryResDto create(CreateCategoryReqDto reqDto) throws CustomException {
+	public CategoryResDto create(CreateCategoryReqDto reqDto) throws CustomException {
 		ReferenceType referenceType = null;
 		if(reqDto.getReferenceId() == null || reqDto.getReferenceId() == 0) {
 			referenceType = ReferenceType.WORKSPACE;
@@ -69,20 +82,25 @@ public class CategoryService extends BaseService {
 			if(!projectOp.isPresent()) {
 				throw new CustomException("Reference id is not valid project id", HttpStatus.BAD_REQUEST);
 			}
+			if(Boolean.TRUE.equals(projectOp.get().getIsInheritSettings())) {
+				throw new CustomException("Project settings inherited from workspace is enabled! Disable it first.", HttpStatus.BAD_REQUEST);
+			}
 		}
 
 		Category category = reqDto.getBean();
+		category.setReferenceType(referenceType);
 		category.setSeqn(0);
 		category.setIsDefaultForEvent(false);
 		category.setIsDefaultForTask(false);
-		category.setReferenceType(referenceType);
-
+		category.setIsInherited(false);
+		category.setParentId(null);
 		category = categoryRepo.save(category);
-		return new CreateCategoryResDto(category);
+
+		return new CategoryResDto(category);
 	}
 
 	@Transactional
-	public UpdateCategoryResDto update(UpdateCategoryReqDto reqDto) throws CustomException {
+	public CategoryResDto update(UpdateCategoryReqDto reqDto) throws CustomException {
 		Optional<Category> categoryOp = categoryRepo.findById(reqDto.getId());
 		if(!categoryOp.isPresent()) {
 			throw new CustomException("Category not exist", HttpStatus.BAD_REQUEST);
@@ -90,9 +108,24 @@ public class CategoryService extends BaseService {
 
 		Category exisObj = categoryOp.get();
 		BeanUtils.copyProperties(reqDto, exisObj);
-
+		// Default task or event validation
+		if(Boolean.FALSE.equals(exisObj.getIsForTask())) {
+			exisObj.setIsDefaultForTask(false);
+		}
+		if(Boolean.FALSE.equals(exisObj.getIsForEvent())) {
+			exisObj.setIsDefaultForEvent(false);
+		}
 		exisObj = categoryRepo.save(exisObj);
-		return new UpdateCategoryResDto(exisObj);
+
+		// check all the inherited childs and update their data too
+		List<Category> categories = categoryRepo.findAllByParentIdAndIsInheritedTrue(exisObj.getId());
+		for(Category category : categories) {
+			category.setName(exisObj.getName());
+			category.setColor(exisObj.getColor());
+			categoryRepo.save(category);
+		}
+
+		return new CategoryResDto(exisObj);
 	}
 
 	@Transactional
@@ -101,8 +134,15 @@ public class CategoryService extends BaseService {
 		if(!categoryOp.isPresent()) {
 			throw new CustomException("Category not exist", HttpStatus.BAD_REQUEST);
 		}
-
 		categoryRepo.delete(categoryOp.get());
+
+		// check all the childs and make their inheritance false and update parent reference to null
+		List<Category> categories = categoryRepo.findAllByParentIdAndIsInheritedTrue(id);
+		for(Category category : categories) {
+			category.setIsInherited(false);
+			category.setParentId(null);
+			categoryRepo.save(category);
+		}
 	}
 
 	@Transactional
@@ -119,11 +159,35 @@ public class CategoryService extends BaseService {
 		}
 
 		// Remove existing default first
-		Optional<Category> existingDefaultOp = categoryRepo.findByReferenceIdAndReferenceTypeAndIsDefaultForTask(referenceid, referenceType, Boolean.TRUE);
-		if(existingDefaultOp.isPresent()) {
-			Category existingDefaultCategory = existingDefaultOp.get();
-			existingDefaultCategory.setIsDefaultForTask(false);
-			categoryRepo.save(existingDefaultCategory);
+		if(referenceType == ReferenceType.WORKSPACE) {
+			Optional<Category> existingDefaultOp = categoryRepo.findByReferenceIdAndReferenceTypeAndIsDefaultForTaskTrue(referenceid, referenceType);
+			if(existingDefaultOp.isPresent()) {
+				Category existingDefaultCategory = existingDefaultOp.get();
+				existingDefaultCategory.setIsDefaultForTask(false);
+				categoryRepo.save(existingDefaultCategory);
+			}
+		} else {
+			// get project inheritence info first
+			Optional<Project> projectOp = projectRepo.findByIdAndWorkspaceId(referenceid, loggedinUser().getWorkspace().getId());
+			if(!projectOp.isPresent()) throw new CustomException("Project not eixist", HttpStatus.NOT_FOUND);
+
+			Project project = projectOp.get();
+
+			if(Boolean.TRUE.equals(project.getIsInheritSettings())) {
+				Optional<Category> existingDefaultOp = categoryRepo.findByReferenceIdAndReferenceTypeAndIsDefaultForTaskTrueAndIsInheritedTrue(referenceid, referenceType);
+				if(existingDefaultOp.isPresent()) {
+					Category existingDefaultCategory = existingDefaultOp.get();
+					existingDefaultCategory.setIsDefaultForTask(false);
+					categoryRepo.save(existingDefaultCategory);
+				}
+			} else {
+				Optional<Category> existingDefaultOp = categoryRepo.findByReferenceIdAndReferenceTypeAndIsDefaultForTaskTrueAndIsInheritedFalse(referenceid, referenceType);
+				if(existingDefaultOp.isPresent()) {
+					Category existingDefaultCategory = existingDefaultOp.get();
+					existingDefaultCategory.setIsDefaultForTask(false);
+					categoryRepo.save(existingDefaultCategory);
+				}
+			}
 		}
 
 		Category exisObj = categoryOp.get();
@@ -147,11 +211,35 @@ public class CategoryService extends BaseService {
 		}
 
 		// Remove existing default first
-		Optional<Category> existingDefaultOp = categoryRepo.findByReferenceIdAndReferenceTypeAndIsDefaultForEvent(referenceid, referenceType, Boolean.TRUE);
-		if(existingDefaultOp.isPresent()) {
-			Category existingDefaultCategory = existingDefaultOp.get();
-			existingDefaultCategory.setIsDefaultForEvent(false);
-			categoryRepo.save(existingDefaultCategory);
+		if(referenceType == ReferenceType.WORKSPACE) {
+			Optional<Category> existingDefaultOp = categoryRepo.findByReferenceIdAndReferenceTypeAndIsDefaultForEventTrue(referenceid, referenceType);
+			if(existingDefaultOp.isPresent()) {
+				Category existingDefaultCategory = existingDefaultOp.get();
+				existingDefaultCategory.setIsDefaultForEvent(false);
+				categoryRepo.save(existingDefaultCategory);
+			}
+		} else {
+			// get project inheritence info first
+			Optional<Project> projectOp = projectRepo.findByIdAndWorkspaceId(referenceid, loggedinUser().getWorkspace().getId());
+			if(!projectOp.isPresent()) throw new CustomException("Project not eixist", HttpStatus.NOT_FOUND);
+
+			Project project = projectOp.get();
+
+			if(Boolean.TRUE.equals(project.getIsInheritSettings())) {
+				Optional<Category> existingDefaultOp = categoryRepo.findByReferenceIdAndReferenceTypeAndIsDefaultForEventTrueAndIsInheritedTrue(referenceid, referenceType);
+				if(existingDefaultOp.isPresent()) {
+					Category existingDefaultCategory = existingDefaultOp.get();
+					existingDefaultCategory.setIsDefaultForEvent(false);
+					categoryRepo.save(existingDefaultCategory);
+				}
+			} else {
+				Optional<Category> existingDefaultOp = categoryRepo.findByReferenceIdAndReferenceTypeAndIsDefaultForEventTrueAndIsInheritedFalse(referenceid, referenceType);
+				if(existingDefaultOp.isPresent()) {
+					Category existingDefaultCategory = existingDefaultOp.get();
+					existingDefaultCategory.setIsDefaultForEvent(false);
+					categoryRepo.save(existingDefaultCategory);
+				}
+			}
 		}
 
 		Category exisObj = categoryOp.get();
