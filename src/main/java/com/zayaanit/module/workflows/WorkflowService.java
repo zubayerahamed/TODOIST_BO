@@ -108,6 +108,14 @@ public class WorkflowService extends BaseService {
 		BeanUtils.copyProperties(reqDto, exisObj);
 		exisObj = workflowRepo.save(exisObj);
 
+		// check all inherited workflow and update them
+		List<Workflow> workflows = workflowRepo.findAllByParentIdAndIsInheritedTrue(exisObj.getId());
+		for(Workflow w : workflows) {
+			w.setName(exisObj.getName());
+			w.setColor(exisObj.getColor());
+			workflowRepo.save(w);
+		}
+
 		return new WorkflowResDto(exisObj);
 	}
 
@@ -119,5 +127,13 @@ public class WorkflowService extends BaseService {
 		}
 
 		workflowRepo.delete(workflowOp.get());
+
+		// check all inherited workflow and update their inherited reference to null
+		List<Workflow> workflows = workflowRepo.findAllByParentIdAndIsInheritedTrue(id);
+		for(Workflow w : workflows) {
+			w.setIsInherited(false);
+			w.setParentId(null);
+			workflowRepo.save(w);
+		}
 	}
 }

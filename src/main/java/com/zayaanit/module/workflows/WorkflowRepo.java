@@ -19,4 +19,6 @@ public interface WorkflowRepo extends JpaRepository<Workflow, Long> {
 	List<Workflow> findAllByReferenceIdAndReferenceTypeAndIsSystemDefinedFalse(Long referenceId, ReferenceType referenceType);
 
 	Optional<Workflow> findByReferenceIdAndReferenceTypeAndParentId(Long referenceId, ReferenceType referenceType, Long parentId);
+
+	List<Workflow> findAllByParentIdAndIsInheritedTrue(Long parentId);
 }
