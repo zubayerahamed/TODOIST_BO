@@ -35,6 +35,12 @@ public class WorkspaceController {
 		return ResponseBuilder.build(ResponseStatusType.READ_SUCCESS, resData);
 	}
 
+	@GetMapping("/all/others")
+	public ResponseEntity<SuccessResponse<List<WorkspaceResDto>>> getOthersWorkspaces(){
+		List<WorkspaceResDto> resData = workspaceService.getOthersWorkspaces();
+		return ResponseBuilder.build(ResponseStatusType.READ_SUCCESS, resData);
+	}
+
 	@GetMapping("/{id}")
 	public ResponseEntity<SuccessResponse<WorkspaceResDto>> find(@PathVariable Long id){
 		WorkspaceResDto resData = workspaceService.findById(id);
@@ -42,14 +48,14 @@ public class WorkspaceController {
 	} 
 
 	@PostMapping
-	public ResponseEntity<SuccessResponse<CreateWorkspaceResDto>> create(@Valid @RequestBody CreateWorkspaceReqDto reqDto){
-		CreateWorkspaceResDto resData = workspaceService.create(reqDto);
+	public ResponseEntity<SuccessResponse<WorkspaceResDto>> create(@Valid @RequestBody CreateWorkspaceReqDto reqDto){
+		WorkspaceResDto resData = workspaceService.create(reqDto);
 		return ResponseBuilder.build(ResponseStatusType.CREATE_SUCCESS, resData);
 	}
 
 	@PutMapping
-	public ResponseEntity<SuccessResponse<UpdateWorkspaceResDto>> update(@Valid @RequestBody UpdateWorkspaceReqDto reqDto){
-		UpdateWorkspaceResDto resData = workspaceService.update(reqDto);
+	public ResponseEntity<SuccessResponse<WorkspaceResDto>> update(@Valid @RequestBody UpdateWorkspaceReqDto reqDto){
+		WorkspaceResDto resData = workspaceService.update(reqDto);
 		return ResponseBuilder.build(ResponseStatusType.UPDATE_SUCCESS, resData);
 	}
 

@@ -7,7 +7,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -177,6 +180,45 @@ public class AuthenticationService {
 		saveUserToken(user.getId(), jwtToken);
 
 		// 9. Return token
+		return AuthenticationResDto.builder().accessToken(jwtToken).refreshToken(refreshToken).build();
+	}
+
+	public AuthenticationResDto switchWorkspace(SwitchWorkspaceReqDto request,  HttpServletRequest httpReq) throws CustomException {
+		// 1. Find user by email
+		User users = userRepo.findByEmail(request.getEmail()).orElseThrow(() -> new RuntimeException("User not found"));
+
+		// 2. Check if user is active
+		if (Boolean.FALSE.equals(users.getIsActive())) {
+			throw new RuntimeException("User account is inactive.");
+		}
+
+		// 3. Find the user workspace relation first
+		UserWorkspace userWorkspace = userWorkspacesRepo.findByUserIdAndWorkspaceId(users.getId(), request.getWorkspaceId()).orElseThrow(() -> new RuntimeException("Workspace is not assigned to this user."));
+
+		// 4. Find the workspace
+		Workspace switchedWorkspace = workspaceRepo.findById(request.getWorkspaceId()).orElseThrow(() -> new RuntimeException("Workspace not found."));
+
+		// 5. Check if workspace is active
+		if (Boolean.FALSE.equals(switchedWorkspace.getIsActive())) {
+			throw new RuntimeException("Workspace is inactive.");
+		}
+
+		MyUserDetail mud = new MyUserDetail(users, switchedWorkspace, userWorkspace);
+
+		// 6. Generate token
+		var jwtToken = jwtService.generateToken(new MyUserDetail(users, switchedWorkspace, userWorkspace));
+		var refreshToken = jwtService.generateRefreshToken(new MyUserDetail(users, switchedWorkspace, userWorkspace));
+
+		// 7. Revoke tokens and save new token
+		revokeAllUserTokens(users.getId());
+		saveUserToken(users.getId(), jwtToken);
+		SecurityContextHolder.clearContext();
+
+		UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(mud, null, mud.getAuthorities());
+		authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpReq));
+		SecurityContextHolder.getContext().setAuthentication(authToken);
+
+		// 8. Return token
 		return AuthenticationResDto.builder().accessToken(jwtToken).refreshToken(refreshToken).build();
 	}
 

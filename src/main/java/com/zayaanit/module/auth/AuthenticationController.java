@@ -43,4 +43,10 @@ public class AuthenticationController {
 	public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		authenticationService.refreshToken(request, response);
 	}
+
+	@PostMapping("/switch-workspace")
+	public ResponseEntity<SuccessResponse<AuthenticationResDto>> switchWorkspace(@RequestBody SwitchWorkspaceReqDto request, HttpServletRequest httpReq) {
+		AuthenticationResDto data = authenticationService.switchWorkspace(request, httpReq);
+		return ResponseBuilder.build(ResponseStatusType.READ_SUCCESS, data);
+	}
 }

@@ -51,6 +51,23 @@ public class WorkspaceService extends BaseService {
 		return workspacesResponse;
 	}
 
+	public List<WorkspaceResDto> getOthersWorkspaces(){
+		List<UserWorkspace> userWorkspaces = userWorkspaceRepo.findAllByUserId(loggedinUser().getUserId());
+		if(userWorkspaces.isEmpty()) return Collections.emptyList();
+
+		List<WorkspaceResDto> workspacesResponse = new ArrayList<>();
+		userWorkspaces.stream().forEach(uw -> {
+			if(uw.getWorkspaceId() != loggedinUser().getWorkspace().getId()) {
+				Optional<Workspace> workspaceOp = workspaceRepo.findById(uw.getWorkspaceId());
+				if(workspaceOp.isPresent()) {
+					workspacesResponse.add(new WorkspaceResDto(workspaceOp.get(), uw));
+				}
+			}
+		});
+
+		return workspacesResponse;
+	}
+
 	public WorkspaceResDto findById(Long id) throws CustomException {
 		Optional<UserWorkspace> userWorkspaceOp = userWorkspaceRepo.findById(new UsersWorkspacesPK(loggedinUser().getUserId(), id));
 		if(!userWorkspaceOp.isPresent()) throw new CustomException("User has no access with this workspace", HttpStatus.UNAUTHORIZED);
@@ -61,7 +78,7 @@ public class WorkspaceService extends BaseService {
 	}
 
 	@Transactional
-	public CreateWorkspaceResDto create(CreateWorkspaceReqDto reqDto) {
+	public WorkspaceResDto create(CreateWorkspaceReqDto reqDto) {
 		Workspace workspace = reqDto.getBean();
 		workspace.setIsActive(true);
 		workspace.setIsSystemDefined(false);
@@ -134,11 +151,11 @@ public class WorkspaceService extends BaseService {
 
 		indexWorkflow = workflowRepo.save(indexWorkflow);
 
-		return new CreateWorkspaceResDto(workspace, userWorkpsace);
+		return new WorkspaceResDto(workspace, userWorkpsace);
 	}
 
 	@Transactional
-	public UpdateWorkspaceResDto update(UpdateWorkspaceReqDto reqDto) {
+	public WorkspaceResDto update(UpdateWorkspaceReqDto reqDto) {
 		Optional<UserWorkspace> userWorkspaceOp = userWorkspaceRepo.findById(new UsersWorkspacesPK(loggedinUser().getUserId(), reqDto.getId()));
 		if(!userWorkspaceOp.isPresent()) throw new CustomException("User has no access with this workspace", HttpStatus.UNAUTHORIZED);
 
@@ -152,7 +169,7 @@ public class WorkspaceService extends BaseService {
 		Workspace existobj = workspaceOp.get();
 		BeanUtils.copyProperties(reqDto, existobj);
 		existobj = workspaceRepo.save(existobj);
-		return new UpdateWorkspaceResDto(existobj, userWorkspaceOp.get());
+		return new WorkspaceResDto(existobj, userWorkspaceOp.get());
 	}
 
 	@Transactional

@@ -11,6 +11,7 @@ public interface UserWorkspaceRepo extends JpaRepository<UserWorkspace, UsersWor
 
 	List<UserWorkspace> findAllByUserId(Long userId);
 	Optional<UserWorkspace> findByUserIdAndIsPrimary(Long userId, Boolean isPrimary);
+	Optional<UserWorkspace> findByUserIdAndWorkspaceId(Long userId, Long workspaceId);
 	Optional<UserWorkspace> findByUserIdAndIsAdmin(Long userId, Boolean isAdmin);
 	Optional<UserWorkspace> findByUserIdAndIsCollaborator(Long userId, Boolean isCollaborator);
 }
