@@ -1,14 +1,23 @@
 package com.zayaanit.module.events;
 
+<<<<<<< Upstream, based on upstream/master
+=======
+import java.io.IOException;
+import java.time.LocalDate;
+>>>>>>> 4abf5be 1808
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.zayaanit.enums.ResponseStatusType;
+import com.zayaanit.model.ResponseBuilder;
+import com.zayaanit.model.SuccessResponse;
 import org.apache.commons.lang3.SerializationUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.zayaanit.enums.PerticipantType;
@@ -26,6 +35,7 @@ import com.zayaanit.module.reminder.ReminderService;
 
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.GetMapping;
 
 /**
  * Zubayer Ahamed
@@ -304,4 +314,11 @@ public class EventService extends BaseService {
 			scheduleEventReminder(t);
 		});
 	}
+
+	public List<EventResDto> getTodayEvents() {
+		LocalDate today = LocalDate.now();
+		List<Event> events = eventRepo.findByEventDate(today);
+		return events.stream().map(EventResDto::new).collect(Collectors.toList());
+	}
+
 }
