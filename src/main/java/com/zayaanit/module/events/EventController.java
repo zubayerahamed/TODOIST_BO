@@ -59,5 +59,11 @@ public class EventController {
 	public ResponseEntity<SuccessResponse<EventResDto>> delete(@PathVariable Long id){
 		eventService.delete(id);
 		return ResponseBuilder.build(ResponseStatusType.DELETE_NO_CONTENT, null);
-	} 
+	}
+
+	@GetMapping("/today")
+	public ResponseEntity<SuccessResponse<List<EventResDto>>> getTodayEvents() {
+		List<EventResDto> resData = eventService.getTodayEvents();
+		return ResponseBuilder.build(ResponseStatusType.READ_SUCCESS, resData);
+	}
 }

@@ -1,6 +1,7 @@
 package com.zayaanit.module.events;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -8,6 +9,9 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.zayaanit.enums.ResponseStatusType;
+import com.zayaanit.model.ResponseBuilder;
+import com.zayaanit.model.SuccessResponse;
 import org.apache.commons.lang3.SerializationUtils;
 import org.apache.velocity.exception.MethodInvocationException;
 import org.apache.velocity.exception.ParseErrorException;
@@ -15,6 +19,7 @@ import org.apache.velocity.exception.ResourceNotFoundException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.zayaanit.enums.PerticipantType;
@@ -38,6 +43,7 @@ import com.zayaanit.module.users.preferences.UserPreferenceRepo;
 import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.GetMapping;
 
 /**
  * Zubayer Ahamed
@@ -303,4 +309,11 @@ public class EventService extends BaseService {
 			scheduleEventReminder(t, false);
 		});
 	}
+
+	public List<EventResDto> getTodayEvents() {
+		LocalDate today = LocalDate.now();
+		List<Event> events = eventRepo.findByEventDate(today);
+		return events.stream().map(EventResDto::new).collect(Collectors.toList());
+	}
+
 }
