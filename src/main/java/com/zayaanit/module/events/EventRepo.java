@@ -29,5 +29,7 @@ public interface EventRepo extends JpaRepository<Event, Long> {
 
 	List<Event> findAllByProjectId(Long projectId);
 	List<Event> findByEventDate(LocalDate eventDate);
+	List<Event> findByEventDateAfter(LocalDate eventDate);
+
 
 }

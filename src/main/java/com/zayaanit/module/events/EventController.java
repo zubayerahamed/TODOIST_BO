@@ -72,4 +72,10 @@ public class EventController {
 		List<EventResDto> resData = eventService.getTodayEvents();
 		return ResponseBuilder.build(ResponseStatusType.READ_SUCCESS, resData);
 	}
+
+	@GetMapping("/upcoming")
+	public ResponseEntity<SuccessResponse<List<EventResDto>>> getUpcomingEvents() {
+		List<EventResDto> resData = eventService.getUpcomingEvents();
+		return ResponseBuilder.build(ResponseStatusType.READ_SUCCESS, resData);
+	}
 }

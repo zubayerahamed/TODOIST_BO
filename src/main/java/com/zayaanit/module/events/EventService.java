@@ -321,4 +321,11 @@ public class EventService extends BaseService {
 		return events.stream().map(EventResDto::new).collect(Collectors.toList());
 	}
 
+	public List<EventResDto> getUpcomingEvents() {
+		LocalDate today = LocalDate.now();
+		List<Event> events = eventRepo.findByEventDateAfter(today);
+		return events.stream().map(EventResDto::new).collect(Collectors.toList());
+	}
+
+
 }
