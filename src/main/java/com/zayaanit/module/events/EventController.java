@@ -66,4 +66,16 @@ public class EventController {
 		EventResDto resData = eventService.complete(id);
 		return ResponseBuilder.build(ResponseStatusType.UPDATE_SUCCESS, resData);
 	}
+
+	@GetMapping("/today")
+	public ResponseEntity<SuccessResponse<List<EventResDto>>> getTodayEvents() {
+		List<EventResDto> resData = eventService.getTodayEvents();
+		return ResponseBuilder.build(ResponseStatusType.READ_SUCCESS, resData);
+	}
+
+	@GetMapping("/upcoming")
+	public ResponseEntity<SuccessResponse<List<EventResDto>>> getUpcomingEvents() {
+		List<EventResDto> resData = eventService.getUpcomingEvents();
+		return ResponseBuilder.build(ResponseStatusType.READ_SUCCESS, resData);
+	}
 }

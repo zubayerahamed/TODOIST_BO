@@ -1,5 +1,6 @@
 package com.zayaanit.module.events;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -304,4 +305,18 @@ public class EventService extends BaseService {
 			scheduleEventReminder(t);
 		});
 	}
+
+	public List<EventResDto> getTodayEvents() {
+		LocalDate today = LocalDate.now();
+		List<Event> events = eventRepo.findByEventDate(today);
+		return events.stream().map(EventResDto::new).collect(Collectors.toList());
+	}
+
+	public List<EventResDto> getUpcomingEvents() {
+		LocalDate today = LocalDate.now();
+		List<Event> events = eventRepo.findByEventDateAfter(today);
+		return events.stream().map(EventResDto::new).collect(Collectors.toList());
+	}
+
+
 }

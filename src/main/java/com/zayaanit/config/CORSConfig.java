@@ -18,12 +18,6 @@ public class CORSConfig implements WebMvcConfigurer {
 				.allowedOrigins("http://localhost:4200")
 				.allowedMethods("GET", "POST", "PUT", "DELETE")
 				.allowedHeaders("*");
-				
-//				registry.addMapping("/**") // Or "/api/v1/ws/**" specifically
-//                .allowedOrigins("*") // or "http://localhost:8080"
-//                .allowedMethods("*")
-//                .allowedHeaders("*");
-                //.allowCredentials(true);
 			}
 		};
 	}
