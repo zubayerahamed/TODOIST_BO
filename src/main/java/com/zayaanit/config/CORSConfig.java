@@ -15,21 +15,9 @@ public class CORSConfig implements WebMvcConfigurer {
 			@Override
 			public void addCorsMappings(@NonNull CorsRegistry registry) {
 				registry.addMapping("/**")
-<<<<<<< Upstream, based on upstream/master
 				.allowedOrigins("http://localhost:4200")
 				.allowedMethods("GET", "POST", "PUT", "DELETE")
 				.allowedHeaders("*");
-				
-//				registry.addMapping("/**") // Or "/api/v1/ws/**" specifically
-//                .allowedOrigins("*") // or "http://localhost:8080"
-//                .allowedMethods("*")
-//                .allowedHeaders("*");
-                //.allowCredentials(true);
-=======
-				.allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-				.allowedHeaders("*")
-				.allowedOrigins("*");
->>>>>>> 00470a6 2408
 			}
 		};
 	}
