@@ -42,6 +42,7 @@ public class EventService extends BaseService {
 	@Autowired private ReminderService reminderService;
 	@Autowired private EventPerticipantsRepo epRepo;
 	@Autowired private AsyncNotificationService asyncNotificationService;
+	@Autowired private EventChecklistRepo checklistRepo;
 
 	public List<EventResDto> getAllByProjectId(Long projectId) {
 		List<Event> events = eventRepo.findAllByProjectId(projectId);
@@ -64,16 +65,27 @@ public class EventService extends BaseService {
 		event.setIsReminderSent(false);
 		Event finalEvent = eventRepo.save(event);
 
+		// Add checklist 
+		if(reqDto.getChecklists() != null) {
+			reqDto.getChecklists().stream().forEach(c -> {
+				EventChecklist checklist = c.getBean();
+				checklist.setEventId(finalEvent.getId());
+				checklistRepo.save(checklist);
+			});
+		}
+
 		// Add documents reference id with event
-		reqDto.getDocuments().stream().forEach(d -> {
-			Optional<Document> documentOp = documentRepo.findById(d);
-			if(documentOp.isPresent()) {
-				Document document = documentOp.get();
-				document.setReferenceId(finalEvent.getId());
-				document.setXtemp(false);
-				documentRepo.save(document);
-			}
-		});
+		if(reqDto.getDocuments() != null) {
+			reqDto.getDocuments().stream().forEach(d -> {
+				Optional<Document> documentOp = documentRepo.findById(d);
+				if(documentOp.isPresent()) {
+					Document document = documentOp.get();
+					document.setReferenceId(finalEvent.getId());
+					document.setXtemp(false);
+					documentRepo.save(document);
+				}
+			});
+		}
 
 		// Add event creator
 		EventPerticipants ep = EventPerticipants.builder()
@@ -86,17 +98,19 @@ public class EventService extends BaseService {
 		eventCreatorId.add(ep.getUserId());
 
 		// Add other perticipants
-		List<Long> perticipants = reqDto.getPerticipants().stream().filter(p -> !p.equals(loggedinUser().getUserId())).collect(Collectors.toList());
-		perticipants.stream().forEach(p -> {
-			EventPerticipants eventPerticipant = EventPerticipants.builder()
-					.userId(p)
-					.eventId(finalEvent.getId())
-					.isReminderSent(Boolean.FALSE)
-					.perticipantType(PerticipantType.CONTRIBUTOR)
-					.build();
-			epRepo.save(eventPerticipant);
-			allPerticipantsId.add(p);
-		});
+		if(reqDto.getPerticipants() != null) {
+			List<Long> perticipants = reqDto.getPerticipants().stream().filter(p -> !p.equals(loggedinUser().getUserId())).collect(Collectors.toList());
+			perticipants.stream().forEach(p -> {
+				EventPerticipants eventPerticipant = EventPerticipants.builder()
+						.userId(p)
+						.eventId(finalEvent.getId())
+						.isReminderSent(Boolean.FALSE)
+						.perticipantType(PerticipantType.CONTRIBUTOR)
+						.build();
+				epRepo.save(eventPerticipant);
+				allPerticipantsId.add(p);
+			});
+		}
 
 		// Schedule it for reminder
 		scheduleEventReminder(finalEvent);
@@ -160,6 +174,9 @@ public class EventService extends BaseService {
 		BeanUtils.copyProperties(reqDto, existObj);
 		existObj.setIsReminderSent(false);  // Reset Reminder Status
 		Event finalEvent = eventRepo.save(existObj);
+
+		// TODO: checklist update, add new checklist, remove checklist
+		
 
 		// Update documents reference
 		// Remove existing documents which are not available in this request

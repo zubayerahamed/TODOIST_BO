@@ -39,9 +39,11 @@ public class CreateEventReqDto {
 	private LocalDate eventDate;
 	@NotNull(message = "Event start time required")
 	@JsonFormat(pattern = "HH:mm")
+//	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSX")
 	private LocalTime startTime;
 	@NotNull(message = "Event end time required")
 	@JsonFormat(pattern = "HH:mm")
+//	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSX")
 	private LocalTime endTime;
 
 	private String location;
@@ -50,6 +52,7 @@ public class CreateEventReqDto {
 
 	private List<Long> perticipants;
 	private List<Long> documents;
+	private List<EventChecklistReqDto> checklists;
 
 	public Event getBean() {
 		return Event.builder()
@@ -61,8 +64,8 @@ public class CreateEventReqDto {
 				.startTime(startTime == null ? LocalTime.MIDNIGHT : startTime)
 				.endTime(endTime == null ? LocalTime.of(23, 59) : endTime)
 				.location(location)
-				.isReminderEnabled(Boolean.TRUE.equals(isReminderEnabled))
-				.reminderBefore(reminderBefore == null ? 0 : reminderBefore)
+				.isReminderEnabled(reminderBefore != null)
+				.reminderBefore(reminderBefore)
 				.build();
 	}
 }

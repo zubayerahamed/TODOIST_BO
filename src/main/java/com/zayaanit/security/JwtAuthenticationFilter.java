@@ -50,8 +50,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 		jwtToken = authHeader.substring(7);
 		userId = jwtService.extractUsername(jwtToken);
+		Integer workspaceId = jwtService.extractClaim(jwtToken, claims -> claims.get("workspaceId", Integer.class));
 		if(StringUtils.isNotBlank(userId) && SecurityContextHolder.getContext().getAuthentication() == null) {  // User id not null && user is not authenticated yet
-			MyUserDetail userDetails = (MyUserDetail) usersService.loadUserByUsername(userId);
+			MyUserDetail userDetails = (MyUserDetail) usersService.loadUserByUsername(userId + "|" + workspaceId);
 
 			var isTokenValid = xtokensRepo.findByToken(jwtToken).map(t -> !t.isExpired() && !t.isRevoked()).orElse(false);
 

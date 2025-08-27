@@ -32,7 +32,9 @@ public class UserService implements UserDetailsService  {
 			throw new UsernameNotFoundException("Email required");
 		}
 
-		Optional<User> userOp = usersRepo.findById(Long.valueOf(username));
+		String[] credentials =  username.split("\\|");
+
+		Optional<User> userOp = usersRepo.findById(Long.valueOf(credentials[0]));
 		if(!userOp.isPresent()) throw new UsernameNotFoundException("User not exist.");
 
 		User user = userOp.get();
@@ -45,9 +47,16 @@ public class UserService implements UserDetailsService  {
 			throw new UsernameNotFoundException("Primary workspace not found");
 		}
 
-		Optional<Workspace> workspaceOp = workspacesRepo.findById(userWorkspaceOp.get().getWorkspaceId());
+		// Find the current workspace assigned with user
+		Optional<UserWorkspace> userCurrentWorkspaceOp = usersWorkspacesRepo.findByUserIdAndWorkspaceId(user.getId(), Long.valueOf(credentials[1]));
+		if(!userCurrentWorkspaceOp.isPresent()) {
+			throw new UsernameNotFoundException("Workspace not found");
+		}
+
+
+		Optional<Workspace> workspaceOp = workspacesRepo.findById(userCurrentWorkspaceOp.get().getWorkspaceId());
 		if(!workspaceOp.isPresent()) {
-			throw new UsernameNotFoundException("Primary workspace not found");
+			throw new UsernameNotFoundException("Workspace not found");
 		}
 
 		Workspace workspace = workspaceOp.get();
