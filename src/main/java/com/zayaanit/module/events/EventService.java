@@ -51,14 +51,51 @@ public class EventService extends BaseService {
 	@Autowired private CategoryRepo categoryRepo;
 	@Autowired private ProjectRepo projectRepo;
 
-	public List<EventResDto> getAllTodaysEventsFromAllProjects(){
+	public long getCountOfAllEventsFromAllProjects(LocalDate date, Boolean isCompleted){
+		List<Project> projects = projectRepo.findAllByWorkspaceId(loggedinUser().getWorkspace().getId());
+		if(projects.isEmpty()) return 0;
+
+		List<EventResDto> allEventResponseList = new ArrayList<>();
+
+		for(Project project : projects) {
+			List<Event> todaysEvents = new ArrayList<>();
+			if(date == null) {
+				todaysEvents = eventRepo.findAllByProjectIdAndIsCompleted(project.getId(), isCompleted);
+			} else {
+				if(date.isEqual(LocalDate.now())) {
+					todaysEvents = eventRepo.findAllByProjectIdAndEventDateAndIsCompleted(project.getId(), date, isCompleted);
+				} else {
+					todaysEvents = eventRepo.findAllByProjectIdAndEventDateAfterAndIsCompleted(project.getId(), LocalDate.now(), isCompleted);
+				}
+			}
+
+			List<EventResDto> eventsResponseList = todaysEvents.stream().map(EventResDto::new).collect(Collectors.toList());
+
+			for(EventResDto event : eventsResponseList) {
+				allEventResponseList.add(event);
+			}
+		}
+
+		return allEventResponseList.size();
+	}
+
+	public List<EventResDto> getAllEventsFromAllProjects(LocalDate date, Boolean isCompleted){
 		List<Project> projects = projectRepo.findAllByWorkspaceId(loggedinUser().getWorkspace().getId());
 		if(projects.isEmpty()) return Collections.emptyList(); 
 
 		List<EventResDto> allEventResponseList = new ArrayList<>();
 
 		for(Project project : projects) {
-			List<Event> todaysEvents = eventRepo.findAllByProjectIdAndEventDateAndIsCompleted(project.getId(), LocalDate.now(), false);
+			List<Event> todaysEvents = new ArrayList<>();
+			if(date == null) {
+				todaysEvents = eventRepo.findAllByProjectIdAndIsCompleted(project.getId(), isCompleted);
+			} else {
+				if(date.isEqual(LocalDate.now())) {
+					todaysEvents = eventRepo.findAllByProjectIdAndEventDateAndIsCompleted(project.getId(), date, isCompleted);
+				} else {
+					todaysEvents = eventRepo.findAllByProjectIdAndEventDateAfterAndIsCompleted(project.getId(), LocalDate.now(), isCompleted);
+				}
+			}
 
 			List<EventResDto> eventsResponseList = todaysEvents.stream().map(EventResDto::new).collect(Collectors.toList());
 

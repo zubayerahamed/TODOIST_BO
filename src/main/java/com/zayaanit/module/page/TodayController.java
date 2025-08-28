@@ -1,5 +1,6 @@
 package com.zayaanit.module.page;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +28,13 @@ public class TodayController {
 
 	@GetMapping
 	public ResponseEntity<SuccessResponse<List<EventResDto>>> getAllTodaysEvents(){
-		List<EventResDto> resData = eventService.getAllTodaysEventsFromAllProjects();
+		List<EventResDto> resData = eventService.getAllEventsFromAllProjects(LocalDate.now(), false);
+		return ResponseBuilder.build(ResponseStatusType.READ_SUCCESS, resData);
+	}
+
+	@GetMapping("/count")
+	public ResponseEntity<SuccessResponse<Long>> getCountOfAllTodaysEvents(){
+		long resData = eventService.getCountOfAllEventsFromAllProjects(LocalDate.now(), false);
 		return ResponseBuilder.build(ResponseStatusType.READ_SUCCESS, resData);
 	}
 }

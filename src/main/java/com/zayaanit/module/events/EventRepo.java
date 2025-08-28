@@ -27,6 +27,7 @@ public interface EventRepo extends JpaRepository<Event, Long> {
 	List<Event> findByEventDateAfter(LocalDate eventDate);
 	List<Event> findAllByProjectIdAndIsCompleted(Long projectId, Boolean isCompleted);
 	List<Event> findAllByProjectIdAndEventDateAndIsCompleted(Long projectId, LocalDate eventDate, Boolean isCompleted);
+	List<Event> findAllByProjectIdAndEventDateAfterAndIsCompleted(Long projectId, LocalDate eventDate, Boolean isCompleted);
 
 
 	@Query("SELECT COUNT(e) FROM Event e WHERE e.projectId=:projectId AND e.isCompleted = false")
