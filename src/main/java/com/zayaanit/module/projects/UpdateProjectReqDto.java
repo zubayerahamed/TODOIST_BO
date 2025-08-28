@@ -1,7 +1,6 @@
 package com.zayaanit.module.projects;
 
 import com.zayaanit.enums.LayoutType;
-import com.zayaanit.module.ValidEnum;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -27,9 +26,6 @@ public class UpdateProjectReqDto {
 	@Size(min = 1, max = 25, message = "Project name must be 1 to 25 characters long")
 	private String name;
 	private String color;
-	@NotNull(message = "Is favourite required, Value should be either true or false")
 	private Boolean isFavourite;
-	@NotNull(message = "Layout type required, Value should be withing LIST, BOARD, CALENDAR")
-	@ValidEnum(enumClass = LayoutType.class, message = "Invalid layout type, Value should be withing LIST, BOARD, CALENDAR")
 	private LayoutType layoutType;
 }

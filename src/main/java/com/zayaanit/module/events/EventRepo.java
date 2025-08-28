@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -24,6 +25,10 @@ public interface EventRepo extends JpaRepository<Event, Long> {
 	List<Event> findAllByProjectId(Long projectId);
 	List<Event> findByEventDate(LocalDate eventDate);
 	List<Event> findByEventDateAfter(LocalDate eventDate);
+	List<Event> findAllByProjectIdAndIsCompleted(Long projectId, Boolean isCompleted);
+	List<Event> findAllByProjectIdAndEventDateAndIsCompleted(Long projectId, LocalDate eventDate, Boolean isCompleted);
 
 
+	@Query("SELECT COUNT(e) FROM Event e WHERE e.projectId=:projectId AND e.isCompleted = false")
+	long countProjectActiveEvents(@Param("projectId") Long projectId);
 }

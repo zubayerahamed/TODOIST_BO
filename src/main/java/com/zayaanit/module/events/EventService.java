@@ -18,7 +18,6 @@ import com.zayaanit.mail.MailType;
 import com.zayaanit.module.BaseService;
 import com.zayaanit.module.category.Category;
 import com.zayaanit.module.category.CategoryRepo;
-import com.zayaanit.module.category.CategoryService;
 import com.zayaanit.module.documents.Document;
 import com.zayaanit.module.documents.DocumentRepo;
 import com.zayaanit.module.documents.DocumentService;
@@ -30,6 +29,7 @@ import com.zayaanit.module.projects.Project;
 import com.zayaanit.module.projects.ProjectRepo;
 import com.zayaanit.module.reminder.ReminderService;
 
+import io.jsonwebtoken.lang.Collections;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 
@@ -51,8 +51,52 @@ public class EventService extends BaseService {
 	@Autowired private CategoryRepo categoryRepo;
 	@Autowired private ProjectRepo projectRepo;
 
-	public List<EventResDto> getAllByProjectId(Long projectId) {
-		List<Event> events = eventRepo.findAllByProjectId(projectId);
+	public List<EventResDto> getAllTodaysEventsFromAllProjects(){
+		List<Project> projects = projectRepo.findAllByWorkspaceId(loggedinUser().getWorkspace().getId());
+		if(projects.isEmpty()) return Collections.emptyList(); 
+
+		List<EventResDto> allEventResponseList = new ArrayList<>();
+
+		for(Project project : projects) {
+			List<Event> todaysEvents = eventRepo.findAllByProjectIdAndEventDateAndIsCompleted(project.getId(), LocalDate.now(), false);
+
+			List<EventResDto> eventsResponseList = todaysEvents.stream().map(EventResDto::new).collect(Collectors.toList());
+
+			for(EventResDto event : eventsResponseList) {
+				event.setProjectName(project.getName());
+
+				// Checklist
+				event.setChecklists(new ArrayList<>());
+				List<EventChecklist> checklists = checklistRepo.findAllByEventId(event.getId());
+				if(checklists != null && !checklists.isEmpty()) {
+					checklists.stream().forEach(checklist -> {
+						event.getChecklists().add(new EventChecklistResDto(checklist));
+					});
+				}
+
+				// category
+				if(event.getCategoryId() != null) {
+					Optional<Category> categoryOp = categoryRepo.findById(event.getCategoryId());
+					if(categoryOp.isPresent()) {
+						event.setCategoryName(categoryOp.get().getName());
+					}
+				}
+
+				allEventResponseList.add(event);
+			}
+		}
+
+		return allEventResponseList;
+	}
+
+	public List<EventResDto> getAllByProjectId(Long projectId, Boolean isComplete) {
+		List<Event> events = new ArrayList<>();
+
+		if(isComplete == null) {
+			events = eventRepo.findAllByProjectId(projectId);
+		} else {
+			events = eventRepo.findAllByProjectIdAndIsCompleted(projectId, isComplete);
+		}
 
 		List<EventResDto> responseData = events.stream().map(EventResDto::new).collect(Collectors.toList());
 
@@ -74,9 +118,11 @@ public class EventService extends BaseService {
 			}
 
 			// category
-			Optional<Category> categoryOp = categoryRepo.findById(event.getCategoryId());
-			if(categoryOp.isPresent()) {
-				event.setCategoryName(categoryOp.get().getName());
+			if(event.getCategoryId() != null) {
+				Optional<Category> categoryOp = categoryRepo.findById(event.getCategoryId());
+				if(categoryOp.isPresent()) {
+					event.setCategoryName(categoryOp.get().getName());
+				}
 			}
 		});
 
@@ -167,7 +213,7 @@ public class EventService extends BaseService {
 	}
 
 	@Transactional
-	public EventResDto complete(Long id) throws CustomException {
+	public EventResDto markComplete(Long id) throws CustomException {
 		Optional<Event> eventOp = eventRepo.findById(id);
 		if(!eventOp.isPresent()) throw new CustomException("Event not found", HttpStatus.NOT_FOUND);
 
@@ -191,6 +237,42 @@ public class EventService extends BaseService {
 
 			// TODO: send sms notification
 		}
+
+		return new EventResDto(finalEvent);
+	}
+
+	@Transactional
+	public EventChecklistResDto markCheckListComplete(Long checklistId) throws CustomException {
+		Optional<EventChecklist> checklistOp = checklistRepo.findById(checklistId);
+		if(!checklistOp.isPresent()) throw new CustomException("Checklist item not found", HttpStatus.NOT_FOUND);
+
+		EventChecklist existObj = checklistOp.get();
+		existObj.setIsCompleted(true);
+		EventChecklist finalChecklist = checklistRepo.save(existObj);
+
+		return new EventChecklistResDto(finalChecklist);
+	}
+
+	@Transactional
+	public EventChecklistResDto markCheckListInComplete(Long checklistId) throws CustomException {
+		Optional<EventChecklist> checklistOp = checklistRepo.findById(checklistId);
+		if(!checklistOp.isPresent()) throw new CustomException("Checklist item not found", HttpStatus.NOT_FOUND);
+
+		EventChecklist existObj = checklistOp.get();
+		existObj.setIsCompleted(false);
+		EventChecklist finalChecklist = checklistRepo.save(existObj);
+
+		return new EventChecklistResDto(finalChecklist);
+	}
+
+	@Transactional
+	public EventResDto markInComplete(Long id) throws CustomException {
+		Optional<Event> eventOp = eventRepo.findById(id);
+		if(!eventOp.isPresent()) throw new CustomException("Event not found", HttpStatus.NOT_FOUND);
+
+		Event existObj = eventOp.get();
+		existObj.setIsCompleted(false);
+		Event finalEvent = eventRepo.save(existObj);
 
 		return new EventResDto(finalEvent);
 	}

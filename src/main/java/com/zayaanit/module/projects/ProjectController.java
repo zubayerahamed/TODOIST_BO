@@ -5,7 +5,14 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.zayaanit.enums.ResponseStatusType;
 import com.zayaanit.model.ResponseBuilder;
@@ -86,4 +93,10 @@ public class ProjectController {
 		Page<ProjectResDto> resData = projectService.getAll(page, size);
 		return ResponseBuilder.build(ResponseStatusType.READ_SUCCESS, resData);
 	}
+
+	@GetMapping("/total-events-and-tasks/{id}")
+	public ResponseEntity<SuccessResponse<Long>> totalEventAndTasksCount(@PathVariable Long id){
+		long resData = projectService.totalEventAndTasksCount(id);
+		return ResponseBuilder.build(ResponseStatusType.READ_SUCCESS, resData);
+	} 
 }

@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -21,4 +22,7 @@ public interface TaskRepo extends JpaRepository<Task, Long> {
 	List<Task> findAllPendingReminders();
 
 	List<Task> findAllByProjectId(Long projectId);
+
+	@Query("SELECT COUNT(e) FROM Task e WHERE e.projectId=:projectId AND e.isCompleted = false")
+	long countProjectActiveTasks(@Param("projectId") Long projectId);
 }

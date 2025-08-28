@@ -33,7 +33,19 @@ public class EventController {
 
 	@GetMapping("/all/{projectId}")
 	public ResponseEntity<SuccessResponse<List<EventResDto>>> getAll(@PathVariable Long projectId){
-		List<EventResDto> resData = eventService.getAllByProjectId(projectId);
+		List<EventResDto> resData = eventService.getAllByProjectId(projectId, null);
+		return ResponseBuilder.build(ResponseStatusType.READ_SUCCESS, resData);
+	}
+
+	@GetMapping("/all/incomplete/{projectId}")
+	public ResponseEntity<SuccessResponse<List<EventResDto>>> getAllInComplete(@PathVariable Long projectId){
+		List<EventResDto> resData = eventService.getAllByProjectId(projectId, false);
+		return ResponseBuilder.build(ResponseStatusType.READ_SUCCESS, resData);
+	}
+
+	@GetMapping("/all/complete/{projectId}")
+	public ResponseEntity<SuccessResponse<List<EventResDto>>> getAllComplete(@PathVariable Long projectId){
+		List<EventResDto> resData = eventService.getAllByProjectId(projectId, true);
 		return ResponseBuilder.build(ResponseStatusType.READ_SUCCESS, resData);
 	}
 
@@ -61,9 +73,15 @@ public class EventController {
 		return ResponseBuilder.build(ResponseStatusType.DELETE_NO_CONTENT, null);
 	}
 
-	@PutMapping("/complete/{id}")
-	public ResponseEntity<SuccessResponse<EventResDto>> complete(@PathVariable Long id){
-		EventResDto resData = eventService.complete(id);
+	@PutMapping("/markcomplete/{id}")
+	public ResponseEntity<SuccessResponse<EventResDto>> markcomplete(@PathVariable Long id){
+		EventResDto resData = eventService.markComplete(id);
+		return ResponseBuilder.build(ResponseStatusType.UPDATE_SUCCESS, resData);
+	}
+
+	@PutMapping("/markincomplete/{id}")
+	public ResponseEntity<SuccessResponse<EventResDto>> markincomplete(@PathVariable Long id){
+		EventResDto resData = eventService.markInComplete(id);
 		return ResponseBuilder.build(ResponseStatusType.UPDATE_SUCCESS, resData);
 	}
 
@@ -77,5 +95,17 @@ public class EventController {
 	public ResponseEntity<SuccessResponse<List<EventResDto>>> getUpcomingEvents() {
 		List<EventResDto> resData = eventService.getUpcomingEvents();
 		return ResponseBuilder.build(ResponseStatusType.READ_SUCCESS, resData);
+	}
+
+	@PutMapping("/checklist/markcomplete/{id}")
+	public ResponseEntity<SuccessResponse<EventChecklistResDto>> markCheckListComplete(@PathVariable Long id){
+		EventChecklistResDto resData = eventService.markCheckListComplete(id);
+		return ResponseBuilder.build(ResponseStatusType.UPDATE_SUCCESS, resData);
+	}
+
+	@PutMapping("/checklist/markincomplete/{id}")
+	public ResponseEntity<SuccessResponse<EventChecklistResDto>> markCheckListInComplete(@PathVariable Long id){
+		EventChecklistResDto resData = eventService.markCheckListInComplete(id);
+		return ResponseBuilder.build(ResponseStatusType.UPDATE_SUCCESS, resData);
 	}
 }

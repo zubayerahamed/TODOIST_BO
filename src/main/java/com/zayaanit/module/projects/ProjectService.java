@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.beans.BeanUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -18,6 +18,8 @@ import com.zayaanit.exception.CustomException;
 import com.zayaanit.module.BaseService;
 import com.zayaanit.module.category.Category;
 import com.zayaanit.module.category.CategoryRepo;
+import com.zayaanit.module.events.EventRepo;
+import com.zayaanit.module.tasks.TaskRepo;
 import com.zayaanit.module.workflows.Workflow;
 import com.zayaanit.module.workflows.WorkflowRepo;
 
@@ -34,6 +36,8 @@ public class ProjectService extends BaseService {
 	@Autowired private ProjectRepo projectRepo;
 	@Autowired private CategoryRepo categoryRepo;
 	@Autowired private WorkflowRepo workflowRepo;
+	@Autowired private EventRepo eventRepo;
+	@Autowired private TaskRepo taskRepo;
 
 	public List<ProjectResDto> getAll() {
 		List<Project> projects = projectRepo.findAllByWorkspaceId(loggedinUser().getWorkspace().getId());
@@ -41,9 +45,24 @@ public class ProjectService extends BaseService {
 
 		List<ProjectResDto> responseData = new ArrayList<>();
 		projects.stream().forEach(p -> {
-			responseData.add(new ProjectResDto(p));
+			ProjectResDto prd = new ProjectResDto(p);
+			// add total events
+			prd.setTotalActiveEvents(eventRepo.countProjectActiveEvents(p.getId()));
+			// add total tasks
+			prd.setTotalActiveTasks(taskRepo.countProjectActiveTasks(p.getId()));
+			responseData.add(prd);
 		});
 		return responseData;
+	}
+
+	public long totalEventAndTasksCount(Long id) throws CustomException {
+		Optional<Project> projectOp = projectRepo.findByIdAndWorkspaceId(id, loggedinUser().getWorkspace().getId());
+		if(!projectOp.isPresent()) throw new CustomException("Project not exist", HttpStatus.NOT_FOUND);
+
+		long totalEvents = eventRepo.countProjectActiveEvents(id);
+		long totalTasks = taskRepo.countProjectActiveTasks(id);
+
+		return totalEvents + totalTasks;
 	}
 
 	public ProjectResDto findById(Long id) throws CustomException {
@@ -135,9 +154,18 @@ public class ProjectService extends BaseService {
 		if(!projectOp.isPresent()) throw new CustomException("Project not exist", HttpStatus.NOT_FOUND);
 
 		Project existobj = projectOp.get();
-		BeanUtils.copyProperties(reqDto, existobj);
-
+		existobj.setName(reqDto.getName());
+		if(StringUtils.isNotBlank(reqDto.getColor())) {
+			existobj.setColor(reqDto.getColor());
+		}
+		if(reqDto.getIsFavourite() != null) {
+			existobj.setIsFavourite(reqDto.getIsFavourite());
+		}
+		if(reqDto.getLayoutType() != null) {
+			existobj.setLayoutType(reqDto.getLayoutType());
+		}
 		existobj = projectRepo.save(existobj);
+
 		return new UpdateProjectResDto(existobj);
 	}
 
