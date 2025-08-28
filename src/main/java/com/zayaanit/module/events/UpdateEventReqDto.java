@@ -50,6 +50,7 @@ public class UpdateEventReqDto {
 	private String location;
 	private Boolean isReminderEnabled;
 	private Integer reminderBefore;
+	private String eventLink;
 
 	private List<Long> perticipants;
 	private List<Long> documents;

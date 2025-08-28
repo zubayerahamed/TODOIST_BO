@@ -49,6 +49,7 @@ public class CreateEventReqDto {
 	private String location;
 	private Boolean isReminderEnabled;
 	private Integer reminderBefore;
+	private String eventLink;
 
 	private List<Long> perticipants;
 	private List<Long> documents;
@@ -66,6 +67,7 @@ public class CreateEventReqDto {
 				.location(location)
 				.isReminderEnabled(reminderBefore != null)
 				.reminderBefore(reminderBefore)
+				.eventLink(eventLink)
 				.build();
 	}
 }

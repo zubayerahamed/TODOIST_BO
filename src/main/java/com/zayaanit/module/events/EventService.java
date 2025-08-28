@@ -16,6 +16,9 @@ import com.zayaanit.enums.PerticipantType;
 import com.zayaanit.exception.CustomException;
 import com.zayaanit.mail.MailType;
 import com.zayaanit.module.BaseService;
+import com.zayaanit.module.category.Category;
+import com.zayaanit.module.category.CategoryRepo;
+import com.zayaanit.module.category.CategoryService;
 import com.zayaanit.module.documents.Document;
 import com.zayaanit.module.documents.DocumentRepo;
 import com.zayaanit.module.documents.DocumentService;
@@ -23,6 +26,8 @@ import com.zayaanit.module.events.perticipants.EventPerticipants;
 import com.zayaanit.module.events.perticipants.EventPerticipantsRepo;
 import com.zayaanit.module.notification.AsyncNotificationService;
 import com.zayaanit.module.notification.NotificationType;
+import com.zayaanit.module.projects.Project;
+import com.zayaanit.module.projects.ProjectRepo;
 import com.zayaanit.module.reminder.ReminderService;
 
 import jakarta.transaction.Transactional;
@@ -43,10 +48,39 @@ public class EventService extends BaseService {
 	@Autowired private EventPerticipantsRepo epRepo;
 	@Autowired private AsyncNotificationService asyncNotificationService;
 	@Autowired private EventChecklistRepo checklistRepo;
+	@Autowired private CategoryRepo categoryRepo;
+	@Autowired private ProjectRepo projectRepo;
 
 	public List<EventResDto> getAllByProjectId(Long projectId) {
 		List<Event> events = eventRepo.findAllByProjectId(projectId);
-		return events.stream().map(EventResDto::new).collect(Collectors.toList());
+
+		List<EventResDto> responseData = events.stream().map(EventResDto::new).collect(Collectors.toList());
+
+		// Get all the checklists, projects, categories
+		responseData.stream().forEach(event -> {
+			// Checklist
+			event.setChecklists(new ArrayList<>());
+			List<EventChecklist> checklists = checklistRepo.findAllByEventId(event.getId());
+			if(checklists != null && !checklists.isEmpty()) {
+				checklists.stream().forEach(checklist -> {
+					event.getChecklists().add(new EventChecklistResDto(checklist));
+				});
+			}
+
+			// project
+			Optional<Project> projectOp = projectRepo.findById(event.getProjectId());
+			if(projectOp.isPresent()) {
+				event.setProjectName(projectOp.get().getName());
+			}
+
+			// category
+			Optional<Category> categoryOp = categoryRepo.findById(event.getCategoryId());
+			if(categoryOp.isPresent()) {
+				event.setCategoryName(categoryOp.get().getName());
+			}
+		});
+
+		return responseData;
 	}
 
 	public EventResDto  findById(Long id) throws CustomException {

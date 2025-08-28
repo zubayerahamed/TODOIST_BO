@@ -2,6 +2,7 @@ package com.zayaanit.module.events;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 
 import org.springframework.beans.BeanUtils;
 
@@ -31,8 +32,12 @@ public class EventResDto {
 	private String location;
 	private Boolean isReminderEnabled;
 	private Integer reminderBefore; // How many minutes before to send reminder
+	private String eventLink;
 	private Boolean isReminderSent;
 	private Boolean isCompleted;
+	private List<EventChecklistResDto> checklists;
+	private String projectName;
+	private String categoryName;
 
 	public EventResDto(Event obj) {
 		BeanUtils.copyProperties(obj, this);

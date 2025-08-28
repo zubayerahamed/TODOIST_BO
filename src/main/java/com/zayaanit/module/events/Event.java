@@ -63,6 +63,9 @@ public class Event extends AbstractModel<Long> {
 	@Column(name = "location", length = 50)
 	private String location;
 
+	@Column(name = "event_link", length = 255)
+	private String eventLink;
+
 	@Column(name = "is_reminder_eanbled", length = 1, nullable = false, columnDefinition = "BIT DEFAULT 0")
 	private Boolean isReminderEnabled;
 
