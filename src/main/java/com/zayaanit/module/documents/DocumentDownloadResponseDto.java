@@ -1,5 +1,7 @@
 package com.zayaanit.module.documents;
 
+import java.nio.file.Path;
+
 import org.springframework.core.io.Resource;
 
 import lombok.AllArgsConstructor;
@@ -17,4 +19,6 @@ public class DocumentDownloadResponseDto {
 
 	private String fileName;
 	private Resource resource;
+	private Path filePath;
+	private long fileSize;
 }

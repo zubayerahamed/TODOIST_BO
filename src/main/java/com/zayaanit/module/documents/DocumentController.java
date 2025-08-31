@@ -1,5 +1,6 @@
 package com.zayaanit.module.documents;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,15 +28,33 @@ public class DocumentController {
 
 	@Autowired private DocumentService documentService;
 
+//	@GetMapping("/download/{id}")
+//	public ResponseEntity<Resource> getFile(@PathVariable Long id) throws IOException{
+//		DocumentDownloadResponseDto resDto = documentService.download(id);
+//
+//		// Detect file's content type
+//		String contentType = Files.probeContentType(resDto.getFilePath());
+//		if (contentType == null) {
+//			contentType = "application/octet-stream"; // fallback
+//		}
+//
+//		return ResponseEntity.ok()
+//				.contentType(MediaType.parseMediaType(contentType))
+//				.header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + resDto.getResource().getFilename() + "\"")
+//				.body(resDto.getResource());
+//	}
+
 	@GetMapping("/download/{id}")
-	public ResponseEntity<Resource> download(@PathVariable Long id){
-		DocumentDownloadResponseDto resDto = documentService.download(id);
+	public ResponseEntity<Resource> getFile2(@PathVariable Long id) throws IOException{
+		DocumentDownloadResponseDto resDto = documentService.download2(id);
 
-		HttpHeaders headers = new HttpHeaders();
-		headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + resDto.getFileName());
-
-		return ResponseEntity.ok().headers(headers).contentType(MediaType.APPLICATION_OCTET_STREAM).body(resDto.getResource());
+		return ResponseEntity.ok()
+				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resDto.getResource().getFilename() + "\"")
+				.contentType(MediaType.APPLICATION_OCTET_STREAM)
+				.contentLength(resDto.getFileSize())
+				.body(resDto.getResource());
 	}
+
 
 	@GetMapping("/all/{referenceid}")
 	public ResponseEntity<SuccessResponse<List<DocumentResDto>>> getAll(@PathVariable Long referenceid){

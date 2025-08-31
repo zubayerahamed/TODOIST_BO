@@ -120,6 +120,15 @@ public class EventService extends BaseService {
 					}
 				}
 
+				// Documents
+				event.setDocuments(new ArrayList<>());
+				List<Document> documents = documentRepo.findAllByReferenceId(event.getId());
+				if(documents != null && !documents.isEmpty()) {
+					for(Document document : documents) {
+						event.getDocuments().add(new DocumentResDto(document));
+					}
+				}
+
 				allEventResponseList.add(event);
 			}
 		}

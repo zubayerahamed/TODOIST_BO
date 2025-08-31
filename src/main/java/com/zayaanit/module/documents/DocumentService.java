@@ -17,6 +17,7 @@ import java.util.UUID;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -40,7 +41,7 @@ public class DocumentService extends BaseService {
 	@Autowired private DocumentRepo documentRepo;
 	@Autowired private Environment env;
 
-	public DocumentDownloadResponseDto download(Long id) {
+	public DocumentDownloadResponseDto download(Long id) throws IOException {
 		Optional<Document> documentOp = documentRepo.findById(id);
 		if(!documentOp.isPresent()) throw new CustomException("File not found", HttpStatus.BAD_REQUEST);
 
@@ -49,10 +50,29 @@ public class DocumentService extends BaseService {
 
 		String storage = createAndGetStorageLocation();
 		Path filePath = Paths.get(storage).resolve(fileName);
+		long fileSize = Files.size(filePath);
 		Resource resource = new org.springframework.core.io.PathResource(filePath);
 		if (!resource.exists()) throw new CustomException("File not exist", HttpStatus.NOT_FOUND);
 
-		return new DocumentDownloadResponseDto(doc.getOldName(), resource);
+		return new DocumentDownloadResponseDto(doc.getOldName(), resource, filePath, fileSize);
+	}
+
+	public DocumentDownloadResponseDto download2(Long id) throws IOException {
+		Optional<Document> documentOp = documentRepo.findById(id);
+		if(!documentOp.isPresent()) throw new CustomException("File not found", HttpStatus.BAD_REQUEST);
+
+		Document doc = documentOp.get();
+		String fileName = doc.getDocName() + doc.getDocExt();
+
+		String storage = createAndGetStorageLocation();
+		Path filePath = Paths.get(storage).resolve(fileName);
+
+		long fileSize = Files.size(filePath);
+		byte[] data = Files.readAllBytes(filePath);
+		ByteArrayResource resource = new ByteArrayResource(data);
+		if (resource == null || !resource.exists()) throw new CustomException("File not exist", HttpStatus.NOT_FOUND);
+
+		return new DocumentDownloadResponseDto(doc.getOldName(), resource, filePath, fileSize);
 	}
 
 	public List<DocumentResDto> getAll(Long referenceId){

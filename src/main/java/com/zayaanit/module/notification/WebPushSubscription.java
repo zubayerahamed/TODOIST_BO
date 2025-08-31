@@ -38,7 +38,7 @@ public class WebPushSubscription extends AbstractModel<Long> {
 	@Column(name = "user_id")
 	private Long userId;
 
-	@Column(name = "endpoint")
+	@Column(name = "endpoint", length = 2048)
 	private String endpoint;
 
 	@Column(name = "public_key")
