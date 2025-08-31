@@ -100,6 +100,8 @@ public class DocumentService extends BaseService {
 				.oldName(reqDto.getFile().getOriginalFilename())
 				.docExt(fileExt)
 				.xtemp(true)
+				.docSize(String.valueOf(reqDto.getFile().getSize()))
+				.docType(reqDto.getFile().getContentType())
 				.build();
 
 		Document savedDoc = documentRepo.save(doc);

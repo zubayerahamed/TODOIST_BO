@@ -18,6 +18,8 @@ public class DocumentResDto {
 	private String description;
 	private String docName;
 	private String docExt;
+	private String docSize;
+	private String docType;
 
 	public DocumentResDto(Document obj) {
 		BeanUtils.copyProperties(obj, this);

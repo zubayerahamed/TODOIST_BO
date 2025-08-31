@@ -52,5 +52,11 @@ public class Document extends AbstractModel<Long> {
 	@Column(name = "doc_ext", length = 10)
 	private String docExt;
 
+	@Column(name = "doc_size", length = 20)
+	private String docSize;
+
+	@Column(name = "doc_type", length = 20)
+	private String docType;
+
 	private boolean xtemp;
 }

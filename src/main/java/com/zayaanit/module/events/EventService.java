@@ -20,6 +20,7 @@ import com.zayaanit.module.category.Category;
 import com.zayaanit.module.category.CategoryRepo;
 import com.zayaanit.module.documents.Document;
 import com.zayaanit.module.documents.DocumentRepo;
+import com.zayaanit.module.documents.DocumentResDto;
 import com.zayaanit.module.documents.DocumentService;
 import com.zayaanit.module.events.perticipants.EventPerticipants;
 import com.zayaanit.module.events.perticipants.EventPerticipantsRepo;
@@ -159,6 +160,15 @@ public class EventService extends BaseService {
 				Optional<Category> categoryOp = categoryRepo.findById(event.getCategoryId());
 				if(categoryOp.isPresent()) {
 					event.setCategoryName(categoryOp.get().getName());
+				}
+			}
+
+			// Documents
+			event.setDocuments(new ArrayList<>());
+			List<Document> documents = documentRepo.findAllByReferenceId(event.getId());
+			if(documents != null && !documents.isEmpty()) {
+				for(Document document : documents) {
+					event.getDocuments().add(new DocumentResDto(document));
 				}
 			}
 		});

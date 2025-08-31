@@ -6,6 +6,8 @@ import java.util.List;
 
 import org.springframework.beans.BeanUtils;
 
+import com.zayaanit.module.documents.DocumentResDto;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -38,6 +40,7 @@ public class EventResDto {
 	private List<EventChecklistResDto> checklists;
 	private String projectName;
 	private String categoryName;
+	private List<DocumentResDto> documents;
 
 	public EventResDto(Event obj) {
 		BeanUtils.copyProperties(obj, this);
