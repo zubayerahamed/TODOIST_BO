@@ -11,8 +11,6 @@ import jakarta.persistence.Column;
  * @since Jul 3, 2025
  */
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -29,9 +27,9 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "events")
+@Table(name = "parent_events")
 @EqualsAndHashCode(callSuper = true)
-public class Event extends AbstractModel<Long> {
+public class ParentEvent extends AbstractModel<Long> {
 
 	private static final long serialVersionUID = 2572842083641054917L;
 
@@ -73,23 +71,4 @@ public class Event extends AbstractModel<Long> {
 
 	@Column(name = "reminder_before", nullable = false)
 	private Integer reminderBefore; // How many minutes before to send reminder
-
-	@Column(name = "is_reminder_sent", length = 1, nullable = false, columnDefinition = "BIT DEFAULT 0")
-	private Boolean isReminderSent;
-
-	@Column(name = "is_completed", length = 1, nullable = false, columnDefinition = "BIT DEFAULT 0")
-	private Boolean isCompleted;
-
-
-
-	// Below fields needs for repeated events
-	@Column(name = "is_cancelled", length = 1, nullable = false, columnDefinition = "BIT DEFAULT 0")
-	private Boolean isCancelled;
-
-	@Enumerated(EnumType.STRING)
-	@Column(name = "event_type", length = 10)
-	private EventType eventType;
-
-	@Column(name = "event_repeater_id")
-	private Long eventRepeaterId;
 }
