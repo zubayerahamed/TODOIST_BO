@@ -39,11 +39,9 @@ public class CreateEventReqDto {
 	private LocalDate eventDate;
 	@NotNull(message = "Event start time required")
 	@JsonFormat(pattern = "HH:mm")
-//	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSX")
 	private LocalTime startTime;
 	@NotNull(message = "Event end time required")
 	@JsonFormat(pattern = "HH:mm")
-//	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSX")
 	private LocalTime endTime;
 
 	private String location;

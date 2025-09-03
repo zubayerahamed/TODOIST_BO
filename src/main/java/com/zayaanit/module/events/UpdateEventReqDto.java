@@ -41,10 +41,10 @@ public class UpdateEventReqDto {
 	@JsonFormat(pattern = "yyyy-MM-dd")
 	private LocalDate eventDate;
 	@NotNull(message = "Event start time required")
-	@JsonFormat(pattern = "HH:mm")
+	@JsonFormat(pattern = "HH:mm:ss")
 	private LocalTime startTime;
 	@NotNull(message = "Event end time required")
-	@JsonFormat(pattern = "HH:mm")
+	@JsonFormat(pattern = "HH:mm:ss")
 	private LocalTime endTime;
 
 	private String location;
@@ -54,4 +54,5 @@ public class UpdateEventReqDto {
 
 	private List<Long> perticipants;
 	private List<Long> documents;
+	private List<EventChecklistReqDto> checklists;
 }
