@@ -30,6 +30,14 @@ public class WorkspaceResDto {
 	private boolean isAdmin;
 	private boolean isCollaborator;
 
+	private Boolean isWeekendSat;
+	private Boolean isWeekendSun;
+	private Boolean isWeekendMon;
+	private Boolean isWeekendTue;
+	private Boolean isWeekendWed;
+	private Boolean isWeekendThu;
+	private Boolean isWeekendFri;
+
 	public WorkspaceResDto(Workspace workspace, UserWorkspace uw) {
 		BeanUtils.copyProperties(workspace, this);
 

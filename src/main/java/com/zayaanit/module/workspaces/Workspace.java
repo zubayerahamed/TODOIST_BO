@@ -47,4 +47,19 @@ public class Workspace extends AbstractModel<Long> {
 	@Lob
 	@Column(name = "logo", nullable = true)
 	private byte[] logo;
+
+	@Column(name = "is_weekend_sat", length = 1, nullable = false, columnDefinition = "BIT DEFAULT 0")
+	private Boolean isWeekendSat;
+	@Column(name = "is_weekend_sun", length = 1, nullable = false, columnDefinition = "BIT DEFAULT 0")
+	private Boolean isWeekendSun;
+	@Column(name = "is_weekend_mon", length = 1, nullable = false, columnDefinition = "BIT DEFAULT 0")
+	private Boolean isWeekendMon;
+	@Column(name = "is_weekend_tue", length = 1, nullable = false, columnDefinition = "BIT DEFAULT 0")
+	private Boolean isWeekendTue;
+	@Column(name = "is_weekend_wed", length = 1, nullable = false, columnDefinition = "BIT DEFAULT 0")
+	private Boolean isWeekendWed;
+	@Column(name = "is_weekend_thu", length = 1, nullable = false, columnDefinition = "BIT DEFAULT 0")
+	private Boolean isWeekendThu;
+	@Column(name = "is_weekend_fri", length = 1, nullable = false, columnDefinition = "BIT DEFAULT 0")
+	private Boolean isWeekendFri;
 }
