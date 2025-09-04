@@ -16,6 +16,7 @@ import com.zayaanit.enums.ResponseStatusType;
 import com.zayaanit.model.ResponseBuilder;
 import com.zayaanit.model.SuccessResponse;
 import com.zayaanit.module.RestApiController;
+import com.zayaanit.module.events.checklists.EventChecklistResDto;
 
 import jakarta.validation.Valid;
 

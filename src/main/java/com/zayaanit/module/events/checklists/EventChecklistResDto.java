@@ -1,4 +1,4 @@
-package com.zayaanit.module.events;
+package com.zayaanit.module.events.checklists;
 
 import org.springframework.beans.BeanUtils;
 

@@ -5,6 +5,7 @@ import java.time.LocalTime;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.zayaanit.module.events.checklists.CreateEventChecklistReqDto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -51,7 +52,7 @@ public class CreateEventReqDto {
 
 	private List<Long> perticipants;
 	private List<Long> documents;
-	private List<EventChecklistReqDto> checklists;
+	private List<CreateEventChecklistReqDto> checklists;
 
 	public Event getBean() {
 		return Event.builder()

@@ -1,4 +1,4 @@
-package com.zayaanit.module.events;
+package com.zayaanit.module.events.repeaters;
 
 import java.time.LocalDate;
 
@@ -39,7 +39,7 @@ public class EventRepeater extends AbstractModel<Long> {
 	private Long id;
 
 	@Column(name = "parent_event_id")
-	private Long parentEventId;
+	private Long parentEventId;    // if it is null, then this record shoud remove through schedular
 
 	@Column(name = "repeat_every", length = 20)
 	private Integer repeatEvery;  // 1, 2, 3, 4
@@ -48,8 +48,8 @@ public class EventRepeater extends AbstractModel<Long> {
 	@Column(name = "repeat_type", length = 20)
 	private EventRepeatType repeatType;   // Day, Week, Month, Year
 
-	@Column(name = "skip_weekends", nullable = false)
-	private Integer skipWeekends;
+	@Column(name = "skip_weekends", length = 1, nullable = false, columnDefinition = "BIT DEFAULT 0")
+	private Boolean skipWeekends;
 
 	@Column(name = "days_sat", length = 1, nullable = false, columnDefinition = "BIT DEFAULT 0")
 	private Boolean daysSat;
@@ -65,6 +65,10 @@ public class EventRepeater extends AbstractModel<Long> {
 	private Boolean daysThu;
 	@Column(name = "days_fri", length = 1, nullable = false, columnDefinition = "BIT DEFAULT 0")
 	private Boolean daysFri;
+
+	@Enumerated(EnumType.STRING)
+	@Column(name = "data_type", length = 20)
+	private DataType dataType;   // used only for month, year
 
 	@Column(name = "fixed_dates", length = 100)
 	private String fixedDates;

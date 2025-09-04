@@ -1,4 +1,4 @@
-package com.zayaanit.module.events;
+package com.zayaanit.module.events.parents;
 
 import java.time.LocalDate;
 import java.time.LocalTime;

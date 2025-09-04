@@ -1,4 +1,4 @@
-package com.zayaanit.module.events;
+package com.zayaanit.module.events.checklists;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class EventChecklistReqDto {
+public class CreateEventChecklistReqDto {
 
 	private String description;
 	private Boolean isCompleted;

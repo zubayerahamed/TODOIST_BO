@@ -7,6 +7,7 @@ import java.util.List;
 import org.springframework.beans.BeanUtils;
 
 import com.zayaanit.module.documents.DocumentResDto;
+import com.zayaanit.module.events.checklists.EventChecklistResDto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

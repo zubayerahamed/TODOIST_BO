@@ -1,4 +1,4 @@
-package com.zayaanit.module.events;
+package com.zayaanit.module.events.checklists;
 
 import com.zayaanit.model.AbstractModel;
 
