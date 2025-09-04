@@ -43,6 +43,16 @@ public class CreateEventRequestValidator implements ConstraintValidator<ValidCre
 			isValid = false;
 		}
 
+		// 4. Event Repeater Id
+		if(dto.getEventType() != null && EventType.REPEAT.equals(dto.getEventType())) {
+			if(dto.getEventRepeaterId() == null) {
+				context.buildConstraintViolationWithTemplate("Repeater reference required")
+				.addPropertyNode("eventRepeaterId")
+				.addConstraintViolation();
+				isValid = false;
+			}
+		}
+
 		return isValid;
 	}
 }

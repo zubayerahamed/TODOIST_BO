@@ -54,6 +54,9 @@ public class CreateEventReqDto {
 	private List<Long> documents;
 	private List<CreateEventChecklistReqDto> checklists;
 
+	private EventType eventType;
+	private Long eventRepeaterId;
+
 	public Event getBean() {
 		return Event.builder()
 				.title(title)
@@ -67,6 +70,8 @@ public class CreateEventReqDto {
 				.isReminderEnabled(reminderBefore != null)
 				.reminderBefore(reminderBefore)
 				.eventLink(eventLink)
+				.eventType(eventType == null ? EventType.NORMAL : eventType)
+				.eventRepeaterId(eventRepeaterId)
 				.build();
 	}
 }

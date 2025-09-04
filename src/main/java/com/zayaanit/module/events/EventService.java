@@ -25,8 +25,14 @@ import com.zayaanit.module.documents.DocumentService;
 import com.zayaanit.module.events.checklists.EventChecklist;
 import com.zayaanit.module.events.checklists.EventChecklistRepo;
 import com.zayaanit.module.events.checklists.EventChecklistResDto;
+import com.zayaanit.module.events.parents.CreateParentEventReqDto;
+import com.zayaanit.module.events.parents.ParentEvent;
+import com.zayaanit.module.events.parents.ParentEventRepo;
 import com.zayaanit.module.events.perticipants.EventPerticipants;
 import com.zayaanit.module.events.perticipants.EventPerticipantsRepo;
+import com.zayaanit.module.events.repeaters.EventRepeatType;
+import com.zayaanit.module.events.repeaters.EventRepeater;
+import com.zayaanit.module.events.repeaters.EventRepeaterRepo;
 import com.zayaanit.module.notification.AsyncNotificationService;
 import com.zayaanit.module.notification.NotificationType;
 import com.zayaanit.module.projects.Project;
@@ -54,6 +60,8 @@ public class EventService extends BaseService {
 	@Autowired private EventChecklistRepo checklistRepo;
 	@Autowired private CategoryRepo categoryRepo;
 	@Autowired private ProjectRepo projectRepo;
+	@Autowired private ParentEventRepo parentEventRepo;
+	@Autowired private EventRepeaterRepo eventRepeaterRepo;
 
 	public long getCountOfAllEventsFromAllProjects(LocalDate date, Boolean isCompleted){
 		List<Project> projects = projectRepo.findAllByWorkspaceId(loggedinUser().getWorkspace().getId());
@@ -202,6 +210,78 @@ public class EventService extends BaseService {
 		Event event = reqDto.getBean();
 		event.setIsCompleted(false);
 		event.setIsReminderSent(false);
+
+		// if event type is REPEAT , then the process id fefferent
+		if(EventType.REPEAT.equals(event.getEventType())) {
+			// Create a parent event first
+			ParentEvent parentEvent = CreateParentEventReqDto.from(event).getBean();
+			parentEvent = parentEventRepo.save(parentEvent);
+			if(parentEvent == null || parentEvent.getId() == null) {
+				throw new CustomException("Somethin is wrong with creating event", HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+
+			// Update the event repeater with parent event reference
+			Optional<EventRepeater> erOp = eventRepeaterRepo.findById(event.getEventRepeaterId());
+			if(!erOp.isPresent()) throw new CustomException("Event repeater not found", HttpStatus.NOT_FOUND);
+
+			EventRepeater er = erOp.get();
+			er.setParentEventId(parentEvent.getId());
+			er = eventRepeaterRepo.save(er);
+
+			// then create final events based on the repeater
+			List<Event> createdEvents = createEventsFromEventRepeaterAndParentEvent(er, parentEvent);
+
+			// only checklist and documents will be ignored, participent will be assigned all events
+			for(Event ev : createdEvents) {
+				// Add event creator
+				EventPerticipants ep = EventPerticipants.builder()
+						.userId(loggedinUser().getUserId())
+						.eventId(ev.getId())
+						.isReminderSent(Boolean.FALSE)
+						.perticipantType(PerticipantType.CREATOR)
+						.build();
+				ep = epRepo.save(ep);
+				eventCreatorId.add(ep.getUserId());
+
+				// Add other perticipants
+				if(reqDto.getPerticipants() != null) {
+					List<Long> perticipants = reqDto.getPerticipants().stream().filter(p -> !p.equals(loggedinUser().getUserId())).collect(Collectors.toList());
+					perticipants.stream().forEach(p -> {
+						EventPerticipants eventPerticipant = EventPerticipants.builder()
+								.userId(p)
+								.eventId(ev.getId())
+								.isReminderSent(Boolean.FALSE)
+								.perticipantType(PerticipantType.CONTRIBUTOR)
+								.build();
+						epRepo.save(eventPerticipant);
+						allPerticipantsId.add(p);
+					});
+				}
+
+				// Schedule it for reminder
+				scheduleEventReminder(ev);
+			}
+
+			// notification only once for the first event created, rest will be for the reminder
+			Event finalEvent = createdEvents.get(0);
+
+			// Send Email Notification
+			asyncNotificationService.sendEmailNotification(finalEvent, eventCreatorId, MailType.EVENT_CREATED);
+			asyncNotificationService.sendEmailNotification(finalEvent, allPerticipantsId, MailType.EVENT_ASSIGNED);
+
+			// Send socket push notification
+			asyncNotificationService.sendSocketPushNotification(finalEvent, eventCreatorId, NotificationType.EVENT_CREATED);
+			asyncNotificationService.sendSocketPushNotification(finalEvent, allPerticipantsId, NotificationType.EVENT_ASSIGNED);
+
+			// Send web push notification
+			asyncNotificationService.sendBrowserPushNotification(finalEvent, eventCreatorId, NotificationType.EVENT_CREATED);
+			asyncNotificationService.sendBrowserPushNotification(finalEvent, allPerticipantsId, NotificationType.EVENT_ASSIGNED);
+
+			// TODO: send sms notification
+
+			return new EventResDto(finalEvent);
+		}
+
 		Event finalEvent = eventRepo.save(event);
 
 		// Add checklist 
@@ -269,6 +349,45 @@ public class EventService extends BaseService {
 		// TODO: send sms notification
 
 		return new EventResDto(finalEvent);
+	}
+
+	// Limit to 30 event create in advanced
+	private List<Event> createEventsFromEventRepeaterAndParentEvent(EventRepeater er, ParentEvent parentEvent){
+		List<Event> events = new ArrayList<>();
+
+		// TODO; write all the event create logic here, it may move to another seperate service to use it with event repeater change
+		if(EventRepeatType.DAY.equals(er.getRepeatType())) {
+			List<LocalDate> dates = new ArrayList<>();
+			Integer gap = er.getRepeatEvery();
+			LocalDate startDate = er.getStartDate();
+			LocalDate endDate = er.getEndDate();
+
+			dates.add(startDate);
+			// Limit to 30 event creation
+			for(int i = 0; i < 30; i++) {
+				startDate = startDate.plusDays(gap);
+				
+				// TODO: weekday checking: if start date in weekday just skip current startDate and continue to the next
+				
+				if(endDate != null) {
+					if(!startDate.isBefore(endDate)) {
+						break;
+					}
+				}
+				dates.add(startDate);
+				i++;
+			}
+
+			// Now create events based on all the dates found. user parent event for data
+			for(LocalDate eventDate : dates) {
+				Event event = new Event();
+				BeanUtils.copyProperties(parentEvent, event);  // TODO: need to observe
+				event.setEventDate(eventDate);
+				events.add(event);
+			}
+		}
+
+		return events;
 	}
 
 	@Transactional
