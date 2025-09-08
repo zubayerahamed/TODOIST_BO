@@ -1,5 +1,6 @@
 package com.zayaanit.module.events;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +39,7 @@ import com.zayaanit.module.notification.NotificationType;
 import com.zayaanit.module.projects.Project;
 import com.zayaanit.module.projects.ProjectRepo;
 import com.zayaanit.module.reminder.ReminderService;
+import com.zayaanit.module.workspaces.Workspace;
 
 import io.jsonwebtoken.lang.Collections;
 import jakarta.transaction.Transactional;
@@ -351,6 +353,37 @@ public class EventService extends BaseService {
 		return new EventResDto(finalEvent);
 	}
 
+	private List<String> getWeekDays() {
+		List<String> weekends = new ArrayList<>();
+		Workspace workspace = loggedinUser().getWorkspace();
+		if (workspace == null)
+			return weekends;
+
+		if (Boolean.TRUE.equals(workspace.getIsWeekendSun())) {
+			weekends.add("SUNDAY");
+		}
+		if (Boolean.TRUE.equals(workspace.getIsWeekendMon())) {
+			weekends.add("MONDAY");
+		}
+		if (Boolean.TRUE.equals(workspace.getIsWeekendTue())) {
+			weekends.add("TUESDAY");
+		}
+		if (Boolean.TRUE.equals(workspace.getIsWeekendWed())) {
+			weekends.add("WEDNESDAY");
+		}
+		if (Boolean.TRUE.equals(workspace.getIsWeekendThu())) {
+			weekends.add("THURSDAY");
+		}
+		if (Boolean.TRUE.equals(workspace.getIsWeekendFri())) {
+			weekends.add("FRIDAY");
+		}
+		if (Boolean.TRUE.equals(workspace.getIsWeekendSat())) {
+			weekends.add("SATURDAY");
+		}
+
+		return weekends;
+	}
+
 	// Limit to 30 event create in advanced
 	private List<Event> createEventsFromEventRepeaterAndParentEvent(EventRepeater er, ParentEvent parentEvent){
 		List<Event> events = new ArrayList<>();
@@ -362,13 +395,22 @@ public class EventService extends BaseService {
 			LocalDate startDate = er.getStartDate();
 			LocalDate endDate = er.getEndDate();
 
-			dates.add(startDate);
+			// CHeck weekday and add initial starting date
+			DayOfWeek dayOfWeek = startDate.getDayOfWeek(); 
+			if(!getWeekDays().contains(dayOfWeek.name())) {
+				dates.add(startDate);
+			}
+
 			// Limit to 30 event creation
 			for(int i = 0; i < 30; i++) {
 				startDate = startDate.plusDays(gap);
-				
+
 				// TODO: weekday checking: if start date in weekday just skip current startDate and continue to the next
-				
+				dayOfWeek = startDate.getDayOfWeek(); 
+				if(getWeekDays().contains(dayOfWeek.name())) {
+					continue;
+				}
+
 				if(endDate != null) {
 					if(!startDate.isBefore(endDate)) {
 						break;

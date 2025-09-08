@@ -104,6 +104,13 @@ public class AuthenticationService {
 				.name(user.getFirstName() + "'s Workspace")
 				.isSystemDefined(Boolean.TRUE)
 				.isActive(Boolean.TRUE)
+				.isWeekendFri(true)
+				.isWeekendSat(false)
+				.isWeekendSun(false)
+				.isWeekendMon(false)
+				.isWeekendTue(false)
+				.isWeekendWed(false)
+				.isWeekendThu(false)
 				.build();
 
 		workspace = workspaceRepo.save(workspace);

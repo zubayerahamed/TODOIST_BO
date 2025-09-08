@@ -83,6 +83,13 @@ public class WorkspaceService extends BaseService {
 		workspace.setIsActive(true);
 		workspace.setIsSystemDefined(false);
 		workspace.setLogo(null);
+		workspace.setIsWeekendFri(true);
+		workspace.setIsWeekendSat(false);
+		workspace.setIsWeekendSun(false);
+		workspace.setIsWeekendMon(false);
+		workspace.setIsWeekendTue(false);
+		workspace.setIsWeekendWed(false);
+		workspace.setIsWeekendThu(false);
 		workspace = workspaceRepo.save(workspace);
 
 		// Now make relation workspace with user
@@ -168,6 +175,35 @@ public class WorkspaceService extends BaseService {
 
 		Workspace existobj = workspaceOp.get();
 		BeanUtils.copyProperties(reqDto, existobj);
+		existobj = workspaceRepo.save(existobj);
+		return new WorkspaceResDto(existobj, userWorkspaceOp.get());
+	}
+
+	@Transactional
+	public WorkspaceResDto updateWeekend(String day, String status) {
+		Optional<UserWorkspace> userWorkspaceOp = userWorkspaceRepo.findById(new UsersWorkspacesPK(loggedinUser().getUserId(), loggedinUser().getWorkspace().getId()));
+		if(!userWorkspaceOp.isPresent()) throw new CustomException("User has no access with this workspace", HttpStatus.UNAUTHORIZED);
+
+		Optional<Workspace> workspaceOp =  workspaceRepo.findById(loggedinUser().getWorkspace().getId());
+		if(!workspaceOp.isPresent()) throw new CustomException("Workspace not exist", HttpStatus.NOT_FOUND);
+
+		Workspace existobj = workspaceOp.get();
+		if("SAT".equalsIgnoreCase(day)) {
+			existobj.setIsWeekendSat("CHECKED".equalsIgnoreCase(status));
+		} else if("SUN".equalsIgnoreCase(day)) {
+			existobj.setIsWeekendSun("CHECKED".equalsIgnoreCase(status));
+		} else if("MON".equalsIgnoreCase(day)) {
+			existobj.setIsWeekendMon("CHECKED".equalsIgnoreCase(status));
+		} else if("TUE".equalsIgnoreCase(day)) {
+			existobj.setIsWeekendTue("CHECKED".equalsIgnoreCase(status));
+		} else if("WED".equalsIgnoreCase(day)) {
+			existobj.setIsWeekendWed("CHECKED".equalsIgnoreCase(status));
+		} else if("THU".equalsIgnoreCase(day)) {
+			existobj.setIsWeekendThu("CHECKED".equalsIgnoreCase(status));
+		} else if("FRI".equalsIgnoreCase(day)) {
+			existobj.setIsWeekendFri("CHECKED".equalsIgnoreCase(status));
+		}
+
 		existobj = workspaceRepo.save(existobj);
 		return new WorkspaceResDto(existobj, userWorkspaceOp.get());
 	}

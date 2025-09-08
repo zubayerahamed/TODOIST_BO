@@ -64,4 +64,10 @@ public class WorkspaceController {
 		workspaceService.deleteById(id);
 		return ResponseBuilder.build(ResponseStatusType.DELETE_SUCCESS, null);
 	}
+
+	@PutMapping("/weekends/{day}/{status}")
+	public ResponseEntity<SuccessResponse<WorkspaceResDto>> updateWeekend(@PathVariable String day, @PathVariable String status){
+		WorkspaceResDto resData = workspaceService.updateWeekend(day, status);
+		return ResponseBuilder.build(ResponseStatusType.UPDATE_SUCCESS, resData);
+	}
 }
